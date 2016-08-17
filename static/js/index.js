@@ -6,6 +6,7 @@
 init_webvr();
 
 function init_webvr() {
+    set_webvr();                            //初始化,加载场景,设置默认配置等
     play_vr_video();                        //播放VR视频
     add_vr_video_end_listener(init_screen); //添加VR视频播放结束事件
 }
