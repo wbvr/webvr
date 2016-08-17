@@ -2,6 +2,12 @@
  * Created by sohow on 16-8-17.
  */
 
+/*全局变量*/
+var screen, camera, render;
+
+
+/**/
+
 
 init_webvr();
 
