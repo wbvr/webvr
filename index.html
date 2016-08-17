@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>WEBVR-TV</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+    </div>
+</body>
+
+
+<script type="text/javascript">
+    WebVRConfig = {
+        BUFFER_SCALE: 1.0,
+        ROTATE_INSTRUCTIONS_DISABLED: true,
+        ENABLE_DEPRECATED_API: true
+    };
+
+    document.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    });
+</script>
+
+<!-- three.js library -->
+<script type="text/javascript" src="static/js/three.js"></script>
+
+<!-- VRControls.js applies the WebVR transformations to a three.js camera object. -->
+<script type="text/javascript" src="static/js/VRControls.js"></script>
+
+<!-- VREffect.js handles stereo camera setup and rendering.  -->
+<script type="text/javascript" src="static/js/VREffect.js"></script>
+
+<!-- A polyfill for the WebVR API.  -->
+<script type="text/javascript" src="static/js/webvr-polyfill.js"></script>
+
+<script type="text/javascript" src="static/js/stats.min.js"></script>
+
+<script type="text/javascript" src="static/js/index.js"></script>
+
+</html>
