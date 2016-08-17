@@ -43,7 +43,6 @@ found in the LICENSE file.
       };
     </script>
     <script src="js/third-party/webvr-polyfill.js"></script>
-    <script src="js/third-party/wglu/wglu-url.js"></script>
     <script>
       // Dynamically turn the polyfill on if requested by the query args.
     InitializeWebVRPolyfill();
@@ -54,7 +53,6 @@ found in the LICENSE file.
     <script src="js/third-party/gl-matrix-min.js"></script>
 
     <script src="js/third-party/wglu/wglu-program.js"></script>
-    <script src="js/third-party/wglu/wglu-stats.js"></script>
 
     <script src="js/vr-panorama.js"></script>
     <script src="js/vr-samples-util.js"></script>
@@ -80,7 +78,6 @@ found in the LICENSE file.
       var webglCanvas = document.getElementById("webgl-canvas");
       var gl = null;
       var panorama = null;
-      var stats = null;
 
       function init (preserveDrawingBuffer) {
         var glAttribs = {
@@ -95,7 +92,6 @@ found in the LICENSE file.
         panorama = new VRPanorama(gl);
         panorama.setImage("images/test.jpg");
 
-        stats = new WGLUStats(gl);
 
         // Wait until we have a WebGL context to resize and start rendering.
         window.addEventListener("resize", onResize, false);
@@ -208,7 +204,6 @@ found in the LICENSE file.
       }
 
       function onAnimationFrame (t) {
-        stats.begin();
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -229,7 +224,6 @@ found in the LICENSE file.
           } else {
             gl.viewport(0, 0, webglCanvas.width, webglCanvas.height);
             renderSceneView(poseMat, null);
-            stats.renderOrtho();
           }
         } else {
           window.requestAnimationFrame(onAnimationFrame);
@@ -240,10 +234,8 @@ found in the LICENSE file.
           mat4.identity(viewMat);
           panorama.render(projectionMat, viewMat);
 
-          stats.renderOrtho();
         }
 
-        stats.end();
       }
       })();
     </script>
