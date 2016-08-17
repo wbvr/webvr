@@ -1,8 +1,21 @@
-<!--给图片加白框-->
+<!--给图片加黑框-->
 <script>
-    var frame = function(url,cb) {
-        var img = new Image();
-        img.onload = function(){
+    var img = new Image();
+    img.onload = function(){
+        frame(img);
+        document.body.appendChild(img)
+    };
+    img.src = 'http://lizhilei.cn/test/webvr/media/textures/1_1.jpg';
+
+    /*
+    * 使用说明
+    * 图片load之后,使用此函数可以对图品进行处理
+    * 1.处理后图片为长：宽=2：1  PS:只对图片长小于宽的1/2的图片进行处理
+    * 2.不足的地方用黑丝填充
+    * */
+    var frame = function(img) {
+        if (img.width/2 > img.height){
+            var canvas = document.createElement('canvas');
             var image = new Image();
             canvas.width = img.width;
             canvas.height = img.width/2;
@@ -11,16 +24,8 @@
             ctx.fillRect(0,0,img.width,img.width/2);
             ctx.drawImage(img,0,(img.width/2-img.height)/2);
 
-
             img.src = canvas.toDataURL("image/png");
-            cb(img);
-        };
-        var canvas = document.createElement('canvas');
-        img.src = url;
+            canvas = null;
+        }
     };
-    function cb(image){
-        document.body.appendChild(image)
-    }
-
-    frame('http://lizhilei.cn/test/webvr/media/textures/1_1.jpg');
 </script>
