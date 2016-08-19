@@ -42,7 +42,7 @@ function play_vr_video() {
     //video.loop = true;
     video.muted = true;
 
-    video.src = '../../static/video/vr_video.webm';
+    video.src = 'static/video/vr_video.webm';
     video.setAttribute('crossorigin', 'anonymous');
     video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     video.load();
@@ -161,7 +161,7 @@ function set_screen() {
     var geometry = new THREE.SphereGeometry( 500, 32, 16 );
     geometry.scale( - 1, 1, 1 );
 
-    var texture = new THREE.TextureLoader().load( '../../static/img/screen.jpg' );
+    var texture = new THREE.TextureLoader().load( 'static/img/screen.jpg' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture
     } );
@@ -246,7 +246,7 @@ function play_normal_video() {
     video = document.createElement( 'video' );
     video.loop = true;
     //video.muted = true;
-    video.src = '../../static/video/normal_video.mp4';
+    video.src = 'static/video/normal_video.mp4';
     video.setAttribute('crossorigin', 'anonymous');
     video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     video.load();
