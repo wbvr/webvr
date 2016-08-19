@@ -10,10 +10,16 @@ function set_webvr() {
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.layers.enable( 1 );
 
-    fov = 60; //默认视角
+    fov = 60;   //默认视角
+    fps = 60;   //fps
     curtain_width = 240;
     curtain_height = 100;
-
+    curtain_cur_height = curtain_height;
+    up_curtain_time = 5;    //升窗帘所需时间秒
+    down_curtain_time = 5;  //降窗帘所需时间秒
+    zoom_screen_num = 10;    //场景放大次数
+    zoom_screen_cur_num = 0; //场景放大当前次数
+    curtain_exit = 0;
 
 
     window.addEventListener( 'resize', onWindowResize, false );
@@ -23,6 +29,15 @@ function set_webvr() {
     document.addEventListener( 'mouseup', onDocumentMouseUp, false );
     document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
     document.addEventListener( 'MozMousePixelScroll', onDocumentMouseWheel, false);
+
+    //预先加载VR视频
+    vr_video = document.createElement( 'video' );
+    //video.loop = true;
+    vr_video.muted = true;
+    vr_video.src = 'static/video/vr_video.webm';
+    vr_video.setAttribute('crossorigin', 'anonymous');
+    vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+    vr_video.load();
 
     animate();
 }
@@ -36,16 +51,6 @@ function animate() {
 
 function play_vr_video() {
 
-    // video
-
-    vr_video = document.createElement( 'video' );
-    //video.loop = true;
-    vr_video.muted = true;
-
-    vr_video.src = 'static/video/vr_video.webm';
-    vr_video.setAttribute('crossorigin', 'anonymous');
-    vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
-    vr_video.load();
     //vr_video.play();
 
     texture = new THREE.VideoTexture( vr_video );
@@ -142,16 +147,27 @@ function play_vr_video() {
     };
 }
 
-
 function add_vr_video_end_listener(init_screen) {
+    var flag = true;
     vr_video.addEventListener('ended',function(){
-        init_screen();
+        if (flag) {
+            init_screen();
+            flag = false;
+        }
     });
 }
 
-function add_normal_video_play_listener(confirm_msg_box,init_nod) {
+function add_normal_video_play_listener(HControlBegin,init_nod) {
     normal_video.addEventListener('play',function(){
-        setTimeout(confirm_msg_box,5000);
+        //setTimeout(HControlBegin,5000);
+        HControlBegin(init_nod);
+    });
+}
+
+function add_normal_video_end_listener(init_normal_video_end) {
+    normal_video.addEventListener('ended',function(){
+        //setTimeout(HControlBegin,5000);
+        init_normal_video_end();
     });
 }
 
@@ -172,6 +188,69 @@ function confirm_msg_box(init_nod) {
         alert('yes');
     } else {
         alert('no');
+    }
+}
+
+/**
+ * 升幕帘
+ */
+function up_curtain() {
+    console.log('up_curtain');
+    if (curtain.position.y < curtain_height) {
+        var up = curtain_height / up_curtain_time / fps;
+        console.log('up: '+up);
+        curtain.position.y += up;
+        requestAnimationFrame(up_curtain);
+    } else {
+        scene.remove(curtain);
+        curtain_exit = 0;
+        init_forward();
+    }
+}
+
+/**
+ * 降幕帘
+ */
+function down_curtain() {
+    if (!curtain_exit) {
+        scene.add(curtain);
+    }
+    console.log('down_curtain');
+    if (curtain.position.y > 0) {
+        var down = curtain_height / up_curtain_time / fps;
+        console.log('down: '+down);
+        curtain.position.y -= down;
+        requestAnimationFrame(down_curtain);
+    } else {
+
+    }
+}
+
+/**
+ * 缩小
+ */
+function zoom_out_screen() {
+    console.log('zoom_out_screen fov: '+camera.fov);
+    if (zoom_screen_cur_num++ < zoom_screen_num) {
+        camera.fov += 3;
+        camera.updateProjectionMatrix();
+        requestAnimationFrame(zoom_out_screen);
+    } else {
+        zoom_screen_cur_num = 0;
+    }
+}
+
+/**
+ * 放大
+ */
+function zoom_in_screen() {
+    console.log('zoom_in_screen fov: '+camera.fov);
+    if (zoom_screen_cur_num++ < zoom_screen_num) {
+        camera.fov -= 3;
+        camera.updateProjectionMatrix();
+        requestAnimationFrame(zoom_in_screen);
+    } else {
+        zoom_screen_cur_num = 0;
     }
 }
 
@@ -267,16 +346,20 @@ function set_screen() {
         camera.updateProjectionMatrix();
 
     };
-}
 
-function play_normal_video() {
+    //预加载普通视频
     normal_video = document.createElement( 'video' );
-    normal_video.loop = true;
+    //normal_video.loop = true;
     //normal_video.muted = true;
     normal_video.src = 'static/video/normal_video.mp4';
     normal_video.setAttribute('crossorigin', 'anonymous');
     normal_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     normal_video.load();
+}
+
+function play_normal_video() {
+    console.log('play_normal_video');
+
     normal_video.play();
 
     videoTexture = new THREE.VideoTexture( normal_video );
@@ -291,10 +374,12 @@ function play_normal_video() {
         color: 0x000000
     }));
 
+
     movieScreen.position.set(0,0,-400);
     curtain.position.set(0,0,-399);
     scene.add(movieScreen);
     scene.add(curtain);
+    curtain_exit = 1;
 }
 
 

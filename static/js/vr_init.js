@@ -10,7 +10,12 @@ var controls, effect;
 var vrDisplay;
 var render;
 var fov;
-var curtain, curtain_width, curtain_height;    //幕帘
+var fps;
+var curtain, curtain_width, curtain_height,
+    curtain_cur_height, up_curtain_time,
+    down_curtain_time, curtain_exit;
+
+var zoom_screen_num, zoom_screen_cur_num;
 
 var onMouseDownMouseX = 0, onMouseDownMouseY = 0,
     lon = 0, onMouseDownLon = 0,
@@ -22,9 +27,10 @@ var onDocumentMouseDown = function () {};
 var onDocumentMouseMove = function () {};
 var onDocumentMouseUp = function () {};
 var onDocumentMouseWheel = function () {};
+
 var font;
 var loader = new THREE.FontLoader();
-loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
+loader.load( '../../static/json/optimer_bold.typeface.json', function ( response ) {
     font = response;
 } );
 var hc = new HControl();     //头势控制
@@ -41,16 +47,25 @@ function init_webvr() {
 
 function init_screen() {
     set_screen();                                               //设置场景,添加物体
-    count_down(play_normal_video);                              //倒计时,结束后播放普通视频(画面不可见,只有音频)
-    add_normal_video_play_listener(confirm_msg_box, init_nod);   //添加普通视频播放开始事件,开始后弹对话框
+
+
+    // play_normal_video();
+    // up_curtain();
+    // add_normal_video_end_listener(init_normal_video_end);   //添加普通视频播放开始事件,开始后弹对话框
+    //
+    // return;
+
+    countdown(play_normal_video);                              //倒计时,结束后播放普通视频(画面不可见,只有音频)
+    add_normal_video_play_listener(HControlBegin, init_nod);   //添加普通视频播放开始事件,开始后弹对话框
+    add_normal_video_end_listener(init_normal_video_end);   //添加普通视频播放开始事件,开始后弹对话框
 }
 
 function init_nod() {
-    play_pa_effect();                                       //播放pa特效
+    //play_pa_effect();                                       //播放pa特效
     up_curtain();                                           //升幕帘
-    add_normal_video_end_listener(init_normal_video_end);   //添加普通视频播放结束事件
-    add_forward_control_listener(init_forward);             //添加身体前倾事件
-    add_backward_control_listener(init_backward);           //添加身体后仰事件
+    // add_normal_video_end_listener(init_normal_video_end);   //添加普通视频播放结束事件
+    // add_forward_control_listener(init_forward);             //添加身体前倾事件
+    // add_backward_control_listener(init_backward);           //添加身体后仰事件
 }
 
 function init_forward() {
@@ -58,12 +73,13 @@ function init_forward() {
 }
 
 function init_backward() {
-    zoom_out_screen();      //缩小场景
+    zoom_out_screen();                                      //缩小场景
+    down_curtain();                                         //降幕帘
 }
 
 function init_normal_video_end() {
-    down_curtain();                                         //降幕帘
-    add_eye_control_listener(init_eye_yes, init_eye_no);     //添加视控选择事件
+    init_backward();
+    //add_eye_control_listener(init_eye_yes, init_eye_no);     //添加视控选择事件
 }
 
 function init_eye_yes() {
