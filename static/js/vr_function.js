@@ -139,6 +139,8 @@ function play_vr_video() {
         camera.updateProjectionMatrix();
         effect.setSize( window.innerWidth, window.innerHeight );
     };
+    window.removeEventListener( 'resize', onWindowResize, false );
+    window.addEventListener( 'resize', onWindowResize, false );
 
     //播放vr视频render响应事件
     render = function() {
@@ -301,6 +303,8 @@ function set_screen() {
         renderer.setSize( window.innerWidth, window.innerHeight );
         camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
     };
+    window.removeEventListener( 'resize', onWindowResize, false );
+    window.addEventListener( 'resize', onWindowResize, false );
 
     onDocumentMouseDown = function( event ) {
         event.preventDefault();
