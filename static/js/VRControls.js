@@ -66,7 +66,7 @@ THREE.VRControls = function ( object, onError ) {
 				var pose = vrInput.getPose();
 
 				if ( pose.orientation !== null ) {
-					hc.do(pose.orientation);
+					hc && hc.do(pose.orientation);
 					object.quaternion.fromArray( pose.orientation );
 
 				}
