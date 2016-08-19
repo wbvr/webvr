@@ -135,11 +135,12 @@ function play_vr_video() {
 
     //播放vr视频onWindowResize响应事件
     onWindowResize = function() {
-        console.log('onWindowResize for vr');
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         effect.setSize( window.innerWidth, window.innerHeight );
     };
+    window.removeEventListener( 'resize', onWindowResize, false );
+    window.addEventListener( 'resize', onWindowResize, false );
 
     //播放vr视频render响应事件
     render = function() {
@@ -299,10 +300,11 @@ function set_screen() {
     init_webvr_controls();
 
     onWindowResize = function() {
-        console.log('onWindowResize for sceen');
         renderer.setSize( window.innerWidth, window.innerHeight );
         camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
     };
+    window.removeEventListener( 'resize', onWindowResize, false );
+    window.addEventListener( 'resize', onWindowResize, false );
 
     onDocumentMouseDown = function( event ) {
         event.preventDefault();
