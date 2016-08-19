@@ -5,7 +5,7 @@
 function set_webvr() {
     var container = document.getElementById( 'container' );
     container.addEventListener( 'click', function () {
-        video.play();
+        vr_video.play();
     });
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.layers.enable( 1 );
@@ -38,17 +38,17 @@ function play_vr_video() {
 
     // video
 
-    video = document.createElement( 'video' );
+    vr_video = document.createElement( 'video' );
     //video.loop = true;
-    video.muted = true;
+    vr_video.muted = true;
 
-    video.src = 'static/video/vr_video.webm';
-    video.setAttribute('crossorigin', 'anonymous');
-    video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
-    video.load();
-    //video.play();
+    vr_video.src = 'static/video/vr_video.webm';
+    vr_video.setAttribute('crossorigin', 'anonymous');
+    vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+    vr_video.load();
+    //vr_video.play();
 
-    texture = new THREE.VideoTexture( video );
+    texture = new THREE.VideoTexture( vr_video );
     texture.minFilter = THREE.NearestFilter;
     texture.maxFilter = THREE.NearestFilter;
     texture.format = THREE.RGBFormat;
@@ -144,10 +144,37 @@ function play_vr_video() {
 
 
 function add_vr_video_end_listener(init_screen) {
-    video.addEventListener('ended',function(){
+    vr_video.addEventListener('ended',function(){
         init_screen();
     });
 }
+
+function add_normal_video_play_listener(confirm_msg_box,init_nod) {
+    normal_video.addEventListener('play',function(){
+        setTimeout(confirm_msg_box,5000);
+    });
+}
+
+/**
+ * 倒计时
+ */
+function count_down(play_normal_video) {
+
+    play_normal_video();
+}
+
+/**
+ * 对话框
+ */
+function confirm_msg_box(init_nod) {
+    var flag = confirm("是否选择?");
+    if (flag) {
+        alert('yes');
+    } else {
+        alert('no');
+    }
+}
+
 
 function set_screen() {
     container = document.getElementById( 'container' );
@@ -243,16 +270,16 @@ function set_screen() {
 }
 
 function play_normal_video() {
-    video = document.createElement( 'video' );
-    video.loop = true;
-    //video.muted = true;
-    video.src = 'static/video/normal_video.mp4';
-    video.setAttribute('crossorigin', 'anonymous');
-    video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
-    video.load();
-    video.play();
+    normal_video = document.createElement( 'video' );
+    normal_video.loop = true;
+    //normal_video.muted = true;
+    normal_video.src = 'static/video/normal_video.mp4';
+    normal_video.setAttribute('crossorigin', 'anonymous');
+    normal_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+    normal_video.load();
+    normal_video.play();
 
-    videoTexture = new THREE.VideoTexture( video );
+    videoTexture = new THREE.VideoTexture( normal_video );
     videoTexture.minFilter = THREE.NearestFilter;
     videoTexture.maxFilter = THREE.NearestFilter;
 

@@ -4,7 +4,8 @@
 
 /*全局变量*/
 var camera, scene, renderer;
-var canvas, video, texture;
+var canvas, texture;
+var vr_video, normal_video;
 var controls, effect;
 var vrDisplay;
 var render;
@@ -39,9 +40,9 @@ function init_webvr() {
 }
 
 function init_screen() {
-    set_screen();                           //设置场景,添加物体
-    countdown(play_normal_video);                  //倒计时后开始播放普通视频(画面不可见,只有音频)
-    //add_nod_control_listener(init_nod);     //添加点头事件
+    set_screen();                                               //设置场景,添加物体
+    count_down(play_normal_video);                              //倒计时,结束后播放普通视频(画面不可见,只有音频)
+    add_normal_video_play_listener(confirm_msg_box, init_nod);   //添加普通视频播放开始事件,开始后弹对话框
 }
 
 function init_nod() {
