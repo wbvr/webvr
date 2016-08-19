@@ -11,6 +11,8 @@ function set_webvr() {
     camera.layers.enable( 1 );
 
     fov = 60; //默认视角
+    curtain_width = 240;
+    curtain_height = 100;
 
 
 
@@ -241,7 +243,31 @@ function set_screen() {
 }
 
 function play_normal_video() {
+    video = document.createElement( 'video' );
+    video.loop = true;
+    //video.muted = true;
+    video.src = 'static/video/normal_video.mp4';
+    video.setAttribute('crossorigin', 'anonymous');
+    video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+    video.load();
+    video.play();
 
+    videoTexture = new THREE.VideoTexture( video );
+    videoTexture.minFilter = THREE.NearestFilter;
+    videoTexture.maxFilter = THREE.NearestFilter;
+
+    var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
+    var movieGeometry = new THREE.PlaneGeometry( curtain_width, curtain_height );
+    var curtainGeometry = new THREE.PlaneGeometry( curtain_width, curtain_height );
+    var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
+    curtain = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
+        color: 0x000000
+    }));
+
+    movieScreen.position.set(0,0,-400);
+    curtain.position.set(0,0,-399);
+    scene.add(movieScreen);
+    scene.add(curtain);
 }
 
 
@@ -260,8 +286,6 @@ function init_webvr_controls() {
         }
     });
 }
-
-
 
 
 
