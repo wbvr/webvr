@@ -7,8 +7,20 @@ var camera, scene, renderer;
 var canvas, video, texture;
 var controls, effect;
 var vrDisplay;
-var onWindowResize;
 var render;
+var fov;
+var curtain, curtain_width, curtain_height;    //幕帘
+
+var onMouseDownMouseX = 0, onMouseDownMouseY = 0,
+    lon = 0, onMouseDownLon = 0,
+    lat = 0, onMouseDownLat = 0,
+    phi = 0, theta = 0;
+
+var onWindowResize = function () {};
+var onDocumentMouseDown = function () {};
+var onDocumentMouseMove = function () {};
+var onDocumentMouseUp = function () {};
+var onDocumentMouseWheel = function () {};
 
 /**/
 
@@ -18,13 +30,13 @@ init_webvr();
 function init_webvr() {
     set_webvr();                            //初始化,加载场景,设置默认配置等
     play_vr_video();                        //播放VR视频
-    //add_vr_video_end_listener(init_screen); //添加VR视频播放结束事件
+    add_vr_video_end_listener(init_screen); //添加VR视频播放结束事件
 }
 
 function init_screen() {
     set_screen();                           //设置场景,添加物体
     play_normal_video();                    //播放普通视频(画面不可见,只有音频)
-    add_nod_control_listener(init_nod);     //添加点头事件
+    //add_nod_control_listener(init_nod);     //添加点头事件
 }
 
 function init_nod() {

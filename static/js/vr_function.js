@@ -9,11 +9,21 @@ function set_webvr() {
     });
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.layers.enable( 1 );
-    
-    
-    
+
+    fov = 60; //默认视角
+    curtain_width = 240;
+    curtain_height = 100;
+
+
+
     window.addEventListener( 'resize', onWindowResize, false );
-    
+
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+    document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+    document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
+    document.addEventListener( 'MozMousePixelScroll', onDocumentMouseWheel, false);
+
     animate();
 }
 
@@ -29,11 +39,10 @@ function play_vr_video() {
     // video
 
     video = document.createElement( 'video' );
-    video.loop = true;
+    //video.loop = true;
     video.muted = true;
 
-    video.src = 'static/video/vr_video.webm';
-    //video.src = 'http://sohow.applinzi.com/static/img/hsy.mp4';
+    video.src = '../../static/video/vr_video.webm';
     video.setAttribute('crossorigin', 'anonymous');
     video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     video.load();
@@ -96,18 +105,18 @@ function play_vr_video() {
     mesh.rotation.y = - Math.PI / 2;
     mesh.layers.set( 2 );
     scene.add( mesh );
-    
+
     canvas = document.getElementById('canvas');
     renderer = new THREE.WebGLRenderer({canvas:canvas});
     renderer.setClearColor( 0x101010 );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
-    
+
 
     controls = new THREE.VRControls( camera );
 
     effect = new THREE.VREffect( renderer );
-    effect.scale = 0; 
+    effect.scale = 0;
     effect.setSize( window.innerWidth, window.innerHeight );
 
     if ( WEBVR.isAvailable() === true ) {
@@ -134,12 +143,149 @@ function play_vr_video() {
 }
 
 
+function add_vr_video_end_listener(init_screen) {
+    video.addEventListener('ended',function(){
+        init_screen();
+    });
+}
+
+function set_screen() {
+    container = document.getElementById( 'container' );
+
+    camera = new THREE.PerspectiveCamera( fov, window.innerWidth / window.innerHeight, 1, 1100 );
+    camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
+
+    scene = new THREE.Scene();
+    scene.add(camera);
+
+    var geometry = new THREE.SphereGeometry( 500, 32, 16 );
+    geometry.scale( - 1, 1, 1 );
+
+    var texture = new THREE.TextureLoader().load( '../../static/img/screen.jpg' );
+    var material = new THREE.MeshBasicMaterial( {
+        map: texture
+    } );
+    mesh = new THREE.Mesh( geometry, material );
+    scene.add( mesh );
+
+    canvas = document.getElementById('canvas');
+    renderer = new THREE.WebGLRenderer({canvas:canvas});
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
 
 
 
+    render = function() {
+        lat = Math.max( - 85, Math.min( 85, lat ) );
+        phi = THREE.Math.degToRad( 90 - lat );
+        theta = THREE.Math.degToRad( lon );
+
+        camera.position.x = 100 * Math.sin( phi ) * Math.cos( theta );
+        camera.position.y = 100 * Math.cos( phi );
+        camera.position.z = 100 * Math.sin( phi ) * Math.sin( theta );
+        camera.lookAt( scene.position );
+
+        controls.update();
+        effect.render(scene, camera);
+    };
+
+    init_webvr_controls();
+
+    onWindowResize = function() {
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
+    };
+
+    onDocumentMouseDown = function( event ) {
+        event.preventDefault();
+
+        onMouseDownMouseX = event.clientX;
+        onMouseDownMouseY = event.clientY;
+
+        onMouseDownLon = lon;
+        onMouseDownLat = lat;
+    };
+
+    onDocumentMouseMove = function( event ) {
+        lon = ( onMouseDownMouseX - event.clientX ) * 0.1 + onMouseDownLon;
+        lat = ( event.clientY - onMouseDownMouseY ) * 0.1 + onMouseDownLat;
+    };
+
+    onDocumentMouseUp = function( event ) {
+
+    };
+
+    onDocumentMouseWheel = function( event ) {
+
+        // WebKit
+
+        if ( event.wheelDeltaY ) {
+
+            camera.fov -= event.wheelDeltaY * 0.05;
+
+            // Opera / Explorer 9
+
+        } else if ( event.wheelDelta ) {
+
+            camera.fov -= event.wheelDelta * 0.05;
+
+            // Firefox
+
+        } else if ( event.detail ) {
+
+            camera.fov += event.detail * 1.0;
+
+        }
+
+        camera.updateProjectionMatrix();
+
+    };
+}
+
+function play_normal_video() {
+    video = document.createElement( 'video' );
+    video.loop = true;
+    //video.muted = true;
+    video.src = '../../static/video/normal_video.mp4';
+    video.setAttribute('crossorigin', 'anonymous');
+    video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+    video.load();
+    video.play();
+
+    videoTexture = new THREE.VideoTexture( video );
+    videoTexture.minFilter = THREE.NearestFilter;
+    videoTexture.maxFilter = THREE.NearestFilter;
+
+    var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
+    var movieGeometry = new THREE.PlaneGeometry( curtain_width, curtain_height );
+    var curtainGeometry = new THREE.PlaneGeometry( curtain_width, curtain_height );
+    var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
+    var curtain = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
+        color: 0x000000
+    }));
+
+    movieScreen.position.set(0,0,-400);
+    curtain.position.set(0,0,-399);
+    scene.add(movieScreen);
+    scene.add(curtain);
+}
 
 
+function init_webvr_controls() {
+    // Apply VR headset positional data to camera.
+    controls = new THREE.VRControls(camera);
 
+    // Apply VR stereo rendering to renderer.
+    effect = new THREE.VREffect(renderer);
+    effect.setSize(window.innerWidth, window.innerHeight);
+
+    // Get the VRDisplay and save it for later.
+    navigator.getVRDisplays().then(function(displays) {
+        if (displays.length > 0) {
+            vrDisplay = displays[0];
+        }
+    });
+}
 
 
 
@@ -237,11 +383,7 @@ var WEBVR = {
         button.style.zIndex = '999';
         button.textContent = 'ENTER VR';
         button.onclick = function() {
-            console.log('vr model');
-            //vrDisplay.isPresenting ? vrDisplay.exitPresent() : vrDisplay.requestPresent([{source: renderer.domElement}]);
             vrDisplay.requestPresent([{source: renderer.domElement}]);
-            //init_webvr();
-
         };
 
         window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
