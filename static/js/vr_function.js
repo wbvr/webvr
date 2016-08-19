@@ -41,6 +41,7 @@ function set_webvr() {
 
     //
     onWindowResize = function() {
+        console.log('onWindowResize');
         renderer.setSize( window.innerWidth, window.innerHeight );
         camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
     };
