@@ -39,6 +39,12 @@ function set_webvr() {
     vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     vr_video.load();
 
+    //
+    onWindowResize = function() {
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
+    };
+
     animate();
 }
 
@@ -297,10 +303,6 @@ function set_screen() {
 
     init_webvr_controls();
 
-    onWindowResize = function() {
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
-    };
 
     onDocumentMouseDown = function( event ) {
         event.preventDefault();
