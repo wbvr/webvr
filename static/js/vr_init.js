@@ -21,7 +21,11 @@ var onDocumentMouseDown = function () {};
 var onDocumentMouseMove = function () {};
 var onDocumentMouseUp = function () {};
 var onDocumentMouseWheel = function () {};
-
+var font;
+var loader = new THREE.FontLoader();
+loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
+    font = response;
+} );
 /**/
 
 
@@ -35,7 +39,7 @@ function init_webvr() {
 
 function init_screen() {
     set_screen();                           //设置场景,添加物体
-    play_normal_video();                    //播放普通视频(画面不可见,只有音频)
+    countdown(play_normal_video);                  //倒计时后开始播放普通视频(画面不可见,只有音频)
     //add_nod_control_listener(init_nod);     //添加点头事件
 }
 
