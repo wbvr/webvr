@@ -26,6 +26,7 @@ var loader = new THREE.FontLoader();
 loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
     font = response;
 } );
+var hc = new HControl();     //头势控制
 /**/
 
 
