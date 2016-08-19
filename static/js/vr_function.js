@@ -260,7 +260,7 @@ function play_normal_video() {
     var movieGeometry = new THREE.PlaneGeometry( curtain_width, curtain_height );
     var curtainGeometry = new THREE.PlaneGeometry( curtain_width, curtain_height );
     var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
-    var curtain = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
+    curtain = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
         color: 0x000000
     }));
 
