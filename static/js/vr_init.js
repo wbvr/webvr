@@ -9,6 +9,7 @@ var controls, effect;
 var vrDisplay;
 var render;
 var fov;
+var curtain, curtain_width, curtain_height;    //幕帘
 
 var onMouseDownMouseX = 0, onMouseDownMouseY = 0,
     lon = 0, onMouseDownLon = 0,
