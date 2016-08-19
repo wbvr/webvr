@@ -15,14 +15,12 @@ function HControlBegin(callback) {
     });
     var tmaterial = new THREE.MeshBasicMaterial({color:0xffffff});        //物体加上材质
     var tmesh = new THREE.Mesh(text,tmaterial);
-    tmesh.position.set(-20,-20,-200);
-
-    scene.add(tmesh);
+    tmesh.position.set(-20,-10,-200);
 
     setTimeout(function(){
         console.log('nod start');
+        scene.add(tmesh);
         hc.setNod(function(){
-            console.log('nod');
             scene.remove(tmesh);
             hc.closeNod();
             hc.close();

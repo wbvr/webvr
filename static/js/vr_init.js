@@ -41,8 +41,12 @@ function init_webvr() {
 
 function init_screen() {
     set_screen();                                               //设置场景,添加物体
-    count_down(play_normal_video);                              //倒计时,结束后播放普通视频(画面不可见,只有音频)
-    add_normal_video_play_listener(confirm_msg_box, init_nod);   //添加普通视频播放开始事件,开始后弹对话框
+    countdown(function(){
+        play_normal_video();                                    //倒计时,结束后播放普通视频(画面不可见,只有音频)
+        HControlBegin(function(){
+            console.log('111');                                 //运行点头后的操作
+        });
+    });
 }
 
 function init_nod() {

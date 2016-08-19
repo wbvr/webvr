@@ -144,8 +144,12 @@ function play_vr_video() {
 
 
 function add_vr_video_end_listener(init_screen) {
+    var flag = true;
     vr_video.addEventListener('ended',function(){
-        init_screen();
+        if (flag) {
+            init_screen();
+            flag = false;
+        }
     });
 }
 

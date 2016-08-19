@@ -7,7 +7,7 @@ function countdown(callback) {
 
     var curtainGeometry = new THREE.PlaneGeometry( curtain_width, curtain_height );
     var curtain = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
-        color: 0x000000
+        color: 0xffff00
     }));
     curtain.position.set(0,0,-399);
 
