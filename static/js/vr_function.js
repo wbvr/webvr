@@ -39,13 +39,6 @@ function set_webvr() {
     vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     vr_video.load();
 
-    //
-    onWindowResize = function() {
-        console.log('onWindowResize');
-        renderer.setSize( window.innerWidth, window.innerHeight );
-        camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
-    };
-
     animate();
 }
 
@@ -142,6 +135,7 @@ function play_vr_video() {
 
     //播放vr视频onWindowResize响应事件
     onWindowResize = function() {
+        console.log('onWindowResize for vr');
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         effect.setSize( window.innerWidth, window.innerHeight );
@@ -304,6 +298,11 @@ function set_screen() {
 
     init_webvr_controls();
 
+    onWindowResize = function() {
+        console.log('onWindowResize for sceen');
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        camera.projectionMatrix.makePerspective( fov, window.innerWidth / window.innerHeight, 1, 1100 );
+    };
 
     onDocumentMouseDown = function( event ) {
         event.preventDefault();
