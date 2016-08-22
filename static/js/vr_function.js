@@ -273,7 +273,7 @@ function set_screen() {
     var material = new THREE.MeshBasicMaterial( {
         map: texture
     } );
-    mesh = new THREE.Mesh( geometry, material );
+    var mesh = new THREE.Mesh( geometry, material );
     scene.add( mesh );
 
     canvas = document.getElementById('canvas');
@@ -366,7 +366,7 @@ function play_normal_video() {
 
     normal_video.play();
 
-    videoTexture = new THREE.VideoTexture( normal_video );
+    var videoTexture = new THREE.VideoTexture( normal_video );
     videoTexture.minFilter = THREE.NearestFilter;
     videoTexture.maxFilter = THREE.NearestFilter;
 

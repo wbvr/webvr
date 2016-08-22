@@ -5,6 +5,7 @@
 /*全局变量*/
 var camera, scene, renderer;
 var canvas, texture;
+var container;
 var vr_video, normal_video;
 var controls, effect;
 var vrDisplay;
