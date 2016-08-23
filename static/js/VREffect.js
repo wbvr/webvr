@@ -294,6 +294,12 @@ THREE.VREffect = function ( renderer, onError ) {
 
 			camera.matrixWorld.decompose( cameraL.position, cameraL.quaternion, cameraL.scale );
 			camera.matrixWorld.decompose( cameraR.position, cameraR.quaternion, cameraR.scale );
+			if (camera.zoom != 1) {
+				cameraL.zoom = camera.zoom;
+				cameraR.zoom = camera.zoom;
+				cameraL.updateProjectionMatrix();
+				cameraR.updateProjectionMatrix();
+			}
 
 			var scale = this.scale;
 			cameraL.translateOnAxis( eyeTranslationL, scale );
