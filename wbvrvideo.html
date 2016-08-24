@@ -184,7 +184,7 @@
 		video.muted = true;
 
 		//视频地址
-		video.src = 'https://djnxy.github.io/webvr/static/video/vr_video.webm';
+		video.src = 'static/video/hsy.mp4';
 		//video.src = 'http://sohow.applinzi.com/static/img/hsy.mp4';
 		video.setAttribute('crossorigin', 'anonymous');	//允许跨域
 		video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
@@ -204,51 +204,12 @@
 		var geometry = new THREE.SphereGeometry( 500, 60, 40 );
 		geometry.scale( - 1, 1, 1 );
 
-		var uvs = geometry.faceVertexUvs[ 0 ];
-
-		for ( var i = 0; i < uvs.length; i ++ ) {
-
-			for ( var j = 0; j < 3; j ++ ) {
-
-				uvs[ i ][ j ].x *= 0.5;
-
-			}
-
-		}
-
 		var material = new THREE.MeshBasicMaterial( { map: texture } );
 
 		var mesh = new THREE.Mesh( geometry, material );
 		mesh.rotation.y = - Math.PI / 2;
 		mesh.layers.set( 1 ); // display in left eye only
 		scene.add( mesh );
-
-		// right
-
-		geometry = new THREE.SphereGeometry( 500, 60, 40 );
-		geometry.scale( - 1, 1, 1 );
-
-		uvs = geometry.faceVertexUvs[ 0 ];
-
-		for ( var i = 0; i < uvs.length; i ++ ) {
-
-			for ( var j = 0; j < 3; j ++ ) {
-
-				uvs[ i ][ j ].x *= 0.5;
-				uvs[ i ][ j ].x += 0.5;
-
-			}
-
-		}
-
-		material = new THREE.MeshBasicMaterial( { map: texture } );
-
-		mesh = new THREE.Mesh( geometry, material );
-		mesh.rotation.y = - Math.PI / 2;
-		mesh.layers.set( 2 ); // display in right eye only
-		scene.add( mesh );
-
-		//
 
 		renderer = new THREE.WebGLRenderer();
 		renderer.setClearColor( 0x101010 );
