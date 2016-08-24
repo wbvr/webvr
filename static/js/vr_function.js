@@ -31,13 +31,7 @@ function set_webvr() {
     document.addEventListener( 'MozMousePixelScroll', onDocumentMouseWheel, false);
 
     //预先加载VR视频
-    vr_video = document.createElement( 'video' );
-    //video.loop = true;
-    vr_video.muted = true;
-    vr_video.src = 'static/video/vr_video.webm';
-    vr_video.setAttribute('crossorigin', 'anonymous');
-    vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
-    vr_video.load();
+    load_vr_video();
 
     animate();
 }
@@ -256,6 +250,10 @@ function zoom_in_screen() {
     }
 }
 
+function set_video_screen() {
+    vr_video.pause();
+}
+
 
 function set_screen() {
     container = document.getElementById( 'container' );
@@ -273,7 +271,7 @@ function set_screen() {
     var material = new THREE.MeshBasicMaterial( {
         map: texture
     } );
-    mesh = new THREE.Mesh( geometry, material );
+    var mesh = new THREE.Mesh( geometry, material );
     scene.add( mesh );
 
     canvas = document.getElementById('canvas');
@@ -361,12 +359,35 @@ function set_screen() {
     normal_video.load();
 }
 
+function load_normal_video() {
+    //预加载普通视频
+    normal_video = document.createElement( 'video' );
+    //normal_video.loop = true;
+    //normal_video.muted = true;
+    normal_video.src = 'static/video/normal_video.mp4';
+    normal_video.setAttribute('crossorigin', 'anonymous');
+    normal_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+    normal_video.load();
+}
+
+function load_vr_video() {
+    //预加载vr视频
+    vr_video = document.createElement( 'video' );
+    vr_video.loop = true;
+    vr_video.muted = true;
+    vr_video.src = 'static/video/vr_video.webm';
+    vr_video.setAttribute('crossorigin', 'anonymous');
+    vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+    vr_video.load();
+}
+
 function play_normal_video() {
     console.log('play_normal_video');
 
+    vr_video.play();
     normal_video.play();
 
-    videoTexture = new THREE.VideoTexture( normal_video );
+    var videoTexture = new THREE.VideoTexture( normal_video );
     videoTexture.minFilter = THREE.NearestFilter;
     videoTexture.maxFilter = THREE.NearestFilter;
 

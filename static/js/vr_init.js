@@ -5,6 +5,7 @@
 /*全局变量*/
 var camera, scene, renderer;
 var canvas, texture;
+var container;
 var vr_video, normal_video;
 var controls, effect;
 var vrDisplay;
@@ -42,11 +43,13 @@ init_webvr();
 function init_webvr() {
     set_webvr();                            //初始化,加载场景,设置默认配置等
     play_vr_video();                        //播放VR视频
-    add_vr_video_end_listener(init_screen); //添加VR视频播放结束事件
+    //add_vr_video_end_listener(init_screen); //添加VR视频播放结束事件
+    setTimeout(init_screen,5000);
 }
 
 function init_screen() {
-    set_screen();                                               //设置场景,添加物体
+    set_video_screen();                                               //设置场景,添加物体
+    load_normal_video();
 
 
     // play_normal_video();
