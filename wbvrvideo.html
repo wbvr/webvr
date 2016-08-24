@@ -211,6 +211,20 @@
 		mesh.layers.set( 1 ); // display in left eye only
 		scene.add( mesh );
 
+		// right
+
+		geometry = new THREE.SphereGeometry( 500, 60, 40 );
+		geometry.scale( - 1, 1, 1 );
+
+
+		material = new THREE.MeshBasicMaterial( { map: texture } );
+
+		mesh = new THREE.Mesh( geometry, material );
+		mesh.rotation.y = - Math.PI / 2;
+		mesh.layers.set( 2 );
+		scene.add( mesh );
+
+
 		renderer = new THREE.WebGLRenderer();
 		renderer.setClearColor( 0x101010 );
 		renderer.setPixelRatio( window.devicePixelRatio );

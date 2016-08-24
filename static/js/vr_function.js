@@ -60,19 +60,6 @@ function play_vr_video() {
     var geometry = new THREE.SphereGeometry( 500, 60, 40 );
     geometry.scale( - 1, 1, 1 );
 
-    var uvs = geometry.faceVertexUvs[ 0 ];
-
-    var i, j;
-    for ( i = 0; i < uvs.length; i ++ ) {
-
-        for ( j = 0; j < 3; j ++ ) {
-
-            uvs[ i ][ j ].x *= 0.5;
-
-        }
-
-    }
-
     var material = new THREE.MeshBasicMaterial( { map: texture } );
 
     var mesh = new THREE.Mesh( geometry, material );
@@ -85,18 +72,6 @@ function play_vr_video() {
     geometry = new THREE.SphereGeometry( 500, 60, 40 );
     geometry.scale( - 1, 1, 1 );
 
-    uvs = geometry.faceVertexUvs[ 0 ];
-
-    for ( i = 0; i < uvs.length; i ++ ) {
-
-        for ( j = 0; j < 3; j ++ ) {
-
-            uvs[ i ][ j ].x *= 0.5;
-            uvs[ i ][ j ].x += 0.5;
-
-        }
-
-    }
 
     material = new THREE.MeshBasicMaterial( { map: texture } );
 
@@ -375,7 +350,7 @@ function load_vr_video() {
     vr_video = document.createElement( 'video' );
     vr_video.loop = true;
     vr_video.muted = true;
-    vr_video.src = 'static/video/vr_video.webm';
+    vr_video.src = 'http://cache.utovr.com/201508240838054267.mp4';
     vr_video.setAttribute('crossorigin', 'anonymous');
     vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     vr_video.load();
