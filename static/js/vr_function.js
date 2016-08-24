@@ -17,7 +17,7 @@ function set_webvr() {
     curtain_cur_height = curtain_height;
     up_curtain_time = 5;    //升窗帘所需时间秒
     down_curtain_time = 5;  //降窗帘所需时间秒
-    zoom_screen_num = 10;    //场景放大次数
+    zoom_screen_num = 50;    //场景放大次数
     zoom_screen_cur_num = 0; //场景放大当前次数
     curtain_exit = 0;
 
@@ -226,9 +226,9 @@ function down_curtain() {
  * 缩小
  */
 function zoom_out_screen() {
-    console.log('zoom_out_screen fov: '+camera.fov);
+    console.log('zoom_out_screen fov: '+camera.zoom);
     if (zoom_screen_cur_num++ < zoom_screen_num) {
-        camera.fov += 3;
+        camera.zoom /= 1.01;
         camera.updateProjectionMatrix();
         requestAnimationFrame(zoom_out_screen);
     } else {
@@ -240,9 +240,9 @@ function zoom_out_screen() {
  * 放大
  */
 function zoom_in_screen() {
-    console.log('zoom_in_screen fov: '+camera.fov);
+    console.log('zoom_in_screen fov: '+camera.zoom);
     if (zoom_screen_cur_num++ < zoom_screen_num) {
-        camera.fov -= 3;
+        camera.zoom *= 1.01;
         camera.updateProjectionMatrix();
         requestAnimationFrame(zoom_in_screen);
     } else {
