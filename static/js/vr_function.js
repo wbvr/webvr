@@ -128,10 +128,8 @@ function add_vr_video_end_listener(init_screen) {
  * 升幕帘
  */
 function up_curtain() {
-    console.log('up_curtain');
     if (curtain.position.y < curtain_height) {
         var up = curtain_height / up_curtain_time / fps;
-        console.log('up: '+up);
         curtain.position.y += up;
         requestAnimationFrame(up_curtain);
     } else {
@@ -148,10 +146,8 @@ function down_curtain() {
     if (!curtain_exit) {
         scene.add(curtain);
     }
-    console.log('down_curtain');
     if (curtain.position.y > 0) {
         var down = curtain_height / up_curtain_time / fps;
-        console.log('down: '+down);
         curtain.position.y -= down;
         requestAnimationFrame(down_curtain);
     } else {
@@ -163,21 +159,22 @@ function down_curtain() {
  * 缩小
  */
 function zoom_out_screen() {
-    console.log('zoom_out_screen fov: '+camera.zoom);
-    if (zoom_screen_cur_num++ < zoom_screen_num) {
-        camera.zoom /= 1.01;
-        camera.updateProjectionMatrix();
-        requestAnimationFrame(zoom_out_screen);
-    } else {
-        zoom_screen_cur_num = 0;
+    if(camera.zoom > 1) {
+        if (zoom_screen_cur_num++ < zoom_screen_num) {
+            camera.zoom /= 1.01;
+            camera.updateProjectionMatrix();
+            requestAnimationFrame(zoom_out_screen);
+        } else {
+            zoom_screen_cur_num = 0;
+        }
     }
+
 }
 
 /**
  * 放大
  */
 function zoom_in_screen() {
-    console.log('zoom_in_screen fov: '+camera.zoom);
     if (zoom_screen_cur_num++ < zoom_screen_num) {
         camera.zoom *= 1.01;
         camera.updateProjectionMatrix();

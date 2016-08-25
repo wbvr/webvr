@@ -47,18 +47,22 @@ function init_webvr() {
 }
 
 function init_screen() {
+    var is_countdown = true;
     container = document.getElementById( 'container' );
     container.addEventListener( 'click', function () {
-        vr_video.play();
-        countdown(function(){
-            add_curtain();
-            HControlBegin(init_nod);
-            vr_video.addEventListener('ended',function(){
-                alert(1111);
-                vr_video.pause();
-                init_backward();
+        if (is_countdown) {
+            vr_video.play();
+            countdown(function(){
+                add_curtain();
+                HControlBegin(init_nod);
+                vr_video.addEventListener('ended',function(){
+                    vr_video.pause();
+                    init_backward();
+                });
             });
-        });
+            is_countdown= false;
+        }
+
     });
 
     //add_normal_video_end_listener(init_backward);
