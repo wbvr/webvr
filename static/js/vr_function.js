@@ -463,6 +463,7 @@ var WEBVR = {
         button.textContent = 'ENTER VR';
         button.onclick = function() {
             vrDisplay.requestPresent([{source: renderer.domElement}]);
+            document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 10%;');
         };
 
         window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
