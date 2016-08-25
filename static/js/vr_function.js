@@ -469,6 +469,11 @@ var WEBVR = {
         window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
 
             button.textContent = effect.isPresenting ? 'EXIT VR' : 'ENTER VR';
+            if (effect.isPresenting){
+                document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 10%;');
+            } else {
+                document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 10%;display:none');
+            }
 
         }, false );
 
