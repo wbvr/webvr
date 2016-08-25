@@ -28,7 +28,7 @@ var onDocumentMouseDown = function () {};
 var onDocumentMouseMove = function () {};
 var onDocumentMouseUp = function () {};
 var onDocumentMouseWheel = function () {};
-
+var container;
 var font;
 var loader = new THREE.FontLoader();
 loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
@@ -43,24 +43,25 @@ init_webvr();
 function init_webvr() {
     set_webvr();                            //初始化,加载场景,设置默认配置等
     play_vr_video();                        //播放VR视频
-    //add_vr_video_end_listener(init_screen); //添加VR视频播放结束事件
     setTimeout(init_screen,5000);
 }
 
 function init_screen() {
-    set_video_screen();                                               //设置场景,添加物体
-    load_normal_video();
+    container = document.getElementById( 'container' );
+    container.addEventListener( 'click', function () {
+        vr_video.play();
+        countdown(function(){
+            add_curtain();
+            HControlBegin(init_nod);
+            vr_video.addEventListener('ended',function(){
+                alert(1111);
+                vr_video.pause();
+                init_backward();
+            });
+        });
+    });
 
-
-    // play_normal_video();
-    // up_curtain();
-    // add_normal_video_end_listener(init_normal_video_end);   //添加普通视频播放开始事件,开始后弹对话框
-    //
-    // return;
-
-    countdown(play_normal_video);                              //倒计时,结束后播放普通视频(画面不可见,只有音频)
-    add_normal_video_play_listener(HControlBegin, init_nod);   //添加普通视频播放开始事件,开始后弹对话框
-    add_normal_video_end_listener(init_normal_video_end);   //添加普通视频播放开始事件,开始后弹对话框
+    //add_normal_video_end_listener(init_backward);
 }
 
 function init_nod() {
@@ -80,18 +81,3 @@ function init_backward() {
     down_curtain();                                         //降幕帘
 }
 
-function init_normal_video_end() {
-    init_backward();
-    //add_eye_control_listener(init_eye_yes, init_eye_no);     //添加视控选择事件
-}
-
-function init_eye_yes() {
-    //下一个选手
-    clear_webvr();  //清除释放资源
-    next_uid = 2;   //设置下一位选手
-    init_webvr();   //重新初始化
-}
-
-function init_eye_no() {
-    //退出
-}

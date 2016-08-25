@@ -3,10 +3,6 @@
  */
 
 function set_webvr() {
-    var container = document.getElementById( 'container' );
-    container.addEventListener( 'click', function () {
-        vr_video.play();
-    });
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.layers.enable( 1 );
 
@@ -15,8 +11,8 @@ function set_webvr() {
     curtain_width = 240;
     curtain_height = 100;
     curtain_cur_height = curtain_height;
-    up_curtain_time = 5;    //升窗帘所需时间秒
-    down_curtain_time = 5;  //降窗帘所需时间秒
+    up_curtain_time = 2;    //升窗帘所需时间秒
+    down_curtain_time = 2;  //降窗帘所需时间秒
     zoom_screen_num = 50;    //场景放大次数
     zoom_screen_cur_num = 0; //场景放大当前次数
     curtain_exit = 0;
@@ -126,40 +122,6 @@ function add_vr_video_end_listener(init_screen) {
             flag = false;
         }
     });
-}
-
-function add_normal_video_play_listener(HControlBegin,init_nod) {
-    normal_video.addEventListener('play',function(){
-        //setTimeout(HControlBegin,5000);
-        HControlBegin(init_nod);
-    });
-}
-
-function add_normal_video_end_listener(init_normal_video_end) {
-    normal_video.addEventListener('ended',function(){
-        //setTimeout(HControlBegin,5000);
-        init_normal_video_end();
-    });
-}
-
-/**
- * 倒计时
- */
-function count_down(play_normal_video) {
-
-    play_normal_video();
-}
-
-/**
- * 对话框
- */
-function confirm_msg_box(init_nod) {
-    var flag = confirm("是否选择?");
-    if (flag) {
-        alert('yes');
-    } else {
-        alert('no');
-    }
 }
 
 /**
@@ -348,9 +310,8 @@ function load_normal_video() {
 function load_vr_video() {
     //预加载vr视频
     vr_video = document.createElement( 'video' );
-    vr_video.loop = true;
     vr_video.muted = true;
-    vr_video.src = 'http://cache.utovr.com/201508240838054267.mp4';
+    vr_video.src = 'static/video/zp.mp4';
     vr_video.setAttribute('crossorigin', 'anonymous');
     vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     vr_video.load();
@@ -382,6 +343,15 @@ function play_normal_video() {
     curtain_exit = 1;
 }
 
+function add_curtain() {
+    var curtainGeometry = new THREE.PlaneGeometry( curtain_width, curtain_height );
+    curtain = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
+        color: 0x000000
+    }));
+    curtain.position.set(0,0,-399);
+    scene.add(curtain);
+    curtain_exit = 1;
+}
 
 function init_webvr_controls() {
     // Apply VR headset positional data to camera.

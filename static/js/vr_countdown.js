@@ -1,5 +1,5 @@
 
-var  count =10;
+var  count =3;
 function countdown(callback) {
     if (typeof callback !== 'function') {
         console.warn('callback is not function');
