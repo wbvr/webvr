@@ -367,21 +367,21 @@ function init_webvr_controls() {
 }
 
 function play_pa_effect() {
-    vr_video.pause();
-    normal_video.play();
-    var texture = new THREE.VideoTexture( normal_video );
-    texture.minFilter = THREE.NearestFilter;
-    texture.maxFilter = THREE.NearestFilter;
-    var material = new THREE.MeshBasicMaterial({map: texture, overdraw: true, side: THREE.DoubleSide});
-    var geometry = new THREE.PlaneGeometry(curtain_width, curtain_height);
-    var Mesh = new THREE.Mesh(geometry, material);
-    Mesh.position.set(0, -200, -400);
-    scene.add(Mesh);
-    setTimeout(function(){
-        normal_video.pause();
-        vr_video.play();
-        scene.remove(Mesh);
-    },1000)
+    //vr_video.pause();
+    //normal_video.play();
+    //var texture = new THREE.VideoTexture( normal_video );
+    //texture.minFilter = THREE.NearestFilter;
+    //texture.maxFilter = THREE.NearestFilter;
+    //var material = new THREE.MeshBasicMaterial({map: texture, overdraw: true, side: THREE.DoubleSide});
+    //var geometry = new THREE.PlaneGeometry(curtain_width, curtain_height);
+    //var Mesh = new THREE.Mesh(geometry, material);
+    //Mesh.position.set(0, -200, -400);
+    //scene.add(Mesh);
+    //setTimeout(function(){
+    //    normal_video.pause();
+    //    vr_video.play();
+    //    scene.remove(Mesh);
+    //},1000)
 }
 
 
@@ -478,16 +478,16 @@ var WEBVR = {
         button.textContent = 'ENTER VR';
         button.onclick = function() {
             vrDisplay.requestPresent([{source: renderer.domElement}]);
-            document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 10%;');
+            document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 5%;');
         };
 
         window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
 
             button.textContent = effect.isPresenting ? 'EXIT VR' : 'ENTER VR';
             if (effect.isPresenting){
-                document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 10%;');
+                document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 5%;');
             } else {
-                document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 10%;display:none');
+                document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 5%;display:none');
             }
 
         }, false );
