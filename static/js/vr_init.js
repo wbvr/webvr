@@ -42,6 +42,7 @@ init_webvr();
 
 function init_webvr() {
     set_webvr();                            //初始化,加载场景,设置默认配置等
+    load_normal_video();
     play_vr_video();                        //播放VR视频
     setTimeout(init_screen,5000);
 }
@@ -51,10 +52,15 @@ function init_screen() {
     container = document.getElementById( 'container' );
     container.addEventListener( 'click', function () {
         if (is_countdown) {
+            normal_video.play();
+            normal_video.pause();
             vr_video.play();
             countdown(function(){
                 add_curtain();
-                HControlBegin(init_nod);
+                HControlBegin(function(){
+                    init_nod();
+                    play_pa_effect();
+                });
                 vr_video.addEventListener('ended',function(){
                     vr_video.pause();
                     init_backward();
