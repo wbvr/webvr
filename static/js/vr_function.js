@@ -298,7 +298,7 @@ function load_normal_video() {
     normal_video = document.createElement( 'video' );
     //normal_video.loop = true;
     //normal_video.muted = true;
-    normal_video.src = 'static/video/normal_video.mp4';
+    normal_video.src = 'static/video/bz.mp4';
     normal_video.setAttribute('crossorigin', 'anonymous');
     normal_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
     normal_video.load();
@@ -366,8 +366,23 @@ function init_webvr_controls() {
     });
 }
 
-
-
+function play_pa_effect() {
+    vr_video.pause();
+    normal_video.play();
+    var texture = new THREE.VideoTexture( normal_video );
+    texture.minFilter = THREE.NearestFilter;
+    texture.maxFilter = THREE.NearestFilter;
+    var material = new THREE.MeshBasicMaterial({map: texture, overdraw: true, side: THREE.DoubleSide});
+    var geometry = new THREE.PlaneGeometry(curtain_width, curtain_height);
+    var Mesh = new THREE.Mesh(geometry, material);
+    Mesh.position.set(0, -200, -400);
+    scene.add(Mesh);
+    setTimeout(function(){
+        normal_video.pause();
+        vr_video.play();
+        scene.remove(Mesh);
+    },1000)
+}
 
 
 
