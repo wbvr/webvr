@@ -367,22 +367,40 @@ function init_webvr_controls() {
 }
 
 function play_pa_effect() {
-    //vr_video.pause();
-    //normal_video.play();
-    //var texture = new THREE.VideoTexture( normal_video );
-    //texture.minFilter = THREE.NearestFilter;
-    //texture.maxFilter = THREE.NearestFilter;
-    //var material = new THREE.MeshBasicMaterial({map: texture, overdraw: true, side: THREE.DoubleSide});
-    //var geometry = new THREE.PlaneGeometry(curtain_width, curtain_height);
-    //var Mesh = new THREE.Mesh(geometry, material);
-    //Mesh.position.set(0, -200, -400);
-    //scene.add(Mesh);
-    //setTimeout(function(){
-    //    normal_video.pause();
-    //    vr_video.play();
-    //    scene.remove(Mesh);
-    //},1000)
+    pa_status = 1;
+    vr_change();
+    setTimeout(function(){
+        pa_status = 0;
+    },1000)
 }
+function vr_change() {
+    if (status == 0) {
+        $('#left').hide();
+        if (pa_status == 1){
+            $('#l').hide();
+            $('#r').hide();
+            $('#c').show();
+        } else {
+            $('#l').hide();
+            $('#r').hide();
+            $('#c').hide();
+        }
+
+    } else {
+        $('#left').show();
+        if (pa_status == 1){
+            $('#l').show();
+            $('#r').show();
+            $('#c').hide();
+        } else {
+            $('#l').hide();
+            $('#r').hide();
+            $('#c').hide();
+        }
+    }
+    setTimeout(vr_change, 100)
+}
+
 
 
 
@@ -477,18 +495,14 @@ var WEBVR = {
         button.style.zIndex = '999';
         button.textContent = 'ENTER VR';
         button.onclick = function() {
+            vr_change();
             vrDisplay.requestPresent([{source: renderer.domElement}]);
-            document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 5%;');
+
         };
 
         window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
 
             button.textContent = effect.isPresenting ? 'EXIT VR' : 'ENTER VR';
-            if (effect.isPresenting){
-                document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 5%;');
-            } else {
-                document.getElementById('left').setAttribute('style', 'position: fixed;bottom: auto;top: 10%;right:60%;width: 5%;display:none');
-            }
 
         }, false );
 
