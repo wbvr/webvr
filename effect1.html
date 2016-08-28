@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>three.js webvr - video</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #f0f0f0;
+            margin: 0px;
+            overflow: hidden;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            color: #fff;
+            text-align: center;
+        }
+        a {
+            color: #ff0
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<!--
+<div id="info">
+	<a href="http://threejs.org" target="_blank">three.js</a> webgl - vr video<br />
+	stereoscopic panoramic render by <a href="http://pedrofe.com/rendering-for-oculus-rift-with-arnold/" target="_blank">pedrofe</a>. scene from <a href="http://www.meryproject.com/" target="_blank">mery project</a>.
+</div>
+-->
+
+<script src="static/js/three.js"></script>
+<script src="static/js/VREffect.js"></script>
+<script src="static/js/VRControls.js"></script>
+<!-- A polyfill for the WebVR API.  -->
+<script src="static/js/webvr-polyfill.js"></script>
+<script src="static/js/texiao.js"></script>
+<script type="text/javascript">
+    /**
+     * @author mrdoob / http://mrdoob.com
+     * Based on @tojiro's vr-samples-utils.js
+     */
+
+    var vrDisplay;
+    var WEBVR = {
+
+        isLatestAvailable: function () {
+
+            return navigator.getVRDisplays !== undefined;
+
+        },
+
+        isAvailable: function () {
+
+            return navigator.getVRDisplays !== undefined || navigator.getVRDevices !== undefined;
+
+        },
+
+        getMessage: function () {
+
+            var message;
+
+            if ( navigator.getVRDisplays ) {
+
+                navigator.getVRDisplays().then( function ( displays ) {
+
+                    if ( displays.length === 0 ) message = 'WebVR supported, but no VRDisplays found.';
+
+                } );
+
+            } else if ( navigator.getVRDevices ) {
+
+                message = 'Your browser supports WebVR but not the latest version. See <a href="http://webvr.info">webvr.info</a> for more info.';
+
+            } else {
+
+                message = 'Your browser does not support WebVR. See <a href="http://webvr.info">webvr.info</a> for assistance.';
+
+            }
+
+            if ( message !== undefined ) {
+
+                var container = document.createElement( 'div' );
+                container.style.position = 'absolute';
+                container.style.left = '0';
+                container.style.top = '0';
+                container.style.right = '0';
+                container.style.zIndex = '999';
+                container.align = 'center';
+
+                var error = document.createElement( 'div' );
+                error.style.fontFamily = 'sans-serif';
+                error.style.fontSize = '16px';
+                error.style.fontStyle = 'normal';
+                error.style.lineHeight = '26px';
+                error.style.backgroundColor = '#fff';
+                error.style.color = '#000';
+                error.style.padding = '10px 20px';
+                error.style.margin = '50px';
+                error.style.display = 'inline-block';
+                error.innerHTML = message;
+                container.appendChild( error );
+
+                return container;
+
+            }
+
+        },
+
+        getButton: function () {
+
+            var button = document.createElement( 'button' );
+            button.style.position = 'absolute';
+            button.style.left = 'calc(50% - 50px)';
+            button.style.bottom = '20px';
+            button.style.width = '100px';
+            button.style.border = '0';
+            button.style.padding = '8px';
+            button.style.cursor = 'pointer';
+            button.style.backgroundColor = '#000';
+            button.style.color = '#fff';
+            button.style.fontFamily = 'sans-serif';
+            button.style.fontSize = '13px';
+            button.style.fontStyle = 'normal';
+            button.style.textAlign = 'center';
+            button.style.zIndex = '999';
+            button.textContent = 'ENTER VR';
+            button.onclick = function() {
+                console.log('vr model');
+                //vrDisplay.isPresenting ? vrDisplay.exitPresent() : vrDisplay.requestPresent([{source: renderer.domElement}]);
+                vrDisplay.requestPresent([{source: renderer.domElement}]);
+                //init_webvr();
+
+            };
+
+            window.addEventListener( 'vrdisplaypresentchange', function ( event ) {
+
+                button.textContent = effect.isPresenting ? 'EXIT VR' : 'ENTER VR';
+
+            }, false );
+
+            return button;
+
+        }
+
+    };
+</script>
+
+<script>
+
+    if ( WEBVR.isLatestAvailable() === false ) {
+
+        document.body.appendChild( WEBVR.getMessage() );
+
+    }
+
+    //
+
+    var camera, scene, renderer;
+    var video, texture;
+
+    var controls, effect;
+
+    init();
+    animate();
+
+    function init() {
+
+        var container = document.getElementById( 'container' );
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.001, 2000 );
+        camera.layers.enable( 2 ); // render left view when no stereo available
+
+        scene = new THREE.Scene();
+
+
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor( 0x101010 );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        container.appendChild( renderer.domElement );
+
+
+        controls = new THREE.VRControls( camera );
+
+        effect = new THREE.VREffect( renderer );
+        effect.scale = 0; // video doesn't need eye separation
+        effect.setSize( window.innerWidth, window.innerHeight );
+
+        if ( WEBVR.isAvailable() === true ) {
+            // Get the VRDisplay and save it for later.
+            navigator.getVRDisplays().then(function(displays) {
+                if (displays.length > 0) {
+                    vrDisplay = displays[0];
+                }
+            });
+            document.body.appendChild( WEBVR.getButton(  ) );
+
+        }
+        texiao1();
+
+        //
+
+        window.addEventListener( 'resize', onWindowResize, false );
+
+    }
+
+    function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        effect.setSize( window.innerWidth, window.innerHeight );
+
+    }
+
+    function animate() {
+
+        render();
+        requestAnimationFrame( animate );
+
+    }
+
+    function render() {
+
+        controls.update();
+
+        effect.render( scene, camera );
+
+    }
+
+</script>
+</body>
+</html>
