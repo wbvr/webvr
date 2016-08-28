@@ -30,6 +30,8 @@ var onDocumentMouseUp = function () {};
 var onDocumentMouseWheel = function () {};
 var container;
 var font;
+var status = 0;
+var pa_status = 0;
 var loader = new THREE.FontLoader();
 loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
     font = response;
@@ -42,7 +44,6 @@ init_webvr();
 
 function init_webvr() {
     set_webvr();                            //初始化,加载场景,设置默认配置等
-    load_normal_video();
     play_vr_video();                        //播放VR视频
     setTimeout(init_screen,5000);
 }
@@ -52,8 +53,6 @@ function init_screen() {
     container = document.getElementById( 'container' );
     container.addEventListener( 'click', function () {
         if (is_countdown) {
-            normal_video.play();
-            normal_video.pause();
             vr_video.play();
             countdown(function(){
                 add_curtain();
