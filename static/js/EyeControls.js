@@ -59,7 +59,9 @@
     
         unbind: function (object) {
             var index = this.objects.indexOf(object);
-            this.objects.splice(index, 1);
+            if (index != -1) {
+                this.objects.splice(index, 1);
+            }
         },
         
         show: function () {
