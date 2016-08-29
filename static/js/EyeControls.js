@@ -39,8 +39,11 @@
         constructor: THREE.EyeControls,
         
         bind: function (object,callback) {
-            object.eye_callback = callback;
-            this.objects.push(object);
+            var index = this.objects.indexOf(object);
+            if (index == -1) {
+                object.eye_callback = callback;
+                this.objects.push(object);
+            }
         },
 
         hover_over: function () {
@@ -59,7 +62,9 @@
     
         unbind: function (object) {
             var index = this.objects.indexOf(object);
-            this.objects.splice(index, 1);
+            if (index != -1) {
+                this.objects.splice(index, 1);
+            }
         },
         
         show: function () {
