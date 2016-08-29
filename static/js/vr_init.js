@@ -35,10 +35,6 @@ var pa_status = 0;
 var loader = new THREE.FontLoader();
 loader.load( 'static/json/Xuyuan_Regular_Regular.json', function ( response ) {
     font = response;
-    HControlBegin(function(){
-        init_nod();
-        play_pa_effect();
-    });
 } );
 var hc = new HControl();     //头势控制
 /**/
