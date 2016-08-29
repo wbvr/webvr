@@ -49,7 +49,7 @@ function init_webvr() {
 }
 
 function init_screen() {
-    var is_countdown = false;
+    var is_countdown = true;
     container = document.getElementById( 'container' );
     container.addEventListener( 'click', function () {
         if (is_countdown) {
