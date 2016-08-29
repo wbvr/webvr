@@ -39,6 +39,7 @@
 <!-- A polyfill for the WebVR API.  -->
 <script src="static/js/webvr-polyfill.js"></script>
 <!-- 视控 -->
+<script src="static/js/texiao.js"></script>
 <script src="static/js/EyeControls.js"></script>
 
 <script type="text/javascript">
@@ -316,12 +317,55 @@
             //opacity: 0.9
         }));
 
-        menu_like.position.set(0,-120,-100);
+        menu_like.position.set(50,-120,-100);
         scene.add(menu_like);
 
+
+        var boatGeometry = new THREE.PlaneGeometry( 50, 50 );
+        var boatTexture = new THREE.TextureLoader().load( 'static/img/b.png' );
+        var boat = new THREE.Mesh( boatGeometry ,new THREE.MeshBasicMaterial({
+            map: boatTexture,
+            //color: 0xff0000,
+            transparent: true,
+            //opacity: 0.9
+        }));
+        var is_play = false;
+
+        boat.position.set(0,-120,-100);
+        scene.add(boat);
+
+        var flowerGeometry = new THREE.PlaneGeometry( 50, 50 );
+        var flowerTexture = new THREE.TextureLoader().load( 'static/img/weibo.png' );
+        var flower = new THREE.Mesh( flowerGeometry ,new THREE.MeshBasicMaterial({
+            map: flowerTexture,
+            //color: 0xff0000,
+            transparent: true,
+            //opacity: 0.9
+        }));
+
+        flower.position.set(-50,-120,-100);
+        scene.add(flower);
+
+        flower.menu_name = 'flower';
         menu_like.menu_name = 'menu_like';
+        boat.menu_name = 'bo';
         eye_contrler.bind(menu_like,function (obj) {
-            alert(obj.menu_name);
+            alert(11);
+        });
+        eye_contrler.bind(flower,function (obj) {
+            if (!is_play ){
+                is_play = true;
+                texiao();
+                setTimeout(function(){is_play = false},3000)
+            }
+
+        });
+        eye_contrler.bind(boat,function (obj) {
+            if (!is_play ){
+                is_play = true;
+                texiao();
+                setTimeout(function(){is_play = false},1500)
+            }
         });
     }
 
