@@ -25,7 +25,7 @@ function HControlBegin(callback) {
         font: font,
 
         size: 30,
-        height: 20,
+        height: 10,
         curveSegments: 4,
         bevelThickness: 2,
         bevelSize: 1.5,
@@ -49,7 +49,7 @@ function HControlBegin(callback) {
         font: font,
 
         size: 30,
-        height: 20,
+        height: 10,
         curveSegments: 4,
         bevelThickness: 2,
         bevelSize: 1.5,
