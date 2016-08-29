@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>three.js webvr - video</title>
+    <title>webvr live-video</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <style>
@@ -40,6 +40,9 @@
 <script src="static/js/webvr-polyfill.js"></script>
 <!-- 视控 -->
 <script src="static/js/texiao.js"></script>
+<script src="static/js/EyeControls.js"></script>
+
+<!-- 视控 -->
 <script src="static/js/EyeControls.js"></script>
 
 <script type="text/javascript">
@@ -170,6 +173,7 @@
     var video, texture;
 
     var controls, effect;
+    var eye_contrler;
 
     init();
     animate();
@@ -245,7 +249,7 @@
         video.setAttribute('crossorigin', 'anonymous');
         //video.setAttribute( 'type', 'application/vnd.apple.mpegurl' );
         //video.setAttribute( 'type', 'application/x-mpegURL' );	//video/mp4
-        //video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+        video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
         video.load();
         video.play();
 
