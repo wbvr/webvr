@@ -33,7 +33,7 @@ var font;
 var status = 0;
 var pa_status = 0;
 var loader = new THREE.FontLoader();
-loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
+loader.load( 'static/json/Xuyuan_Regular_Regular.json', function ( response ) {
     font = response;
 } );
 var hc = new HControl();     //头势控制
