@@ -329,13 +329,13 @@ THREE.VREffect = function ( renderer, onError ) {
 				vrHMD.submitFrame();
 
 			}
-
+			status = 1;
 			return;
 
 		}
 
 		// Regular render mode if not HMD
-
+		status = 0;
 		renderer.render( scene, camera );
 
 	};

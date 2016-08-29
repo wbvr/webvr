@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>webvr live-video</title>
+    <title>three.js webvr - video</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <style>
@@ -33,17 +33,11 @@
 -->
 
 <script src="static/js/three.js"></script>
-
 <script src="static/js/VREffect.js"></script>
 <script src="static/js/VRControls.js"></script>
 <!-- A polyfill for the WebVR API.  -->
 <script src="static/js/webvr-polyfill.js"></script>
-<!-- 视控 -->
-<script src="static/js/EyeControls.js"></script>
-
-<!-- 视控 -->
-<script src="static/js/EyeControls.js"></script>
-
+<script src="static/js/texiao.js"></script>
 <script type="text/javascript">
     /**
      * @author mrdoob / http://mrdoob.com
@@ -153,9 +147,6 @@
         }
 
     };
-
-
-
 </script>
 
 <script>
@@ -172,102 +163,19 @@
     var video, texture;
 
     var controls, effect;
-    var eye_contrler;
 
     init();
     animate();
 
-    function eventTester(e){
-        video.addEventListener(e,function(){
-            if (e == 'error') {
-                console.log(video.error,video.error.code);
-            }
-            console.log((new Date()).getTime(),e)
-        },false);
-    }
-
-    function print_video_event() {
-        eventTester("loadstart"); //客户端开始请求数据
-        eventTester("progress"); //客户端正在请求数据
-        eventTester("suspend"); //延迟下载
-        eventTester("abort"); //客户端主动终止下载（不是因为错误引起）
-        eventTester("loadstart"); //客户端开始请求数据
-        eventTester("progress"); //客户端正在请求数据
-        eventTester("suspend"); //延迟下载
-        eventTester("abort"); //客户端主动终止下载（不是因为错误引起），
-        eventTester("error"); //请求数据时遇到错误
-        eventTester("stalled"); //网速失速
-        eventTester("play"); //play()和autoplay开始播放时触发
-        eventTester("pause"); //pause()触发
-        eventTester("loadedmetadata"); //成功获取资源长度
-        eventTester("loadeddata"); //
-        eventTester("waiting"); //等待数据，并非错误
-        eventTester("playing"); //开始回放
-        eventTester("canplay"); //可以播放，但中途可能因为加载而暂停
-        eventTester("canplaythrough"); //可以播放，歌曲全部加载完毕
-        eventTester("seeking"); //寻找中
-        eventTester("seeked"); //寻找完毕
-        eventTester("timeupdate"); //播放时间改变
-        eventTester("ended"); //播放结束
-        eventTester("ratechange"); //播放速率改变
-        eventTester("durationchange"); //资源长度改变
-        eventTester("volumechange"); //音量改变
-    }
-
-
     function init() {
 
         var container = document.getElementById( 'container' );
-        container.addEventListener( 'click', function () {
-            console.log(video);
-            video.play();
-        } );
-
-        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
-        //camera.layers.enable( 1 ); // render left view when no stereo available
-        eye_contrler = new THREE.EyeControls(camera);
-        // video
-
-        video = document.createElement( 'video' );
-        print_video_event();
-        //video.loop = true;
-        //video.muted = true;
-
-        //http://58.135.196.138:8090/live/789E9CE292A040d2A459CF55D2FB362E/789E9CE292A040d2A459CF55D2FB362E.m3u8
-
-        //video.src = 'http://sohow.applinzi.com/static/img/sintel.mp4'
-        //video.src = 'http://sohow.applinzi.com/static/img/MaryOculus.mp4';
-        //video.src = 'http://sohow.applinzi.com/static/img/m1.mp4';
-        //video.src = 'http://sohow.applinzi.com/static/img/hsy.mp4';
-        //video.src = 'http://10.235.24.45/hls/test.m3u8';
-        //video.src = 'http://58.135.196.138:8090/live/789E9CE292A040d2A459CF55D2FB362E/789E9CE292A040d2A459CF55D2FB362E.m3u8';
-        //video.src = 'http://hls.yy.com/live/54880976_54880976.m3u8?id=yyent&uid=0d268e721bafa16011ed420182ecd1d81472019973&appid=15012&uuid=1A3512763E4046869071355677D1FD4A';
-        //video.src = 'http://104.194.70.86/hls/vr.m3u8';
-        //video.src = 'http://10.235.24.45/hls/test.m3u8';
-        video.src = 'static/video/vr_video.webm';
-        video.setAttribute('crossorigin', 'anonymous');
-        //video.setAttribute( 'type', 'application/vnd.apple.mpegurl' );
-        //video.setAttribute( 'type', 'application/x-mpegURL' );	//video/mp4
-        video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
-        video.load();
-        video.play();
-
-
-        texture = new THREE.VideoTexture( video );
-        texture.minFilter = THREE.NearestFilter;
-        texture.maxFilter = THREE.NearestFilter;
-        texture.format = THREE.RGBFormat;
-        texture.generateMipmaps = false;
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.001, 2000 );
+        camera.layers.enable( 2 ); // render left view when no stereo available
 
         scene = new THREE.Scene();
 
-        material = new THREE.MeshBasicMaterial( { map: texture } );
-        var mesh = new THREE.Mesh( get_geometry(), material );
-        scene.add( mesh );
 
-        add_menu();
-
-        //
 
         renderer = new THREE.WebGLRenderer();
         renderer.setClearColor( 0x101010 );
@@ -275,7 +183,6 @@
         renderer.setSize( window.innerWidth, window.innerHeight );
         container.appendChild( renderer.domElement );
 
-        //
 
         controls = new THREE.VRControls( camera );
 
@@ -293,7 +200,7 @@
             document.body.appendChild( WEBVR.getButton(  ) );
 
         }
-
+        texiao1();
 
         //
 
@@ -310,25 +217,6 @@
 
     }
 
-    function add_menu() {
-        var curtainGeometry = new THREE.PlaneGeometry( 50, 50 );
-        var texture = new THREE.TextureLoader().load( 'static/img/like.png' );
-        var menu_like = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
-            map: texture,
-            //color: 0xff0000,
-            transparent: true,
-            //opacity: 0.9
-        }));
-
-        menu_like.position.set(0,-120,-100);
-        scene.add(menu_like);
-
-        menu_like.menu_name = 'menu_like';
-        eye_contrler.bind(menu_like,function (obj) {
-            alert(obj.menu_name);
-        });
-    }
-
     function animate() {
 
         render();
@@ -339,47 +227,9 @@
     function render() {
 
         controls.update();
-        eye_contrler.update();
+
         effect.render( scene, camera );
 
-    }
-
-
-    function get_geometry() {
-        var geometry = new THREE.SphereBufferGeometry( 500, 60, 40 ).toNonIndexed();
-        geometry.scale( - 1, 1, 1 );
-
-        // Remap UVs
-
-//        var normals = geometry.attributes.normal.array;
-//        var uvs = geometry.attributes.uv.array;
-//
-//        for ( var i = 0, l = normals.length / 3; i < l; i ++ ) {
-//
-//            var x = normals[ i * 3 + 0 ];
-//            var y = normals[ i * 3 + 1 ];
-//            var z = normals[ i * 3 + 2 ];
-//
-//            if ( i < l / 2 ) {
-//
-//                var correction = ( x == 0 && z == 0 ) ? 1 : ( Math.acos( y ) / Math.sqrt( x * x + z * z ) ) * ( 2 / Math.PI );
-//                uvs[ i * 2 + 0 ] = x * ( 404 / 1920 ) * correction + ( 447 / 1920 );
-//                uvs[ i * 2 + 1 ] = z * ( 404 / 1080 ) * correction + ( 582 / 1080 );
-//
-//            } else {
-//
-//                var correction = ( x == 0 && z == 0 ) ? 1 : ( Math.acos( - y ) / Math.sqrt( x * x + z * z ) ) * ( 2 / Math.PI );
-//                uvs[ i * 2 + 0 ] = - x * ( 404 / 1920 ) * correction + ( 1460 / 1920 );
-//                uvs[ i * 2 + 1 ] = z * ( 404 / 1080 ) * correction + ( 582 / 1080 );
-//
-//            }
-//
-//        }
-
-        //geometry.rotateZ(  Math.PI / 2 );
-
-        return geometry;
-        //
     }
 
 </script>
