@@ -40,9 +40,8 @@
 <script src="static/js/webvr-polyfill.js"></script>
 <!-- 视控 -->
 <script src="static/js/EyeControls.js"></script>
-
-<!-- 视控 -->
-<script src="static/js/EyeControls.js"></script>
+<!-- 菜单 -->
+<script src="static/js/vr_menu.js"></script>
 
 <script type="text/javascript">
     /**
@@ -265,8 +264,17 @@
         var mesh = new THREE.Mesh( get_geometry(), material );
         scene.add( mesh );
 
-        add_menu();
-
+        //add_menu();
+	menu = new THREE.VrMenu();
+        menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
+            alert(obj.menu_index);
+        });
+        menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
+            alert(obj.menu_index);
+        });
+        menu.add_option(scene, eye_contrler, 'static/img/ship.png', function (obj) {
+            alert(obj.menu_index);
+        });
         //
 
         renderer = new THREE.WebGLRenderer();
