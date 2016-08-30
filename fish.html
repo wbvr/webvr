@@ -267,14 +267,24 @@
 
         //add_menu();
 	menu = new THREE.VrMenu();
+
+        var is_play = false;
         menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
-            alert(obj.menu_index);
+            texiao2(this.position.x,this.position.y,this.position.z+1);
         });
         menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
-            alert(obj.menu_index);
+            if (!is_play ){
+                is_play = true;
+                texiao1();
+                setTimeout(function(){is_play = false},1500)
+            }
         });
         menu.add_option(scene, eye_contrler, 'static/img/ship.png', function (obj) {
-            alert(obj.menu_index);
+            if (!is_play ){
+                is_play = true;
+                texiao();
+                setTimeout(function(){is_play = false},3000)
+            }
         });
         //
 
@@ -341,7 +351,6 @@
             transparent: true,
             //opacity: 0.9
         }));
-        var is_play = false;
 
         boat.position.set(0,-120,-100);
         scene.add(boat);
@@ -362,22 +371,14 @@
         menu_like.menu_name = 'menu_like';
         boat.menu_name = 'bo';
         eye_contrler.bind(menu_like,function (obj) {
-            alert(11);
+
         });
         eye_contrler.bind(boat,function (obj) {
-            if (!is_play ){
-                is_play = true;
-                texiao();
-                setTimeout(function(){is_play = false},3000)
-            }
+
 
         });
         eye_contrler.bind(flower,function (obj) {
-            if (!is_play ){
-                is_play = true;
-                texiao1();
-                setTimeout(function(){is_play = false},1500)
-            }
+
         });
     }
 
