@@ -29,7 +29,7 @@ function texiao() {
 function texiao1() {
     var Geometry = [];
     var efs = [];
-    var texture = new THREE.TextureLoader().load( 'static/img/b.png' );
+    var texture = new THREE.TextureLoader().load( 'static/img/flower.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
@@ -60,7 +60,7 @@ function texiao2(x, y, z) {
     var rd = 10 + 100 * Math.random();
     var drd = 0.1 + 0.2 * Math.random();
     var f = Math.random() > 0.5 ? true: false;
-    var texture = new THREE.TextureLoader().load( 'static/img/b.png' );
+    var texture = new THREE.TextureLoader().load( 'static/img/hand.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
