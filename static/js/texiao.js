@@ -9,11 +9,12 @@ function texiao() {
     var dh = 50;
     var dl = 10;
     var th = dp * Math.PI /180;
+    var rd = 300;
     var y = dh * Math.sin(th * dl);
     var curtainGeometry = new THREE.PlaneGeometry( 100, 100 );
     var ef = new THREE.Mesh( curtainGeometry ,material);
 
-    ef.position.set(300 * Math.sin(th), y, (-300 * Math.cos(th)));
+    ef.position.set(rd * Math.sin(th), y, (-rd * Math.cos(th)));
     scene.add(ef);
 
     function up() {
@@ -24,7 +25,7 @@ function texiao() {
                 dl = 2 + 3 * Math.random();
             }
             y = dh * Math.sin(th * dl);
-            ef.position.set(300 * Math.sin(th), y, (-300 * Math.cos(th)));
+            ef.position.set(rd * Math.sin(th), y, (-rd * Math.cos(th)));
             ef.rotation.set(0,-th,Math.cos(th * dl)/3);
             dp-=1;
             requestAnimationFrame(up);
