@@ -60,7 +60,8 @@ function texiao2(x, y, z) {
     var rd = 10 + 100 * Math.random();
     var drd = 0.1 + 0.2 * Math.random();
     var f = Math.random() > 0.5 ? true: false;
-    var texture = new THREE.TextureLoader().load( 'static/img/hand.png' );
+    var img = Math.floor(1 + 9 * Math.random());
+    var texture = new THREE.TextureLoader().load( 'static/img/' + img + '.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
