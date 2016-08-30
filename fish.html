@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>three.js webvr - video</title>
+    <title>webvr live-video</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <style>
@@ -41,6 +41,8 @@
 <!-- 视控 -->
 <script src="static/js/texiao.js"></script>
 <script src="static/js/EyeControls.js"></script>
+<!-- 菜单 -->
+<script src="static/js/vr_menu.js"></script>
 
 <script type="text/javascript">
     /**
@@ -170,6 +172,7 @@
     var video, texture;
 
     var controls, effect;
+    var eye_contrler;
 
     init();
     animate();
@@ -245,7 +248,7 @@
         video.setAttribute('crossorigin', 'anonymous');
         //video.setAttribute( 'type', 'application/vnd.apple.mpegurl' );
         //video.setAttribute( 'type', 'application/x-mpegURL' );	//video/mp4
-        //video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+        video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
         video.load();
         video.play();
 
@@ -262,8 +265,17 @@
         var mesh = new THREE.Mesh( get_geometry(), material );
         scene.add( mesh );
 
-        add_menu();
-
+        //add_menu();
+	menu = new THREE.VrMenu();
+        menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
+            alert(obj.menu_index);
+        });
+        menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
+            alert(obj.menu_index);
+        });
+        menu.add_option(scene, eye_contrler, 'static/img/ship.png', function (obj) {
+            alert(obj.menu_index);
+        });
         //
 
         renderer = new THREE.WebGLRenderer();

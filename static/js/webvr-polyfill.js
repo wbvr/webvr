@@ -1133,6 +1133,10 @@ VRDisplay.prototype.wrapForFullscreen = function(element) {
     ];
     this.fullscreenWrapper_.setAttribute('style', cssProperties.join('; ') + ';');
     this.fullscreenWrapper_.classList.add('webvr-polyfill-fullscreen-wrapper');
+      if (typeof eye_contrler != "undefined") {
+          this.fullscreenWrapper_.appendChild(eye_contrler.show_spote_l());
+          this.fullscreenWrapper_.appendChild(eye_contrler.show_spote_r());
+      }
   }
 
   if (this.fullscreenElement_ == element) {
@@ -4424,7 +4428,9 @@ var DPDB_CACHE = _dereq_('./dpdb-cache.js');
 var Util = _dereq_('../util.js');
 
 // Online DPDB URL.
+//var ONLINE_DPDB_URL = 'https://djnxy.github.io/webvr/static/json/dpdb.json';
 var ONLINE_DPDB_URL = 'https://storage.googleapis.com/cardboard-dpdb/dpdb.json';
+
 
 /**
  * Calculates device parameters based on the DPDB (Device Parameter Database).
@@ -5704,6 +5710,9 @@ FusionPoseSensor.prototype.onDeviceMotionChange_ = function(deviceMotion) {
 
   var deltaS = timestampS - this.previousTimestampS;
   if (deltaS <= Util.MIN_TIMESTEP || deltaS > Util.MAX_TIMESTEP) {
+      console.log(Util.MIN_TIMESTEP);
+      console.log(Util.MAX_TIMESTEP);
+      console.log(deltaS);
     console.warn('Invalid timestamps detected. Time step between successive ' +
                  'gyroscope sensor samples is very small or not monotonic');
     this.previousTimestampS = timestampS;
@@ -5946,7 +5955,7 @@ var objectAssign = _dereq_('object-assign');
 
 var Util = window.Util || {};
 
-Util.MIN_TIMESTEP = 0.001;
+Util.MIN_TIMESTEP = 0.0001;
 Util.MAX_TIMESTEP = 1;
 
 Util.base64 = function(mimeType, base64) {
