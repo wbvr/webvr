@@ -1,22 +1,32 @@
 function texiao() {
-    var texture = new THREE.TextureLoader().load( 'static/img/b.png' );
+    var texture = new THREE.TextureLoader().load( 'static/img/ship.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
     } );
+
+    var dp = 0;
+    var dh = 50;
+    var dl = 10;
+    var th = dp * Math.PI /180;
+    var y = dh * Math.sin(th * dl);
     var curtainGeometry = new THREE.PlaneGeometry( 100, 100 );
     var ef = new THREE.Mesh( curtainGeometry ,material);
 
-    ef.position.set(0, 0, -100);
+    ef.position.set(300 * Math.sin(th), y, (-300 * Math.cos(th)));
     scene.add(ef);
-    var dp = 0;
 
     function up() {
-        if(dp<360){
-            var th = dp * Math.PI /180;
-            ef.position.set(300 * Math.sin(th), 0, (-300 * Math.cos(th)));
-            ef.rotation.set(0,-th,0);
-            dp+=4;
+        if(dp>-360){
+            th = dp * Math.PI /180;
+            if(Math.abs(Math.sin(th * dl)) <= 0.0001) {
+                dh = 40 + 20 * Math.random();
+                dl = 2 + 3 * Math.random();
+            }
+            y = dh * Math.sin(th * dl);
+            ef.position.set(300 * Math.sin(th), y, (-300 * Math.cos(th)));
+            ef.rotation.set(0,-th,Math.cos(th * dl)/3);
+            dp-=1;
             requestAnimationFrame(up);
         } else {
             scene.remove(ef);
