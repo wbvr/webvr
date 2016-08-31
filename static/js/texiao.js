@@ -207,10 +207,11 @@ function texiao3() {
 
 
 function zan(count){
-    var num =0;
+    var c = count || 1;
+    var num = 1;
     var handlr = function(){
         texiao3();
-        if(num<=count) {
+        if(num <= c) {
             setTimeout(handlr,300);
         }
         num++;
