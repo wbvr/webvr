@@ -4,8 +4,8 @@
 ( function ( THREE ) {
     THREE.VrMenu = function () {
         this.options = [];
-        this.option_width = 50;
-        this.option_height = 50;
+        this.option_width = 30;
+        this.option_height = 30;
         this.option_margin = 5;
 
         this.STATUS = {
@@ -14,7 +14,7 @@
         };
         this.status = this.STATUS.STATUS_SHOW;
         
-        this.menu_position = new THREE.Vector3(0,-120,-100);
+        this.menu_position = new THREE.Vector3(0,-220,-300);
     };
 
     THREE.VrMenu.prototype = {

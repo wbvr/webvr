@@ -9,7 +9,7 @@ function texiao() {
     var dh = 50;
     var dl = 10;
     var th = dp * Math.PI /180;
-    var rd = 300;
+    var rd = 200;
     var y = dh * Math.sin(th * dl);
     var curtainGeometry = new THREE.PlaneGeometry( 100, 100 );
     var ef = new THREE.Mesh( curtainGeometry ,material);
@@ -40,16 +40,17 @@ function texiao() {
 function texiao1() {
     var Geometry = [];
     var efs = [];
+    var rd = 200;
     var texture = new THREE.TextureLoader().load( 'static/img/flower.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
     } );
-    for (var i=-180;i < 180; i+=10){
-        Geometry[i] = new THREE.PlaneGeometry( 20, 20 );
+    for (var i=-180;i < 180; i+=30){
+        Geometry[i] = new THREE.PlaneGeometry( 40, 40 );
         efs[i] = new THREE.Mesh( Geometry[i] ,material);
         var th = i * Math.PI /180;
-        efs[i].position.set(300 * Math.sin(th), 0, (-300 * Math.cos(th)));
+        efs[i].position.set(rd * Math.sin(th), 0, (-rd * Math.cos(th)));
         efs[i].rotation.set(0,-th,0);
         scene.add(efs[i]);
     }
