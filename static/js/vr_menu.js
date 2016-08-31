@@ -4,9 +4,10 @@
 ( function ( THREE ) {
     THREE.VrMenu = function () {
         this.options = [];
-        this.option_width = 30;
-        this.option_height = 30;
-        this.option_margin = 5;
+        this.option_width = 50;
+        this.option_height = 50;
+        this.option_margin_angle = Math.PI/6;
+        this.option_margin_x = 50;
 
         this.STATUS = {
             STATUS_SHOW: 1,
@@ -14,35 +15,171 @@
         };
         this.status = this.STATUS.STATUS_SHOW;
         
-        this.menu_position = new THREE.Vector3(0,-220,-300);
+        this.move_speed = 5;
+
+        this.cursor_up = null;
+        this.cursor_down = null;
+        this.cursor_left = null;
+        this.cursor_right = null;
+        this.cursor_height = 20;
+        this.cursor_size = 15;
+
+        this.rotate_index = 1;
+        
+        this.menu_position = new THREE.Vector3(0,-150,-200);
     };
 
     THREE.VrMenu.prototype = {
         constructor: THREE.EyeControls,
 
         show: function (scene,eye_contrler) {
-            this.options.forEach(function (e) {
+            this.show_as_plane(scene,eye_contrler);
+        },
+
+        show_as_circle: function (scene,eye_contrler) {
+            var angle = (this.options.length - 1) / 2 * this.option_margin_angle;
+            var e;
+            for (var i = 0; i < this.options.length; i++) {
+                e = this.options[i];
+                console.log("angle: "+angle);
+                e.position.applyEuler(new THREE.Euler(0,angle,0, "XYZ"));
+                console.log("e.position: "+e.position);
                 scene.add(e);
                 if (typeof e.eye_callback != "undefined") {
                     eye_contrler.bind(e, e.eye_callback);
                 }
-            });
+                angle -= this.option_margin_angle;
+            }
+        },
+
+        show_as_plane: function (scene,eye_contrler) {
+            var x = (this.options.length - 1) * this.option_margin_x / 2;
+            x = this.menu_position.x - x;
+            var e;
+            for (var i = 0; i < this.options.length; i++) {
+                e = this.options[i];
+                e.position.x = x;
+                console.log("option "+(i+1)+" positon: ",e.position);
+                scene.add(e);
+                if (typeof e.eye_callback != "undefined") {
+                    eye_contrler.bind(e, e.eye_callback);
+                }
+                x += this.option_margin_x;
+            }
+            this.show_cursor(scene,eye_contrler);
         },
 
         hide: function (scene,eye_contrler) {
-            this.options.forEach(function (e) {
+            for (var i = 0; i < this.options.length; i++) {
+                e = this.options[i];
                 if (typeof e.eye_callback != "undefined") {
                     eye_contrler.unbind(e);
                 }
                 scene.remove(e);
-            });
+            }
         },
 
-        move: function (x,y) {
-            this.options.forEach(function (e) {
+        move_menu: function (x,y) {
+            console.log(x,y);
+            for (var i = 0; i < this.options.length; i++) {
+                e = this.options[i];
                 e.position.x += x;
                 e.position.y += y;
-            });
+                console.log(e.position);
+            }
+        },
+        
+        onmenu_up: function (obj) {
+            obj.callback_param.move_cursor(obj.callback_param,0,obj.callback_param.move_speed);
+            obj.callback_param.move_menu(0,obj.callback_param.move_speed);
+        },
+
+        onmenu_down: function (obj) {
+            obj.callback_param.move_cursor(obj.callback_param,0,-1*obj.callback_param.move_speed);
+            obj.callback_param.move_menu(0,-1*obj.callback_param.move_speed);
+        },
+
+        onmenu_left: function (obj) {
+            obj.callback_param.move_cursor(obj.callback_param,-1*obj.callback_param.move_speed,0);
+            obj.callback_param.move_menu(-1*obj.callback_param.move_speed,0);
+        },
+
+        onmenu_right: function (obj) {
+            obj.callback_param.move_cursor(obj.callback_param,obj.callback_param.move_speed,0);
+            obj.callback_param.move_menu(obj.callback_param.move_speed,0);
+        },
+
+        move_cursor: function (_this,x,y) {
+            _this.cursor_up.position.x += x;
+            _this.cursor_up.position.y += y;
+
+            _this.cursor_down.position.x += x;
+            _this.cursor_down.position.y += y;
+
+            _this.cursor_left.position.x += x;
+            _this.cursor_left.position.y += y;
+
+            _this.cursor_right.position.x += x;
+            _this.cursor_right.position.y += y;
+        },
+        
+        show_cursor: function (scene,eye_contrler) {
+            console.log("enter show_cursor()");
+            var triangle = new THREE.triangleGeometry(this.cursor_size);
+            this.cursor_up = new THREE.Mesh( triangle ,new THREE.MeshBasicMaterial({
+                //map: texture,
+                color: 0xff0000
+            }));
+            this.cursor_up.position.x = this.menu_position.x;
+            this.cursor_up.position.y = this.menu_position.y + this.option_height / 2 + this.cursor_height / 2;
+            this.cursor_up.position.z = this.menu_position.z;
+            console.log("this.cursor_up.rotation.z: "+this.cursor_up.rotation.z);
+            this.cursor_up.rotation.z = (this.cursor_up.rotation.z - Math.PI*3/4) % (Math.PI * 2);
+            this.cursor_up.callback_param = this;
+            eye_contrler.bind(this.cursor_up,this.onmenu_up);
+            console.log("cursor_up position: ",this.cursor_up.position);
+            scene.add(this.cursor_up);
+
+            this.cursor_down = new THREE.Mesh( triangle ,new THREE.MeshBasicMaterial({
+                //map: texture,
+                color: 0xff0000
+            }));
+            this.cursor_down.position.x = this.menu_position.x;
+            this.cursor_down.position.y = this.menu_position.y - this.option_height / 2 - this.cursor_height / 2;
+            this.cursor_down.position.z = this.menu_position.z;
+            console.log("this.cursor_down.rotation.z: "+this.cursor_down.rotation.z);
+            this.cursor_down.rotation.z = (this.cursor_down.rotation.z + Math.PI/4) % (Math.PI * 2);
+            this.cursor_down.callback_param = this;
+            eye_contrler.bind(this.cursor_down,this.onmenu_down);
+            console.log("cursor_down position: ",this.cursor_down.position);
+            scene.add(this.cursor_down);
+
+            this.cursor_left = new THREE.Mesh( triangle ,new THREE.MeshBasicMaterial({
+                //map: texture,
+                color: 0xff0000
+            }));
+            var left_margin = (this.options.length - 1) * this.option_margin_x / 2 + this.option_width / 2 +this.cursor_height / 2;
+            this.cursor_left.position.x = this.menu_position.x - left_margin;
+            this.cursor_left.position.y = this.menu_position.y;
+            this.cursor_left.position.z = this.menu_position.z;
+            this.cursor_left.rotation.z = (this.cursor_left.rotation.z - Math.PI/4) % (Math.PI * 2);
+            this.cursor_left.callback_param = this;
+            eye_contrler.bind(this.cursor_left,this.onmenu_left);
+            console.log("cursor_left position: ",this.cursor_left.position);
+            scene.add(this.cursor_left);
+
+            this.cursor_right = new THREE.Mesh( triangle ,new THREE.MeshBasicMaterial({
+                //map: texture,
+                color: 0xff0000
+            }));
+            this.cursor_right.position.x = this.menu_position.x + left_margin;
+            this.cursor_right.position.y = this.menu_position.y;
+            this.cursor_right.position.z = this.menu_position.z;
+            this.cursor_right.rotation.z = (this.cursor_right.rotation.z + Math.PI*3/4) % (Math.PI * 2);
+            this.cursor_right.callback_param = this;
+            eye_contrler.bind(this.cursor_right,this.onmenu_right);
+            console.log("cursor_right position: ",this.cursor_right.position);
+            scene.add(this.cursor_right);
         },
 
         add_option: function (scene, eye_contrler, pic,callback) {
@@ -56,14 +193,14 @@
                 //opacity: 0.9
             }));
 
-            option.position.x = this.menu_position.x + this.options.length * (this.option_width + this.option_margin);
+            //option.position.x = this.menu_position.x + this.options.length * (this.option_width + this.option_margin);
+            option.position.x = this.menu_position.x;
             option.position.y = this.menu_position.y;
             option.position.z = this.menu_position.z;
+
             option.menu_index = this.options.length;
-            console.log("add_option:",option.position);
-            scene.add(option);
             if (typeof callback != "undefined") {
-                eye_contrler.bind(option, callback);
+                option.eye_callback = callback;
             }
             this.options.push(option);
             return option;
