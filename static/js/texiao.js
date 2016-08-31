@@ -68,6 +68,7 @@ function texiao2(x, y, z) {
     var h = 0;
     var th = dp * Math.PI /180;
     var dh = 0.5 + 1.5 * Math.random();
+    var dz = 100 + 900 * Math.random();
     var rd = 10 + 100 * Math.random();
     var drd = 0.1 + 0.2 * Math.random();
     var f = Math.random() > 0.5 ? true: false;
@@ -80,16 +81,14 @@ function texiao2(x, y, z) {
     var curtainGeometry = new THREE.PlaneGeometry(20, 20 );
     var ef = new THREE.Mesh( curtainGeometry ,material);
 
-    ef.position.set(40 * Math.sin(th)+x, (y + h * dh), ((-40 * Math.cos(th)) + z));
-    var th1 = Math.asin(x/Math.sqrt(x*x+z*z));
-    ef.rotation.set(0,-th1,0);
+    ef.position.set(40 * Math.sin(th)+x, (y + h * dh), ((-40 * Math.cos(th))/dz + z));
     scene.add(ef);
 
     function up() {
-        if (h < 500) {
+        if (h < 400) {
             if(dp<360 && dp>-360){
                 th = dp * Math.PI /180;
-                ef.position.set(rd * Math.sin(th)+x, (y + h), ((rd * Math.cos(th)) + z));
+                ef.position.set(rd * Math.sin(th)+x, (y + h), ((rd * Math.cos(th))/dz + z));
                 if (f){
                     dp+=4;
                 } else {
@@ -123,7 +122,7 @@ function texiao3() {
     var h = 0;
     var th = dp * Math.PI /180;
     var dh = 0.5 + 1.5 * Math.random();
-    //var dz1 = 100 + 900 * Math.random();
+    var dz1 = 100 + 900 * Math.random();
     var rd = 10 + 100 * Math.random();
     var drd = 0.1 + 0.2 * Math.random();
     var f = (Math.random() > 0.5) ? 1: -1;
@@ -139,8 +138,8 @@ function texiao3() {
 
     dx=rd * Math.sin(th);
     dy=h;
-    dz=(rd * Math.cos(th)) ;
-    for (var i=-180;i < 180; i+=90){
+    dz=(rd * Math.cos(th))/dz1 ;
+    for (var i=-180;i < 180; i+=60){
         efs[i] = new THREE.Mesh( Geometry ,material);
         var th1 = i * Math.PI /180;
         bx=rd1 * Math.sin(th1);
@@ -167,8 +166,8 @@ function texiao3() {
 
                 dx=rd * Math.sin(th);
                 dy=h;
-                dz=(rd * Math.cos(th)) ;
-                for (var i=-180;i < 180; i+=90){
+                dz=(rd * Math.cos(th))/dz1 ;
+                for (var i=-180;i < 180; i+=60){
                     var th1 = i * Math.PI /180;
                     bx=rd1 * Math.sin(th1);
                     by=y;
@@ -191,7 +190,7 @@ function texiao3() {
             }
             requestAnimationFrame(up);
         } else {
-            for (var i=-180;i < 180; i+=90){
+            for (var i=-180;i < 180; i+=60){
                 scene.remove(efs[i]);
             }
 
@@ -207,29 +206,15 @@ function texiao3() {
 
 
 function zan(count){
-    var c = count || 1;
-    var num = 1;
+    var num =0;
     var handlr = function(){
         texiao3();
-        if(num <= c) {
+        if(num<=count) {
             setTimeout(handlr,300);
         }
         num++;
     };
     setTimeout(handlr,50);
-}
-function zan360(){
-    var r = 300;
-    var z=0;
-    var x=0;
-    for(var i=0;i<360;i+=90){
-        var th1 = i * Math.PI /180;
-        x = 300 * Math.sin(th1);
-        z = 300 * Math.cos(th1);
-        console.log(x+"    "+z);
-        texiao2(x,-200,z);
-    }
-
 }
 
 
