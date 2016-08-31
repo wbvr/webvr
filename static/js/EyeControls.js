@@ -27,7 +27,7 @@
         this.spote_r = null;
         this.SPOTE_NUM = 17;
         this.spote_num = this.SPOTE_NUM;
-        this.spote_speed = 100;
+        this.spote_speed = 300;
         this.show_spote();
 
         this.point = new THREE.Vector2(0, 0);
@@ -48,10 +48,12 @@
 
         hover_over: function () {
             console.log("hover_over");
-            this.hover_status = this.HOVER_STATUS.STATUS_HOVERING;
-            if (this.spote) {
-                this.spoting();
-            }
+            //if (this.hover_status != this.HOVER_STATUS.STATUS_HOVERING) {
+                this.hover_status = this.HOVER_STATUS.STATUS_HOVERING;
+                if (this.spote) {
+                    this.spoting();
+                }
+            //}
         },
 
         hover_out: function () {
@@ -192,9 +194,11 @@
         spoting: function () {
             if (this.hover_status == this.HOVER_STATUS.STATUS_HOVERING && --this.spote_num > 0) {
                 this.play_spote();
+                //TODO 传this有问题
                 window.setTimeout(THREE.EyeControls.spoting, this.spote_speed);
             } else {
                 if (this.spote_num == 0) {
+                    console.log("EyeControls callbak");
                     this.last_hover_obj.eye_callback(this.last_hover_obj);
                 }
                 this.init_spote();
