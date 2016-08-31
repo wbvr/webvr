@@ -236,7 +236,7 @@
 
         var is_play = false;
         menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
-            texiao2(this.position.x,this.position.y,this.position.z+1);
+            zan(10);
         });
         menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
             if (!is_play ){
@@ -386,6 +386,9 @@ function updateHyp(hyp) {
 			break;
 		case '送邮轮':
 			texiao1();
+            break;
+        case '点个赞'
+            zan(count);
 			break;
 		default:
 			break;
