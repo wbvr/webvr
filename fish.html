@@ -236,7 +236,7 @@
 
         var is_play = false;
         menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
-            texiao2(this.position.x,this.position.y,this.position.z+1);
+            zan(10);
         });
         menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
             if (!is_play ){
@@ -387,6 +387,9 @@ function updateHyp(hyp) {
 		case '送邮轮':
 			texiao1();
 			break;
+        case '点个赞':
+            zan(10);
+            break;
 		default:
 			break;
 	}
@@ -405,7 +408,7 @@ function updateStatus(newStatus) {
 
 // Callback function once the user authorises access to the microphone
 // in it, we instanciate the recorder
-function startUserMedia(stream) { 
+function startUserMedia(stream) {
 	var input = audioContext.createMediaStreamSource(stream);
 	// Firefox hack https://support.mozilla.org/en-US/questions/984179
 	window.firefox_audio_hack = input;
