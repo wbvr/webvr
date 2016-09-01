@@ -235,8 +235,13 @@
 	    menu = new THREE.VrMenu();
 
         var is_play = false;
+        var is_zan = false;
         menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
-            zan(10);
+            if (!is_zan ){
+                is_zan = true;
+                zan(10);
+                setTimeout(function(){is_zan = false},300*10);
+            }
         });
         menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
             if (!is_play ){
