@@ -307,7 +307,7 @@ function load_normal_video() {
 function load_vr_video() {
     //预加载vr视频
     vr_video = document.createElement( 'video' );
-    vr_video.muted = true;
+    //vr_video.muted = true;
     vr_video.src = 'static/video/zp.mp4';
     vr_video.setAttribute('crossorigin', 'anonymous');
     vr_video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
