@@ -189,7 +189,7 @@ function texiao3() {
             }
             requestAnimationFrame(up);
         } else {
-            for (var i=-180;i < 180; i+=60){
+            for (var i=-180;i < 180; i+=90){
                 scene.remove(efs[i]);
             }
 
