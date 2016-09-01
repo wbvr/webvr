@@ -122,7 +122,6 @@ function texiao3() {
     var h = 0;
     var th = dp * Math.PI /180;
     var dh = 0.5 + 1.5 * Math.random();
-    var dz1 = 100 + 900 * Math.random();
     var rd = 10 + 100 * Math.random();
     var drd = 0.1 + 0.2 * Math.random();
     var f = (Math.random() > 0.5) ? 1: -1;
@@ -138,8 +137,8 @@ function texiao3() {
 
     dx=rd * Math.sin(th);
     dy=h;
-    dz=(rd * Math.cos(th))/dz1 ;
-    for (var i=-180;i < 180; i+=60){
+    dz=(rd * Math.cos(th));
+    for (var i=-180;i < 180; i+=90){
         efs[i] = new THREE.Mesh( Geometry ,material);
         var th1 = i * Math.PI /180;
         bx=rd1 * Math.sin(th1);
@@ -166,8 +165,8 @@ function texiao3() {
 
                 dx=rd * Math.sin(th);
                 dy=h;
-                dz=(rd * Math.cos(th))/dz1 ;
-                for (var i=-180;i < 180; i+=60){
+                dz=(rd * Math.cos(th));
+                for (var i=-180;i < 180; i+=90){
                     var th1 = i * Math.PI /180;
                     bx=rd1 * Math.sin(th1);
                     by=y;
