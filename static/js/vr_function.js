@@ -375,27 +375,27 @@ function play_pa_effect() {
 }
 function vr_change() {
     if (status == 0) {
-        $('#left').hide();
+        $('.left').hide();
         if (pa_status == 1){
-            $('#l').hide();
-            $('#r').hide();
-            $('#c').show();
+            $('.l').hide();
+            $('.r').hide();
+            $('.c').show();
         } else {
-            $('#l').hide();
-            $('#r').hide();
-            $('#c').hide();
+            $('.l').hide();
+            $('.r').hide();
+            $('.c').hide();
         }
 
     } else {
-        $('#left').show();
+        $('.left').show();
         if (pa_status == 1){
-            $('#l').show();
-            $('#r').show();
-            $('#c').hide();
+            $('.l').show();
+            $('.r').show();
+            $('.c').hide();
         } else {
-            $('#l').hide();
-            $('#r').hide();
-            $('#c').hide();
+            $('.l').hide();
+            $('.r').hide();
+            $('.c').hide();
         }
     }
     setTimeout(vr_change, 100)
