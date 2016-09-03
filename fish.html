@@ -322,7 +322,7 @@
         var eulerZYX = hc.getEulerZYX();
         var x = eulerZYX.x/Math.PI*180;
         var is_follow = true;
-        if ((x > 90 && x > 90 < 160) || (x > -90 && x > 90 < -20)) {
+        if ((x > 90 && x  < 160) || (x > -90 && x  < -20)) {
             is_follow = false;
         }
 
