@@ -55,7 +55,7 @@ function texiao1() {
         scene.add(efs[i]);
     }
     setTimeout(function(){
-        for (var i=-180;i < 180; i+=10){
+        for (var i=-180;i < 180; i+=30){
             scene.remove(efs[i]);
         }
     },2000);

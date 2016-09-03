@@ -46,6 +46,7 @@
 <script src="static/js/vr_menu.js"></script>
 <!-- 图形 -->
 <script src="static/js/Geometry.js"></script>
+<script src="static/js/HControl.js"></script>
 
 <script type="text/javascript">
     /**
@@ -177,6 +178,8 @@
     var controls, effect;
     var eye_contrler;
     var menu;
+    var hc = new HControl();     //头势控制&&菜单随动
+    var thing;
 
     init();
     animate();
@@ -287,6 +290,18 @@
         }
 
 
+        var texture = new THREE.TextureLoader().load( 'static/img/7.png' );
+        var material = new THREE.MeshBasicMaterial( {
+            map: texture,
+            transparent: true
+        } );
+
+        var curtainGeometry = new THREE.PlaneGeometry( 50, 50 );
+        thing = new THREE.Mesh( curtainGeometry ,material);
+        thing.position.set(0, -200, -300);
+        scene.add(thing);
+        hc.open();
+        requestAnimationFrame( follow );
         //
 
         window.addEventListener( 'resize', onWindowResize, false );
@@ -301,6 +316,25 @@
         effect.setSize( window.innerWidth, window.innerHeight );
 
     }
+
+    function follow() {
+        requestAnimationFrame( follow );
+        var eulerZYX = hc.getEulerZYX();
+        var x = eulerZYX.x/Math.PI*180;
+        var is_follow = true;
+        if ((x > 90 && x > 90 < 160) || (x > -90 && x > 90 < -20)) {
+            is_follow = false;
+        }
+
+        if (is_follow) {
+            var eulerYXZ = hc.getEulerYXZ();
+            var th = eulerYXZ.y;
+            thing.position.set(-300 * Math.sin(th), -200, -300 * Math.cos(th));
+            thing.rotation.set(0,th,0);
+        }
+
+    }
+
     function changeVideo(src) {
         var tmpVideo = document.createElement( 'video' );
         tmpVideo.src = 'static/video/vr_video.webm';
