@@ -301,6 +301,30 @@
         effect.setSize( window.innerWidth, window.innerHeight );
 
     }
+    function changeVideo(src) {
+        var tmpVideo = document.createElement( 'video' );
+        tmpVideo.src = 'static/video/vr_video.webm';
+        tmpVideo.setAttribute('crossorigin', 'anonymous');
+        tmpVideo.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+        tmpVideo.load();
+        tmpVideo.play();
+
+
+        var tmpTexture = new THREE.VideoTexture( tmpVideo );
+        tmpTexture.minFilter = THREE.NearestFilter;
+        tmpTexture.maxFilter = THREE.NearestFilter;
+        tmpTexture.format = THREE.RGBFormat;
+        tmpTexture.generateMipmaps = false;
+
+        var tmpGeometry = new THREE.SphereBufferGeometry( 400, 60, 40 ).toNonIndexed();
+        tmpGeometry.scale( - 1, 1, 1 );
+        var tmpMaterial = new THREE.MeshBasicMaterial( { map: tmpTexture } );
+        var tmpMesh = new THREE.Mesh( get_geometry(), tmpMaterial );
+        scene.add( tmpMesh );
+        setTimeout(function(){
+            scene.remove( tmpMesh );
+        },3000);
+    }
 
     function animate() {
 
