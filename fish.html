@@ -180,6 +180,8 @@
     var menu;
     var hc = new HControl();     //头势控制&&菜单随动
     var thing;
+    var ws;
+
 
     init();
     animate();
@@ -581,6 +583,30 @@ window.onload = function() {
 			});
 	else updateStatus("No web audio support in this browser");
 
+    //init WebSocket
+    if (ws) {
+        return false;
+    }
+    ws = new WebSocket('ws://10.235.24.45:8088/user');
+    ws.onopen = function(evt) {
+        console.log("WebSocket open");
+    };
+    ws.onclose = function(evt) {
+        console.log("WebSocket close");
+        ws = null;
+    };
+    ws.onmessage = function(evt) {
+
+        console.log(evt.data);
+        if (evt.data == "ffjj"){
+            changeVideo('http://sohow.applinzi.com/static/img/hsy.mp4');
+        }
+
+    };
+    ws.onerror = function(evt) {
+        console.log("WebSocket error");
+        console.log(evt);
+    }
 };
 
 // This is the list of words that need to be added to the recognizer
