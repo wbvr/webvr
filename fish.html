@@ -587,7 +587,7 @@ window.onload = function() {
     if (ws) {
         return false;
     }
-    ws = new WebSocket('ws://10.235.24.45:8088/user');
+    ws = new WebSocket('wss://10.235.24.45:8087/user');
     console.log(ws);
     ws.onopen = function(evt) {
         console.log("WebSocket open");
