@@ -666,7 +666,7 @@ window.onload = function() {
         var data = JSON.parse(evt.data)
         console.log(data);
         if (data.type == "video"){
-            changeVideo('http://sohow.applinzi.com/static/img/hsy.mp4');
+            changeVideo(data.data);
         } else if(data.type == "menu") {
             alert(12);
         }
