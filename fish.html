@@ -309,8 +309,29 @@
         effect.setSize( window.innerWidth, window.innerHeight );
 
     }
+    var box;
+    function addBox() {
+        var curtainGeometry = new THREE.PlaneGeometry( 200, 100 );
+        var curtain = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
+            color: 0xffffff
+        }));
+        curtain.position.set(0,50,-300);
+        scene.add(curtain);
+        box = new THREE.VrMenu();
+        box.menu_position.set(0, -50, -300);
+        box.option_margin_x = 100;
+        box.add_option(scene, eye_contrler, 'static/img/box.jpg', function (obj) {
+            console.log(1);
+            //ws.send(input.value);
+        });
+        box.add_option(scene, eye_contrler, 'static/img/box.jpg', function (obj) {
+            console.log(1);
+            //ws.send(input.value);
+        });
+        box.show(scene,eye_contrler);
+    }
 
-    function changeVideo(src,time) {
+    function changeVideo(src) {
         var video_status = 0;
         var tmpMesh;
         var tmpVideo = document.createElement( 'video' );
@@ -324,11 +345,11 @@
                 video_status = 1;
                 var light_status = 0;
                 function black(color){
-                    color = (color - 2) /255;console.log(111);
+                    color = (color - 2) /255;
                     ambientLight.color.setRGB(color,color,color);
                 }
                 function light(color) {
-                    color = (color + 2) /255;console.log(222);
+                    color = (color + 2) /255;
                     ambientLight.color.setRGB(color,color,color);
                 }
                 function showVideo() {
@@ -354,6 +375,9 @@
                 function delVideo() {
                     scene.remove( tmpMesh );
                 }
+                tmpVideo.addEventListener('ended',function(){
+                    preDelVideo();
+                });
                 var handler = function(){
                     var color = ambientLight.color.r * 255;
                     if (light_status == 0) {
@@ -372,7 +396,6 @@
                             requestAnimationFrame(handler);
                         } else {
                             ambientLight.color.set(0xffffff);
-                            setTimeout(preDelVideo,time);
                             light_status++;
                         }
                     } else if (light_status == 3) {
