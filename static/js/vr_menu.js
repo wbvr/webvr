@@ -219,9 +219,7 @@
             var eulerZYX = hc.getEulerZYX();
             var x = eulerZYX.x/Math.PI*180;
             var is_follow = true;
-            console.log(x);
-            //if ((x > 90 && x  < 160) || (x > -90 && x  < -20)) {
-            if (x > -60 && x < -30) {
+            if ((x > 90 && x  < 160) || (x > -90 && x  < -20)) {
                 is_follow = false;
             }
 
@@ -229,16 +227,15 @@
                 var eulerYXZ = hc.getEulerYXZ();
                 var y = eulerZYX.y/Math.PI*180;
                 var th = eulerYXZ.y;
-                console.log("Y: "+y);
                 var e;
                 var half = (this.options.length - 1) * this.option_margin_x / 2;
+                var px = this.menu_position.z * Math.sin(th),
+                    py = this.options[0].position.y,
+                    pz = this.menu_position.z * Math.cos(th);
                 for (var i = 0; i < this.options.length; i++) {
                     var c = half - i*this.option_margin_x;
-                    //var radius = -1*Math.sqrt(Math.pow(i * this.option_margin_x - half,2)+Math.pow(this.menu_position.z,2));
                     e = this.options[i];
-                    //e.position.set(Math.abs(e.position.z) * Math.sin(th), e.position.y, -1*Math.abs(e.position.z) * Math.cos(th));
-                    e.position.set(this.menu_position.z * Math.sin(th) - c*Math.cos(th), e.position.y, this.menu_position.z * Math.cos(th));
-                    console.log(e.position);
+                    e.position.set(px + c*Math.cos(th), py,pz - c*Math.sin(th));
                     e.rotation.set(0,th,0);
                 }
             }

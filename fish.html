@@ -298,12 +298,7 @@
             transparent: true
         } );
 
-        var curtainGeometry = new THREE.PlaneGeometry( 50, 50 );
-        thing = new THREE.Mesh( curtainGeometry ,material);
-        thing.position.set(0, -200, -300);
-        scene.add(thing);
         hc.open();
-        requestAnimationFrame( follow );
         //
 
         window.addEventListener( 'resize', onWindowResize, false );
@@ -316,24 +311,6 @@
         camera.updateProjectionMatrix();
 
         effect.setSize( window.innerWidth, window.innerHeight );
-
-    }
-
-    function follow() {
-        requestAnimationFrame( follow );
-        var eulerZYX = hc.getEulerZYX();
-        var x = eulerZYX.x/Math.PI*180;
-        var is_follow = true;
-        if ((x > 90 && x  < 160) || (x > -90 && x  < -20)) {
-            is_follow = false;
-        }
-
-        if (is_follow) {
-            var eulerYXZ = hc.getEulerYXZ();
-            var th = eulerYXZ.y;
-            thing.position.set(-300 * Math.sin(th), -200, -300 * Math.cos(th));
-            thing.rotation.set(0,th,0);
-        }
 
     }
 
@@ -372,6 +349,7 @@
     function render() {
 
         controls.update();
+        menu.update(hc);
         eye_contrler.update();
         effect.render( scene, camera );
 
