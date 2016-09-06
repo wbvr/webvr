@@ -240,7 +240,27 @@
                 }
             }
         },
-
+        updatePosition: function(hc) {
+            var eulerZYX = hc.getEulerZYX();
+            var x = eulerZYX.x/Math.PI*180;
+            var is_follow = true;
+            if (is_follow) {
+                var eulerYXZ = hc.getEulerYXZ();
+                var y = eulerZYX.y/Math.PI*180;
+                var th = eulerYXZ.y;
+                var e;
+                var half = (this.options.length - 1) * this.option_margin_x / 2;
+                var px = this.menu_position.z * Math.sin(th),
+                    py = this.options[0].position.y,
+                    pz = this.menu_position.z * Math.cos(th);
+                for (var i = 0; i < this.options.length; i++) {
+                    var c = half - i*this.option_margin_x;
+                    e = this.options[i];
+                    e.position.set(px - c*Math.cos(th), py,pz + c*Math.sin(th));
+                    e.rotation.set(0,th,0);
+                }
+            }
+        },
         remove_option: function (scene, eye_contrler, option) {
             var index = this.options.indexOf(option);
             if (index != -1) {

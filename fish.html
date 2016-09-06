@@ -337,36 +337,6 @@
             }
 
         }
-        if (data.title != ""){
-            var textMaterial = new THREE.MultiMaterial( [
-                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
-                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
-            ] );
-            var textGeo = new THREE.TextGeometry( "123324", {
-                font: font,
-                size: 50,
-                height: 20,
-                curveSegments: 4,
-                bevelThickness: 2,
-                bevelSize: 1.5,
-                bevelEnabled: true,
-                material: 0,
-                extrudeMaterial: 1
-            });
-            textGeo.computeBoundingBox();
-            textGeo.computeVertexNormals();
-            var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
-
-            textMesh = new THREE.Mesh( textGeo, textMaterial );
-            textMesh.position.x = centerOffset;
-            textMesh.position.y = 0;
-            textMesh.position.z = -299;
-            textMesh.rotation.x = 0;
-            textMesh.rotation.y = Math.PI * 2;
-
-            scene.add(textMesh);
-        }
-
 
         box = new THREE.VrMenu();
         box.menu_position.set(0, -50, -300);
@@ -375,12 +345,13 @@
             var ms = data.items[i];
             box.add_option(scene, eye_contrler, 'static/img/box.jpg', function (obj) {
                 console.log(ms);
-                ws.send(ms);
+                //ws.send(ms);
                 remove();
             });
         }
         box.show(scene,eye_contrler);
 
+        box.updatePosition(hc);
 
         for(i=0; i<data.items.length; i++){
             var item = data.items[i];
@@ -409,9 +380,58 @@
             textMeshs[i].position.y = op.position.y -50;
             textMeshs[i].position.z = op.position.z;
             textMeshs[i].rotation.x = op.rotation.x;
-            textMeshs[i].rotation.y = Math.PI * 2;
+            textMeshs[i].rotation.y = op.rotation.y;
+            textMeshs[i].rotation.z = op.rotation.z;
             scene.add(textMeshs[i]);
         }
+
+
+        if (data.title != ""){
+            var l = box.options.length;
+            var p, r,index;
+            if ((l%2)==0) {
+                index = l/2;
+                p = {
+                    x:(box.options[index].position.x + box.options[index-1].position.x)/2,
+                    y:(box.options[index].position.y + box.options[index-1].position.y)/2,
+                    z:(box.options[index].position.z + box.options[index-1].position.z)/2
+                };
+                r = box.options[index].rotation;
+            } else {
+                index = (l-1)/2;
+                p = box.options[index].position;
+                r = box.options[index].rotation;
+            }
+            var textMaterial = new THREE.MultiMaterial( [
+                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
+                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
+            ] );
+            var textGeo = new THREE.TextGeometry( data.title, {
+                font: font,
+                size: 50,
+                height: 20,
+                curveSegments: 4,
+                bevelThickness: 2,
+                bevelSize: 1.5,
+                bevelEnabled: true,
+                material: 0,
+                extrudeMaterial: 1
+            });
+            textGeo.computeBoundingBox();
+            textGeo.computeVertexNormals();
+            var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+            textMesh = new THREE.Mesh( textGeo, textMaterial );
+            textMesh.position.x = centerOffset + p.x;
+            textMesh.position.y = p.y+50;
+            textMesh.position.z = p.z;
+            textMesh.rotation.x = r.x;
+            textMesh.rotation.y = r.y;
+            textMesh.rotation.z = r.z;
+
+            scene.add(textMesh);
+        }
+
     }
 
     function changeVideo(src) {
