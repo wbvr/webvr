@@ -181,7 +181,7 @@
     var eye_contrler;
     var menu;
     var hc = new HControl();     //头势控制&&菜单随动
-
+    var ambientLight
     init();
     animate();
 
@@ -222,7 +222,7 @@
         texture.format = THREE.RGBFormat;
         texture.generateMipmaps = false;
 
-        material = new THREE.MeshBasicMaterial( { map: texture } );
+        material = new THREE.MeshLambertMaterial( { map: texture } );
         var mesh = new THREE.Mesh( get_geometry(), material );
         scene.add( mesh );
     }
@@ -285,6 +285,10 @@
         hc.open();
         //follow();
         //
+
+        ambientLight = new THREE.AmbientLight( 0xffffff );
+        scene.add( ambientLight );
+
 
         window.addEventListener( 'resize', onWindowResize, false );
 
