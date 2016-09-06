@@ -182,7 +182,11 @@
     var thing;
     var ws;
     var ambientLight;
-
+    var font;
+    var loader = new THREE.FontLoader();
+    loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
+        font = response;
+    } );
 
     init();
     animate();
@@ -309,26 +313,97 @@
         effect.setSize( window.innerWidth, window.innerHeight );
 
     }
-    var box;
-    function addBox() {
-        var curtainGeometry = new THREE.PlaneGeometry( 200, 100 );
-        var curtain = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
-            color: 0xffffff
-        }));
-        curtain.position.set(0,50,-300);
-        scene.add(curtain);
+
+    function addBox(data) {
+        var box;
+        var textMeshs = [];
+        var textMesh;
+        function remove() {
+            scene.remove(textMesh);
+            for(var i=0; i<textMeshs.length;i++){
+                scene.remove(textMeshs[i]);
+            }
+            for(i=0; i<box.options.length;i++){
+                box.remove_option(scene, eye_contrler,box.options[i]);
+                scene.remove(textMeshs[i]);
+            }
+
+        }
+        if (data.title != ""){
+            var textMaterial = new THREE.MultiMaterial( [
+                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
+                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
+            ] );
+            var textGeo = new THREE.TextGeometry( "123324", {
+                font: font,
+                size: 50,
+                height: 20,
+                curveSegments: 4,
+                bevelThickness: 2,
+                bevelSize: 1.5,
+                bevelEnabled: true,
+                material: 0,
+                extrudeMaterial: 1
+            });
+            textGeo.computeBoundingBox();
+            textGeo.computeVertexNormals();
+            var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+            textMesh = new THREE.Mesh( textGeo, textMaterial );
+            textMesh.position.x = centerOffset;
+            textMesh.position.y = 0;
+            textMesh.position.z = -299;
+            textMesh.rotation.x = 0;
+            textMesh.rotation.y = Math.PI * 2;
+
+            scene.add(textMesh);
+        }
+
+
         box = new THREE.VrMenu();
         box.menu_position.set(0, -50, -300);
         box.option_margin_x = 100;
-        box.add_option(scene, eye_contrler, 'static/img/box.jpg', function (obj) {
-            console.log(1);
-            //ws.send(input.value);
-        });
-        box.add_option(scene, eye_contrler, 'static/img/box.jpg', function (obj) {
-            console.log(1);
-            //ws.send(input.value);
-        });
+        for(var i=0;i<data.items.length;i++){
+            var ms = data.items[i];
+            box.add_option(scene, eye_contrler, 'static/img/box.jpg', function (obj) {
+                console.log(item);
+                //ws.send(input.value);
+                remove();
+            });
+        }
         box.show(scene,eye_contrler);
+
+
+        for(i=0; i<data.items.length; i++){
+            var item = data.items[i];
+            var op = box.options[i];
+            textMaterial = new THREE.MultiMaterial( [
+                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
+                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
+            ] );
+            textGeo = new THREE.TextGeometry( item, {
+                font: font,
+                size: 20,
+                height: 10,
+                curveSegments: 4,
+                bevelThickness: 2,
+                bevelSize: 1.5,
+                bevelEnabled: true,
+                material: 0,
+                extrudeMaterial: 1
+            });
+            textGeo.computeBoundingBox();
+            textGeo.computeVertexNormals();
+            centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+            textMeshs[i] = new THREE.Mesh( textGeo, textMaterial );
+            textMeshs[i].position.x = centerOffset + op.position.x;
+            textMeshs[i].position.y = op.position.y -50;
+            textMeshs[i].position.z = op.position.z;
+            textMeshs[i].rotation.x = op.rotation.x;
+            textMeshs[i].rotation.y = Math.PI * 2;
+            scene.add(textMeshs[i]);
+        }
     }
 
     function changeVideo(src) {
@@ -668,7 +743,7 @@ window.onload = function() {
         if (data.type == "video"){
             changeVideo(data.data);
         } else if(data.type == "menu") {
-            alert(12);
+            addBox(data.data);
         }
 
     };

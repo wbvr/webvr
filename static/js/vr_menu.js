@@ -245,7 +245,7 @@
             var index = this.options.indexOf(option);
             if (index != -1) {
                 this.options.splice(index, 1);
-                scene.remove();
+                scene.remove(option);
                 if (typeof option.eye_callback != "undefined") {
                     eye_contrler.unbind(option);
                 }
