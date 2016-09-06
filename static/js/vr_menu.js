@@ -235,7 +235,7 @@
                 for (var i = 0; i < this.options.length; i++) {
                     var c = half - i*this.option_margin_x;
                     e = this.options[i];
-                    e.position.set(px + c*Math.cos(th), py,pz - c*Math.sin(th));
+                    e.position.set(px - c*Math.cos(th), py,pz + c*Math.sin(th));
                     e.rotation.set(0,th,0);
                 }
             }
