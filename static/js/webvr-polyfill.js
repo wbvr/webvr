@@ -1137,6 +1137,12 @@ VRDisplay.prototype.wrapForFullscreen = function(element) {
           this.fullscreenWrapper_.appendChild(eye_contrler.show_spote_l());
           this.fullscreenWrapper_.appendChild(eye_contrler.show_spote_r());
       }
+      if (typeof show_icon != "undefined") {
+          this.fullscreenWrapper_.appendChild($('.left')[0]);
+          this.fullscreenWrapper_.appendChild($('.right')[0]);
+          this.fullscreenWrapper_.appendChild($('.l')[0]);
+          this.fullscreenWrapper_.appendChild($('.r')[0]);
+      }
   }
 
   if (this.fullscreenElement_ == element) {

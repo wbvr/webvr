@@ -46,6 +46,7 @@
 <script src="static/js/vr_menu.js"></script>
 <!-- 图形 -->
 <script src="static/js/Geometry.js"></script>
+<script src="static/js/HControl.js"></script>
 
 <script type="text/javascript">
     /**
@@ -177,6 +178,10 @@
     var controls, effect;
     var eye_contrler;
     var menu;
+    var hc = new HControl();     //头势控制&&菜单随动
+    var thing;
+    var ws;
+
 
     init();
     animate();
@@ -209,8 +214,8 @@
         //video.src = 'http://58.135.196.138:8090/live/789E9CE292A040d2A459CF55D2FB362E/789E9CE292A040d2A459CF55D2FB362E.m3u8';
         //video.src = 'http://hls.yy.com/live/54880976_54880976.m3u8?id=yyent&uid=0d268e721bafa16011ed420182ecd1d81472019973&appid=15012&uuid=1A3512763E4046869071355677D1FD4A';
         //video.src = 'http://104.194.70.86/hls/vr.m3u8';
-        video.src = 'http://10.235.24.45/hls/test.m3u8';
-        //video.src = 'static/video/vr_video.webm';
+        //video.src = 'http://10.235.24.45/hls/test.m3u8';
+        video.src = 'static/video/zp.mp4';
         video.setAttribute('crossorigin', 'anonymous');
         //video.setAttribute( 'type', 'application/vnd.apple.mpegurl' );
         //video.setAttribute( 'type', 'application/x-mpegURL' );	//video/mp4
@@ -235,8 +240,13 @@
 	    menu = new THREE.VrMenu();
 
         var is_play = false;
+        var is_zan = false;
         menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
-            texiao2(this.position.x,this.position.y,this.position.z+1);
+            if (!is_zan ){
+                is_zan = true;
+                zan(10);
+                setTimeout(function(){is_zan = false},300*10);
+            }
         });
         menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
             if (!is_play ){
@@ -282,6 +292,18 @@
         }
 
 
+        var texture = new THREE.TextureLoader().load( 'static/img/7.png' );
+        var material = new THREE.MeshBasicMaterial( {
+            map: texture,
+            transparent: true
+        } );
+
+        var curtainGeometry = new THREE.PlaneGeometry( 50, 50 );
+        thing = new THREE.Mesh( curtainGeometry ,material);
+        thing.position.set(0, -200, -300);
+        scene.add(thing);
+        hc.open();
+        requestAnimationFrame( follow );
         //
 
         window.addEventListener( 'resize', onWindowResize, false );
@@ -295,6 +317,49 @@
 
         effect.setSize( window.innerWidth, window.innerHeight );
 
+    }
+
+    function follow() {
+        requestAnimationFrame( follow );
+        var eulerZYX = hc.getEulerZYX();
+        var x = eulerZYX.x/Math.PI*180;
+        var is_follow = true;
+        if ((x > 90 && x  < 160) || (x > -90 && x  < -20)) {
+            is_follow = false;
+        }
+
+        if (is_follow) {
+            var eulerYXZ = hc.getEulerYXZ();
+            var th = eulerYXZ.y;
+            thing.position.set(-300 * Math.sin(th), -200, -300 * Math.cos(th));
+            thing.rotation.set(0,th,0);
+        }
+
+    }
+
+    function changeVideo(src) {
+        var tmpVideo = document.createElement( 'video' );
+        tmpVideo.src = 'static/video/vr_video.webm';
+        tmpVideo.setAttribute('crossorigin', 'anonymous');
+        tmpVideo.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
+        tmpVideo.load();
+        tmpVideo.play();
+
+
+        var tmpTexture = new THREE.VideoTexture( tmpVideo );
+        tmpTexture.minFilter = THREE.NearestFilter;
+        tmpTexture.maxFilter = THREE.NearestFilter;
+        tmpTexture.format = THREE.RGBFormat;
+        tmpTexture.generateMipmaps = false;
+
+        var tmpGeometry = new THREE.SphereBufferGeometry( 400, 60, 40 ).toNonIndexed();
+        tmpGeometry.scale( - 1, 1, 1 );
+        var tmpMaterial = new THREE.MeshBasicMaterial( { map: tmpTexture } );
+        var tmpMesh = new THREE.Mesh( get_geometry(), tmpMaterial );
+        scene.add( tmpMesh );
+        setTimeout(function(){
+            scene.remove( tmpMesh );
+        },3000);
     }
 
     function animate() {
@@ -382,11 +447,14 @@ function spawnWorker(workerURL, onReady) {
 function updateHyp(hyp) {
 	switch(hyp){
 		case '送鲜花':
-			texiao();
-			break;
-		case '送邮轮':
 			texiao1();
 			break;
+		case '送邮轮':
+			texiao();
+            break;
+        case '点个赞':
+            zan(10);
+            break;
 		default:
 			break;
 	}
@@ -405,7 +473,7 @@ function updateStatus(newStatus) {
 
 // Callback function once the user authorises access to the microphone
 // in it, we instanciate the recorder
-function startUserMedia(stream) { 
+function startUserMedia(stream) {
 	var input = audioContext.createMediaStreamSource(stream);
 	// Firefox hack https://support.mozilla.org/en-US/questions/984179
 	window.firefox_audio_hack = input;
@@ -516,6 +584,31 @@ window.onload = function() {
 			});
 	else updateStatus("No web audio support in this browser");
 
+    //init WebSocket
+    if (ws) {
+        return false;
+    }
+    ws = new WebSocket('wss://10.235.24.45:8087/user');
+    console.log(ws);
+    ws.onopen = function(evt) {
+        console.log("WebSocket open");
+    };
+    ws.onclose = function(evt) {
+        console.log("WebSocket close");
+        ws = null;
+    };
+    ws.onmessage = function(evt) {
+
+        console.log(evt.data);
+        if (evt.data == "ffjj"){
+            changeVideo('http://sohow.applinzi.com/static/img/hsy.mp4');
+        }
+
+    };
+    ws.onerror = function(evt) {
+        console.log("WebSocket error");
+        console.log(evt);
+    }
 };
 
 // This is the list of words that need to be added to the recognizer
