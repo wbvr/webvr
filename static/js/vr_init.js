@@ -45,32 +45,55 @@ init_webvr();
 function init_webvr() {
     set_webvr();                            //初始化,加载场景,设置默认配置等
     play_vr_video();                        //播放VR视频
-    setTimeout(init_screen,5000);
+    setTimeout(init_screen,1000);
 }
 
 function init_screen() {
-    var is_countdown = true;
-    container = document.getElementById( 'container' );
-    container.addEventListener( 'click', function () {
-        if (is_countdown) {
-            vr_video.play();
-            countdown(function(){
-                add_curtain();
-                HControlBegin(function(){
-                    init_nod();
-                    play_pa_effect();
+    if (/iPad|iPhone|iPod/.test(navigator.platform)) {
+        var is_countdown = true;
+        container = document.getElementById( 'container' );
+        container.addEventListener( 'click', function () {
+            if (is_countdown) {
+                vr_video.play();
+                countdown(function(){
+                    add_curtain();
+                    HControlBegin(function(){
+                        init_nod();
+                        play_pa_effect();
+                    });
+                    vr_video.addEventListener('ended',function(){
+                        vr_video.pause();
+                        init_backward();
+                    });
                 });
-                vr_video.addEventListener('ended',function(){
-                    vr_video.pause();
-                    init_backward();
+                is_countdown= false;
+            }
+
+        });
+    } else {
+
+        vr_video.play();
+        function update() {
+            if (vr_video.readyState >= vr_video.HAVE_CURRENT_DATA) {
+                countdown(function () {
+                    add_curtain();
+                    HControlBegin(function () {
+                        init_nod();
+                        play_pa_effect();
+                    });
+                    vr_video.addEventListener('ended', function () {
+                        vr_video.pause();
+                        init_backward();
+                    });
                 });
-            });
-            is_countdown= false;
+
+            } else {
+                requestAnimationFrame(update);
+            }
+
         }
-
-    });
-
-    //add_normal_video_end_listener(init_backward);
+        update();
+    }
 }
 
 function init_nod() {

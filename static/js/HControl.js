@@ -207,3 +207,20 @@ HControl.prototype.closeRock = function(){
         this.close();
     }
 };
+HControl.prototype.getEulerXYZ = function(){
+    var e = new THREE.Euler();
+    e.setFromQuaternion(this.pre);
+    return e;
+};
+
+HControl.prototype.getEulerYXZ = function(){
+    var e = new THREE.Euler();
+    e.setFromQuaternion(this.pre, "YXZ");
+    return e;
+};
+
+HControl.prototype.getEulerZYX = function(){
+    var e = new THREE.Euler();
+    e.setFromQuaternion(this.pre, "ZYX");
+    return e;
+};

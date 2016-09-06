@@ -17,20 +17,20 @@
     <div id="container">
         <canvas id="canvas"></canvas>
     </div>
-    <div style="position: fixed;bottom: auto;top: 10%;right:10%;width: 5%">
+    <div class="right" style="position: fixed;bottom: auto;top: 10%;right:10%;width: 5%">
         <img src="static/img/weibo.png" style="width: 100%">
     </div>
-    <div id="left" style="position: fixed;bottom: auto;top: 10%;right:60%;width: 5%;display:none">
+    <div class="left" style="position: fixed;bottom: auto;top: 10%;right:60%;width: 5%;display:none">
         <img src="static/img/weibo.png" style="width: 100%">
     </div>
 
-    <div id="c" style="position: fixed;bottom: auto;top: 20%;right:20%;width: 60%;display: none" >
+    <div class="c" style="position: fixed;bottom: auto;top: 20%;right:20%;width: 60%;display: none" >
         <img src="static/img/pa.gif" style="width: 100%">
     </div>
-    <div id="l" style="position: fixed;bottom: auto;top: 30%;right:5%;width: 40%;display: none" >
+    <div class="l" style="position: fixed;bottom: auto;top: 30%;right:5%;width: 40%;display: none" >
         <img src="static/img/pa.gif" style="width: 100%">
     </div>
-    <div id="r" style="position: fixed;bottom: auto;top: 30%;right:55%;width: 40%;display: none" >
+    <div class="r" style="position: fixed;bottom: auto;top: 30%;right:55%;width: 40%;display: none" >
         <img src="static/img/pa.gif" style="width: 100%">
     </div>
 
@@ -55,6 +55,7 @@
     document.addEventListener('touchmove', function(e) {
         e.preventDefault();
     });
+    var show_icon = true;
 </script>
 
 <!-- three.js library -->

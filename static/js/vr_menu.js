@@ -14,7 +14,7 @@
             STATUS_HIDDEN: 2
         };
         this.status = this.STATUS.STATUS_SHOW;
-        
+
         this.move_speed = 5;
 
         this.cursor_up = null;
@@ -25,8 +25,8 @@
         this.cursor_size = 15;
 
         this.rotate_index = 1;
-        
-        this.menu_position = new THREE.Vector3(0,-150,-200);
+
+        this.menu_position = new THREE.Vector3(0,-200,-300);
     };
 
     THREE.VrMenu.prototype = {
@@ -36,7 +36,7 @@
             this.show_as_plane(scene,eye_contrler);
         },
 
-        show_as_circle: function (scene,eye_contrler) {
+        show_as_circle: function (s,eye_contrler) {
             var angle = (this.options.length - 1) / 2 * this.option_margin_angle;
             var e;
             for (var i = 0; i < this.options.length; i++) {
@@ -44,7 +44,7 @@
                 console.log("angle: "+angle);
                 e.position.applyEuler(new THREE.Euler(0,angle,0, "XYZ"));
                 console.log("e.position: "+e.position);
-                scene.add(e);
+                s.add(e);
                 if (typeof e.eye_callback != "undefined") {
                     eye_contrler.bind(e, e.eye_callback);
                 }
@@ -52,7 +52,7 @@
             }
         },
 
-        show_as_plane: function (scene,eye_contrler) {
+        show_as_plane: function (s,eye_contrler) {
             var x = (this.options.length - 1) * this.option_margin_x / 2;
             x = this.menu_position.x - x;
             var e;
@@ -60,13 +60,13 @@
                 e = this.options[i];
                 e.position.x = x;
                 console.log("option "+(i+1)+" positon: ",e.position);
-                scene.add(e);
+                s.add(e);
                 if (typeof e.eye_callback != "undefined") {
                     eye_contrler.bind(e, e.eye_callback);
                 }
                 x += this.option_margin_x;
             }
-            this.show_cursor(scene,eye_contrler);
+            //this.show_cursor(scene,eye_contrler);
         },
 
         hide: function (scene,eye_contrler) {
@@ -88,7 +88,16 @@
                 console.log(e.position);
             }
         },
-        
+
+        move: function (x,y,z) {
+            for (var i = 0; i < this.options.length; i++) {
+                e = this.options[i];
+                e.position.x += x;
+                e.position.y += y;
+            }
+            e.position.z = z;
+        },
+
         onmenu_up: function (obj) {
             obj.callback_param.move_cursor(obj.callback_param,0,obj.callback_param.move_speed);
             obj.callback_param.move_menu(0,obj.callback_param.move_speed);
@@ -122,7 +131,7 @@
             _this.cursor_right.position.x += x;
             _this.cursor_right.position.y += y;
         },
-        
+
         show_cursor: function (scene,eye_contrler) {
             console.log("enter show_cursor()");
             var triangle = new THREE.triangleGeometry(this.cursor_size);
@@ -193,7 +202,7 @@
                 //opacity: 0.9
             }));
 
-            //option.position.x = this.menu_position.x + this.options.length * (this.option_width + this.option_margin);
+            option.position.x = this.menu_position.x + this.options.length * (this.option_width + this.option_margin);
             option.position.x = this.menu_position.x;
             option.position.y = this.menu_position.y;
             option.position.z = this.menu_position.z;
@@ -204,6 +213,35 @@
             }
             this.options.push(option);
             return option;
+        },
+
+        update: function(hc) {
+            var eulerZYX = hc.getEulerZYX();
+            var x = eulerZYX.x/Math.PI*180;
+            var is_follow = true;
+            console.log(x);
+            //if ((x > 90 && x  < 160) || (x > -90 && x  < -20)) {
+            if (x > -60 && x < -30) {
+                is_follow = false;
+            }
+
+            if (is_follow) {
+                var eulerYXZ = hc.getEulerYXZ();
+                var y = eulerZYX.y/Math.PI*180;
+                var th = eulerYXZ.y;
+                console.log("Y: "+y);
+                var e;
+                var half = (this.options.length - 1) * this.option_margin_x / 2;
+                for (var i = 0; i < this.options.length; i++) {
+                    var c = half - i*this.option_margin_x;
+                    //var radius = -1*Math.sqrt(Math.pow(i * this.option_margin_x - half,2)+Math.pow(this.menu_position.z,2));
+                    e = this.options[i];
+                    //e.position.set(Math.abs(e.position.z) * Math.sin(th), e.position.y, -1*Math.abs(e.position.z) * Math.cos(th));
+                    e.position.set(this.menu_position.z * Math.sin(th) - c*Math.cos(th), e.position.y, this.menu_position.z * Math.cos(th));
+                    console.log(e.position);
+                    e.rotation.set(0,th,0);
+                }
+            }
         },
 
         remove_option: function (scene, eye_contrler, option) {
