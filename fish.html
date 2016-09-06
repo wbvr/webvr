@@ -320,10 +320,8 @@
         var textMesh;
         function remove() {
             scene.remove(textMesh);
-            for(var i=0; i<textMeshs.length;i++){
-                scene.remove(textMeshs[i]);
-            }
-            for(i=0; i<box.options.length;i++){
+            var len = textMeshs.length;
+            for(i=0; i<len;i++){
                 box.remove_option(scene, eye_contrler,box.options[i]);
                 scene.remove(textMeshs[i]);
             }
