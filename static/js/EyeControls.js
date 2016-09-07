@@ -29,6 +29,7 @@
         this.spote_num = this.SPOTE_NUM;
         this.spote_speed = 300;
         this.show_spote();
+        this.op_status = 0;
 
         this.point = new THREE.Vector2(0, 0);
         this.raycaster = new THREE.Raycaster();
@@ -60,6 +61,7 @@
             console.log("hover_out");
             this.hover_status = this.HOVER_STATUS.STATUS_NOHOVE;
             this.init_spote();
+            this.op_status = 0;
         },
     
         unbind: function (object) {
@@ -199,7 +201,10 @@
             } else {
                 if (this.spote_num == 0) {
                     console.log("EyeControls callbak");
-                    this.last_hover_obj.eye_callback(this.last_hover_obj);
+                    if(this.op_status != 1){
+                        this.op_status = 1;
+                        this.last_hover_obj.eye_callback(this.last_hover_obj);
+                    }
                 }
                 this.init_spote();
             }
