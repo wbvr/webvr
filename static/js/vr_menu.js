@@ -7,7 +7,7 @@
         this.option_width = 50;
         this.option_height = 50;
         this.option_margin_angle = Math.PI/6;
-        this.option_margin_x = 50;
+        this.option_margin_x = 100;
 
         this.STATUS = {
             STATUS_SHOW: 1,
@@ -26,7 +26,7 @@
 
         this.rotate_index = 1;
 
-        this.menu_position = new THREE.Vector3(0,-200,-300);
+        this.menu_position = new THREE.Vector3(0,-260,-340);
     };
 
     THREE.VrMenu.prototype = {
