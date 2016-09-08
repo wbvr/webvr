@@ -187,6 +187,7 @@
     loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
         font = response;
     } );
+    var voice_status = false;
 
     init();
     animate();
@@ -269,6 +270,10 @@
                 setTimeout(function(){is_play = false},1000)
             }
         });
+
+        menu.add_option(scene, eye_contrler, 'static/img/voice.jpg', function (obj) {
+            voice();
+        });
         menu.show(scene,eye_contrler);
 
         //
@@ -304,6 +309,42 @@
         //
 
         window.addEventListener( 'resize', onWindowResize, false );
+
+    }
+    var is_voice_change = false;
+    function voice() {
+        if (!is_voice_change){
+            is_voice_change = true;
+            setTimeout(function() {
+                is_voice_change = false;
+            },2000);
+            if (1){
+                voice_status = !voice_status;
+                var op = menu.options[3];
+                menu.remove_option(scene, eye_contrler, op);
+                if (voice_status){
+                    recognizer.postMessage({command: 'start'});
+                    menu.add_option(scene, eye_contrler, 'static/img/novoice.jpg', function (obj) {
+                        voice();
+                    });
+                } else {
+                    recognizer.postMessage({command: 'stop'});
+                    menu.add_option(scene, eye_contrler, 'static/img/voice.jpg', function (obj) {
+                        voice();
+                    });
+                }
+                menu.options[3].position.x = op.position.x;
+                menu.options[3].position.y = op.position.y;
+                menu.options[3].position.z = op.position.z;
+                menu.options[3].rotation.x = op.rotation.x;
+                menu.options[3].rotation.y = op.rotation.y;
+                menu.options[3].rotation.z = op.rotation.z;
+                menu.show(scene,eye_contrler);
+            }
+        }
+
+
+
 
     }
 
@@ -746,7 +787,8 @@ window.onload = function() {
     ws.onerror = function(evt) {
         console.log("WebSocket error");
         console.log(evt);
-    }
+    };
+
 };
 
 // This is the list of words that need to be added to the recognizer
