@@ -41,7 +41,7 @@ function animate() {
 
 function play_vr_video() {
 
-    //vr_video.play();
+    vr_video.play();
 
     texture = new THREE.VideoTexture( vr_video );
     texture.minFilter = THREE.NearestFilter;
