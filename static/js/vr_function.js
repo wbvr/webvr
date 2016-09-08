@@ -3,7 +3,7 @@
  */
 
 function set_webvr() {
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
+    camera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.layers.enable( 1 );
 
     fov = 60;   //默认视角
@@ -53,7 +53,7 @@ function play_vr_video() {
 
     // left
 
-    var geometry = new THREE.SphereGeometry( 500, 60, 40 );
+    var geometry = new THREE.SphereGeometry( 2000, 60, 40 );
     geometry.scale( - 1, 1, 1 );
 
     var material = new THREE.MeshBasicMaterial( { map: texture } );
@@ -65,7 +65,7 @@ function play_vr_video() {
 
     // right
 
-    geometry = new THREE.SphereGeometry( 500, 60, 40 );
+    geometry = new THREE.SphereGeometry( 2000, 60, 40 );
     geometry.scale( - 1, 1, 1 );
 
 
