@@ -257,6 +257,7 @@
         menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
 //            var data= {title:"123",items:["11","22","33"]}
 //            addBox(data);
+//            playAudio("http://lizhilei.cn/webvr/static/audio/th.wav");
             if (!is_play ){
                 is_play = true;
                 texiao1();
@@ -345,6 +346,15 @@
 
 
 
+
+    }
+    function playAudio(src) {
+        var audio = new Audio();
+        audio.src=src;
+        audio.play();
+        audio.addEventListener('ended',function(){
+            audio = null;
+        });
 
     }
 
