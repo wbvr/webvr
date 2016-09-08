@@ -254,6 +254,8 @@
             }
         });
         menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
+//            var data= {title:"123",items:["11","22","33"]}
+//            addBox(data);
             if (!is_play ){
                 is_play = true;
                 texiao1();
@@ -316,24 +318,21 @@
 
     function addBox(data) {
         var box;
-        var textMeshs = [];
         var textMesh;
         function remove() {
             if (data.title != ""){
                 scene.remove(textMesh);
             }
 
-            var len = textMeshs.length;
+            var len = box.options.length;
             for(var i=0; i<len;i++){
                 op = box.options[i];
                 box.remove_option(scene, eye_contrler, op);
-                scene.remove(textMeshs[i]);
             }
-            len = textMeshs.length;
+            len = box.options.length;
             for(i=0; i<len;i++){
                 op = box.options[i];
                 box.remove_option(scene, eye_contrler, op);
-                scene.remove(textMeshs[i]);
             }
 
         }
@@ -343,48 +342,17 @@
         box.option_margin_x = 100;
         for(var i=0;i<data.items.length;i++){
             var ms = data.items[i];
-            box.add_option(scene, eye_contrler, 'static/img/box.jpg', function (obj) {
+            box.add_text_option(scene, eye_contrler, ms, function (obj) {
                 console.log(ms);
-                //ws.send(ms);
+                if (ws != null) {
+                    ws.send(ms);
+                }
                 remove();
             });
         }
         box.show(scene,eye_contrler);
 
         box.updatePosition(hc);
-
-        for(i=0; i<data.items.length; i++){
-            var item = data.items[i];
-            var op = box.options[i];
-            textMaterial = new THREE.MultiMaterial( [
-                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
-                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
-            ] );
-            textGeo = new THREE.TextGeometry( item, {
-                font: font,
-                size: 20,
-                height: 10,
-                curveSegments: 4,
-                bevelThickness: 2,
-                bevelSize: 1.5,
-                bevelEnabled: true,
-                material: 0,
-                extrudeMaterial: 1
-            });
-            textGeo.computeBoundingBox();
-            textGeo.computeVertexNormals();
-            centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
-
-            textMeshs[i] = new THREE.Mesh( textGeo, textMaterial );
-            textMeshs[i].position.x = centerOffset + op.position.x;
-            textMeshs[i].position.y = op.position.y -50;
-            textMeshs[i].position.z = op.position.z;
-            textMeshs[i].rotation.x = op.rotation.x;
-            textMeshs[i].rotation.y = op.rotation.y;
-            textMeshs[i].rotation.z = op.rotation.z;
-            scene.add(textMeshs[i]);
-        }
-
 
         if (data.title != ""){
             var l = box.options.length;
