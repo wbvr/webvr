@@ -3,7 +3,7 @@
  */
 
 function set_webvr() {
-    camera = new THREE.PerspectiveCamera( 100, window.innerWidth / window.innerHeight, 1, 2000 );
+    camera = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.layers.enable( 1 );
 
     fov = 60;   //默认视角
