@@ -451,12 +451,18 @@
         for(var i=0;i<data.items.length;i++){
             var ms = data.items[i];
             box.add_text_option(scene, eye_contrler, ms, function (obj) {
-                console.log(ms);
+                console.log(obj.name);
                 if (ws != null || user !== false) {
-                    ws.send(ms);
+                    var msg = {
+                        type : 'box',
+                        data : obj.name,
+                        uid : user
+                    };
+                    ws.send(msg);
                 }
                 remove();
             });
+            box.options[i].name = ms;
         }
         box.show(scene,eye_contrler);
 
