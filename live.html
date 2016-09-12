@@ -368,14 +368,14 @@
                 y =  100,
                 z =  0,
                 pic = "static/img/9.png";
-//        if (typeof data != "undefined") {
-//            width =  data.width || 100;
-//            height =  data.height || 100;
-//            x =  data.x || 0;
-//            y =  data.y || 100;
-//            z =  data.z || -300;
-//            pic = data.pic || "static/img/9.png";
-//        }
+        if (typeof data != "undefined") {
+            width =  data.width || 100;
+            height =  data.height || 100;
+            x =  data.x || 0;
+            y =  data.y || 100;
+            z =  data.z || -300;
+            pic = data.pic || "static/img/9.png";
+        }
         var radiu =  Math.sqrt(x * x + z * z);
         var ths = Math.asin(x / radiu);
         var thc = Math.acos(-z / radiu);
@@ -417,6 +417,85 @@
     }
     function delItem() {
         item.remove_option(scene, eye_contrler, item.options[0]);
+    }
+    function head(data) {
+        var box;
+        var textMesh;
+
+        function clear(msg) {
+            console.log(msg);
+            if (ws != null || user !== false) {
+                var msgs = {
+                    type : 'head',
+                    data : msg,
+                    uid : user
+                };
+                msgs=JSON.stringify(msgs);
+                ws.send(msgs);
+            }
+            hc.closeNod();
+            hc.closeRock();
+            scene.remove(textMesh);
+        }
+
+        if (data.title != ""){
+            //开启头势
+            setTimeout(function(){
+                console.log('nod start');
+                hc.setNod(function(){
+                    var msg = "Nod";
+                    clear(msg);
+                });
+                hc.setShook(function(){
+                    var msg = "Shook";
+                    clear(msg);
+                });
+            },2000);
+            var p,r;
+            var eulerZYX = hc.getEulerZYX();
+            var eulerYXZ = hc.getEulerYXZ();
+            var th = eulerYXZ.y;
+            var e;
+            p = {
+                x:300 * Math.sin(th),
+                y:50,
+                z:-300 * Math.cos(th)
+            };
+            r = {
+                x:0,
+                y:-th,
+                z:0
+            };
+
+            var textMaterial = new THREE.MultiMaterial( [
+                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
+                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
+            ] );
+            var textGeo = new THREE.TextGeometry( data.title, {
+                font: font,
+                size: 50,
+                height: 20,
+                curveSegments: 4,
+                bevelThickness: 2,
+                bevelSize: 1.5,
+                bevelEnabled: true,
+                material: 0,
+                extrudeMaterial: 1
+            });
+            textGeo.computeBoundingBox();
+            textGeo.computeVertexNormals();
+            var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+            textMesh = new THREE.Mesh( textGeo, textMaterial );
+            textMesh.position.x = centerOffset + p.x;
+            textMesh.position.y = p.y+50;
+            textMesh.position.z = p.z;
+            textMesh.rotation.x = r.x;
+            textMesh.rotation.y = r.y;
+            textMesh.rotation.z = r.z;
+
+            scene.add(textMesh);
+        }
     }
 
     function onWindowResize() {
@@ -867,6 +946,8 @@ window.onload = function() {
             user = data.data;
         } else if(data.type == "delitem") {
             delItem(data);
+        }  else if(data.type == "headmenu") {
+            head(data.data);
         }
 
     };

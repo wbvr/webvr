@@ -14,6 +14,7 @@ window.addEventListener("load", function(evt) {
     var input7 = document.getElementById("input7");
     var input8 = document.getElementById("input8");
     var input9 = document.getElementById("input9");
+    var input10 = document.getElementById("input10");
     var ws;
 
     var print = function(message) {
@@ -112,6 +113,14 @@ window.addEventListener("load", function(evt) {
         ws.send(input9.value);
         return false;
     };
+    document.getElementById("head").onclick = function(evt) {
+        if (!ws) {
+            return false;
+        }
+        print("SEND: " + input10.value);
+        ws.send(input10.value);
+        return false;
+    };
 });
 </script>
 </head>
@@ -141,6 +150,8 @@ You can change the message and send multiple times.
 <button id="item2">item2</button>
 <p><input id="input9" type="text" value='{"type":"delitem"}'>
 <button id="delitem">delitem</button>
+<p><input id="input10" type="text" value='{"type":"headmenu","data":{"title":"nihao"}}'>
+<button id="head">delitem</button>
 </form>
 </td><td valign="top" width="50%">
 <div id="output"></div>
