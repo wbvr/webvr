@@ -13,6 +13,7 @@ window.addEventListener("load", function(evt) {
     var input6 = document.getElementById("input6");
     var input7 = document.getElementById("input7");
     var input8 = document.getElementById("input8");
+    var input9 = document.getElementById("input9");
     var ws;
 
     var print = function(message) {
@@ -103,6 +104,14 @@ window.addEventListener("load", function(evt) {
         ws.send(input8.value);
         return false;
     };
+    document.getElementById("delitem").onclick = function(evt) {
+        if (!ws) {
+            return false;
+        }
+        print("SEND: " + input9.value);
+        ws.send(input9.value);
+        return false;
+    };
 });
 </script>
 </head>
@@ -130,6 +139,8 @@ You can change the message and send multiple times.
 <button id="item1">item1</button>
 <p><input id="input8" type="text" value='{"type":"item","data":{"width":50,"height":50,"x":0,"y":-60,"z":-300,"pic":"static/img/5.png"}}'>
 <button id="item2">item2</button>
+<p><input id="input9" type="text" value='{"type":"item","data":{"width":50,"height":50,"x":0,"y":-60,"z":-300,"pic":"static/img/5.png"}}'>
+<button id="delitem">delitem</button>
 </form>
 </td><td valign="top" width="50%">
 <div id="output"></div>
