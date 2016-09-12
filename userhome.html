@@ -24,7 +24,7 @@ window.addEventListener("load", function(evt) {
     if (ws) {
 	    return false;
     }
-    ws = new WebSocket("wss://10.235.24.45:8087/mc");
+    ws = new WebSocket("wss://10.235.24.45:8087/user");
     ws.onopen = function(evt) {
 	    print("OPEN");
     }
