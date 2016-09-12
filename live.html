@@ -861,6 +861,8 @@ window.onload = function() {
             playAudio(data.data);
         } else if(data.type == "uid") {
             user = data.data;
+        } else if(data.type == "delitem") {
+            delItem(data);
         }
 
     };
