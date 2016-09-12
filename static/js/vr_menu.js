@@ -215,6 +215,42 @@
             return option;
         },
 
+        add_text_option: function (scene, eye_contrler, text,callback) {
+
+            var textMaterial = new THREE.MultiMaterial( [
+                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
+                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
+            ] );
+
+            var plane = new THREE.TextGeometry( text, {
+                font: font,
+                size: 20,
+                height: 10,
+                curveSegments: 4,
+                bevelThickness: 2,
+                bevelSize: 1.5,
+                bevelEnabled: true,
+                material: 0,
+                extrudeMaterial: 1
+            });
+
+            plane.computeBoundingBox();
+            plane.computeVertexNormals();
+            var option = new THREE.Mesh( plane, textMaterial );
+
+            option.position.x = this.menu_position.x + this.options.length * (this.option_width + this.option_margin);
+            option.position.x = this.menu_position.x;
+            option.position.y = this.menu_position.y;
+            option.position.z = this.menu_position.z;
+
+            option.menu_index = this.options.length;
+            if (typeof callback != "undefined") {
+                option.eye_callback = callback;
+            }
+            this.options.push(option);
+            return option;
+        },
+
         update: function(hc) {
             var eulerZYX = hc.getEulerZYX();
             var x = eulerZYX.x/Math.PI*180;

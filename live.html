@@ -187,7 +187,8 @@
     loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
         font = response;
     } );
-
+    var voice_status = false;
+    var item;
     init();
     animate();
 
@@ -254,6 +255,10 @@
             }
         });
         menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
+//            var data= {title:"123",items:["11","22","33"]}
+//            addBox(data);
+//            playAudio("http://lizhilei.cn/webvr/static/audio/th.wav");
+//            placeItem();
             if (!is_play ){
                 is_play = true;
                 texiao1();
@@ -266,6 +271,10 @@
                 texiao();
                 setTimeout(function(){is_play = false},1000)
             }
+        });
+
+        menu.add_option(scene, eye_contrler, 'static/img/voice.jpg', function (obj) {
+            voice();
         });
         menu.show(scene,eye_contrler);
 
@@ -300,9 +309,107 @@
         scene.add( ambientLight );
         hc.open();
         //
-
         window.addEventListener( 'resize', onWindowResize, false );
 
+    }
+    var is_voice_change = false;
+    function voice() {
+        if (!is_voice_change){
+            is_voice_change = true;
+            setTimeout(function() {
+                is_voice_change = false;
+            },2000);
+            if (1){
+                voice_status = !voice_status;
+                var op = menu.options[3];
+                menu.remove_option(scene, eye_contrler, op);
+                if (voice_status){
+                    recognizer.postMessage({command: 'start'});
+                    menu.add_option(scene, eye_contrler, 'static/img/novoice.jpg', function (obj) {
+                        voice();
+                    });
+                } else {
+                    recognizer.postMessage({command: 'stop'});
+                    menu.add_option(scene, eye_contrler, 'static/img/voice.jpg', function (obj) {
+                        voice();
+                    });
+                }
+                menu.options[3].position.x = op.position.x;
+                menu.options[3].position.y = op.position.y;
+                menu.options[3].position.z = op.position.z;
+                menu.options[3].rotation.x = op.rotation.x;
+                menu.options[3].rotation.y = op.rotation.y;
+                menu.options[3].rotation.z = op.rotation.z;
+                menu.show(scene,eye_contrler);
+            }
+        }
+
+
+
+
+    }
+    function playAudio(src) {
+        var audio = new Audio();
+        audio.src=src;
+        audio.play();
+        audio.addEventListener('ended',function(){
+            audio = null;
+        });
+
+    }
+
+    function placeItem(data) {
+
+        var     width =  100,
+                height =  100,
+                x =  -300,
+                y =  100,
+                z =  300,
+                pic = "static/img/9.png";
+        if (typeof data != "undefined") {
+            width =  data.width || 100;
+            height =  data.height || 100;
+            x =  data.x || 0;
+            y =  data.y || 100;
+            z =  data.z || -300;
+            pic = data.pic || "static/img/9.png";
+        }
+        var radiu =  Math.sqrt(x * x + z * z);
+        var ths = Math.asin(x / radiu);
+        var thc = Math.acos(-z / radiu);
+        console.log(ths);
+        console.log(thc);
+        var th;
+        if (x > 0 && z > 0) {
+            th = Math.acos(-z / radiu);
+        } else if (x < 0 && z > 0) {
+            th = -Math.acos(-z / radiu);
+        } else if (x > 0 && z < 0) {
+            th = Math.asin(x / radiu);
+        } else if (x < 0 && z < 0) {
+            th = Math.asin(x / radiu);
+        }
+
+
+        var plane = new THREE.PlaneGeometry( width, height);
+
+        var texture = new THREE.TextureLoader().load( pic );
+        item = new THREE.Mesh( plane ,new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true
+        }));
+
+        item.position.x = x;
+        item.position.y = y;
+        item.position.z = z;
+        item.rotation.y = -th;
+
+
+
+        scene.add(item);
+    }
+    function delItem(data) {
+        scene.remove(item);
     }
 
     function onWindowResize() {
@@ -316,24 +423,21 @@
 
     function addBox(data) {
         var box;
-        var textMeshs = [];
         var textMesh;
         function remove() {
             if (data.title != ""){
                 scene.remove(textMesh);
             }
 
-            var len = textMeshs.length;
+            var len = box.options.length;
             for(var i=0; i<len;i++){
                 op = box.options[i];
                 box.remove_option(scene, eye_contrler, op);
-                scene.remove(textMeshs[i]);
             }
-            len = textMeshs.length;
+            len = box.options.length;
             for(i=0; i<len;i++){
                 op = box.options[i];
                 box.remove_option(scene, eye_contrler, op);
-                scene.remove(textMeshs[i]);
             }
 
         }
@@ -343,48 +447,17 @@
         box.option_margin_x = 100;
         for(var i=0;i<data.items.length;i++){
             var ms = data.items[i];
-            box.add_option(scene, eye_contrler, 'static/img/box.jpg', function (obj) {
+            box.add_text_option(scene, eye_contrler, ms, function (obj) {
                 console.log(ms);
-                //ws.send(ms);
+                if (ws != null) {
+                    ws.send(ms);
+                }
                 remove();
             });
         }
         box.show(scene,eye_contrler);
 
         box.updatePosition(hc);
-
-        for(i=0; i<data.items.length; i++){
-            var item = data.items[i];
-            var op = box.options[i];
-            textMaterial = new THREE.MultiMaterial( [
-                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
-                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
-            ] );
-            textGeo = new THREE.TextGeometry( item, {
-                font: font,
-                size: 20,
-                height: 10,
-                curveSegments: 4,
-                bevelThickness: 2,
-                bevelSize: 1.5,
-                bevelEnabled: true,
-                material: 0,
-                extrudeMaterial: 1
-            });
-            textGeo.computeBoundingBox();
-            textGeo.computeVertexNormals();
-            centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
-
-            textMeshs[i] = new THREE.Mesh( textGeo, textMaterial );
-            textMeshs[i].position.x = centerOffset + op.position.x;
-            textMeshs[i].position.y = op.position.y -50;
-            textMeshs[i].position.z = op.position.z;
-            textMeshs[i].rotation.x = op.rotation.x;
-            textMeshs[i].rotation.y = op.rotation.y;
-            textMeshs[i].rotation.z = op.rotation.z;
-            scene.add(textMeshs[i]);
-        }
-
 
         if (data.title != ""){
             var l = box.options.length;
@@ -778,7 +851,8 @@ window.onload = function() {
     ws.onerror = function(evt) {
         console.log("WebSocket error");
         console.log(evt);
-    }
+    };
+
 };
 
 // This is the list of words that need to be added to the recognizer
