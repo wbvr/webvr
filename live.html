@@ -49,6 +49,9 @@
 <script src="static/js/HControl.js"></script>
 
 <script type="text/javascript">
+    var user = false;
+
+
     /**
      * @author mrdoob / http://mrdoob.com
      * Based on @tojiro's vr-samples-utils.js
@@ -449,7 +452,7 @@
             var ms = data.items[i];
             box.add_text_option(scene, eye_contrler, ms, function (obj) {
                 console.log(ms);
-                if (ws != null) {
+                if (ws != null || user !== false) {
                     ws.send(ms);
                 }
                 remove();
@@ -839,12 +842,18 @@ window.onload = function() {
         ws = null;
     };
     ws.onmessage = function(evt) {
-        var data = JSON.parse(evt.data)
+        var data = JSON.parse(evt.data);
         console.log(data);
         if (data.type == "video"){
             changeVideo(data.data);
         } else if(data.type == "menu") {
             addBox(data.data);
+        } else if(data.type == "item") {
+            placeItem(data.data);
+        } else if(data.type == "music") {
+            playAudio(data.data);
+        } else if(data.type == "uid") {
+            user = data.data;
         }
 
     };
