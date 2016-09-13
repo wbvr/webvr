@@ -7,7 +7,7 @@
         this.option_width = 50;
         this.option_height = 50;
         this.option_margin_angle = Math.PI/6;
-        this.option_margin_x = 50;
+        this.option_margin_x = 100;
 
         this.STATUS = {
             STATUS_SHOW: 1,
@@ -26,7 +26,7 @@
 
         this.rotate_index = 1;
 
-        this.menu_position = new THREE.Vector3(0,-200,-300);
+        this.menu_position = new THREE.Vector3(0,-260,-340);
     };
 
     THREE.VrMenu.prototype = {
@@ -215,13 +215,47 @@
             return option;
         },
 
+        add_text_option: function (scene, eye_contrler, text,callback) {
+
+            var textMaterial = new THREE.MultiMaterial( [
+                new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
+                new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
+            ] );
+
+            var plane = new THREE.TextGeometry( text, {
+                font: font,
+                size: 20,
+                height: 10,
+                curveSegments: 4,
+                bevelThickness: 2,
+                bevelSize: 1.5,
+                bevelEnabled: true,
+                material: 0,
+                extrudeMaterial: 1
+            });
+
+            plane.computeBoundingBox();
+            plane.computeVertexNormals();
+            var option = new THREE.Mesh( plane, textMaterial );
+
+            option.position.x = this.menu_position.x + this.options.length * (this.option_width + this.option_margin);
+            option.position.x = this.menu_position.x;
+            option.position.y = this.menu_position.y;
+            option.position.z = this.menu_position.z;
+
+            option.menu_index = this.options.length;
+            if (typeof callback != "undefined") {
+                option.eye_callback = callback;
+            }
+            this.options.push(option);
+            return option;
+        },
+
         update: function(hc) {
             var eulerZYX = hc.getEulerZYX();
             var x = eulerZYX.x/Math.PI*180;
             var is_follow = true;
-            console.log(x);
-            //if ((x > 90 && x  < 160) || (x > -90 && x  < -20)) {
-            if (x > -60 && x < -30) {
+            if ((x > 90 && x  < 160) || (x > -90 && x  < -20)) {
                 is_follow = false;
             }
 
@@ -229,26 +263,45 @@
                 var eulerYXZ = hc.getEulerYXZ();
                 var y = eulerZYX.y/Math.PI*180;
                 var th = eulerYXZ.y;
-                console.log("Y: "+y);
                 var e;
                 var half = (this.options.length - 1) * this.option_margin_x / 2;
+                var px = this.menu_position.z * Math.sin(th),
+                    py = this.options[0].position.y,
+                    pz = this.menu_position.z * Math.cos(th);
                 for (var i = 0; i < this.options.length; i++) {
                     var c = half - i*this.option_margin_x;
-                    //var radius = -1*Math.sqrt(Math.pow(i * this.option_margin_x - half,2)+Math.pow(this.menu_position.z,2));
                     e = this.options[i];
-                    //e.position.set(Math.abs(e.position.z) * Math.sin(th), e.position.y, -1*Math.abs(e.position.z) * Math.cos(th));
-                    e.position.set(this.menu_position.z * Math.sin(th) - c*Math.cos(th), e.position.y, this.menu_position.z * Math.cos(th));
-                    console.log(e.position);
+                    e.position.set(px - c*Math.cos(th), py,pz + c*Math.sin(th));
                     e.rotation.set(0,th,0);
                 }
             }
         },
-
+        updatePosition: function(hc) {
+            var eulerZYX = hc.getEulerZYX();
+            var x = eulerZYX.x/Math.PI*180;
+            var is_follow = true;
+            if (is_follow) {
+                var eulerYXZ = hc.getEulerYXZ();
+                var y = eulerZYX.y/Math.PI*180;
+                var th = eulerYXZ.y;
+                var e;
+                var half = (this.options.length - 1) * this.option_margin_x / 2;
+                var px = this.menu_position.z * Math.sin(th),
+                    py = this.options[0].position.y,
+                    pz = this.menu_position.z * Math.cos(th);
+                for (var i = 0; i < this.options.length; i++) {
+                    var c = half - i*this.option_margin_x;
+                    e = this.options[i];
+                    e.position.set(px - c*Math.cos(th), py,pz + c*Math.sin(th));
+                    e.rotation.set(0,th,0);
+                }
+            }
+        },
         remove_option: function (scene, eye_contrler, option) {
             var index = this.options.indexOf(option);
             if (index != -1) {
                 this.options.splice(index, 1);
-                scene.remove();
+                scene.remove(option);
                 if (typeof option.eye_callback != "undefined") {
                     eye_contrler.unbind(option);
                 }
