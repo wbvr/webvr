@@ -249,14 +249,14 @@
 
         var is_play = false;
         var is_zan = false;
-        menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
+        menu.add_option(scene, eye_contrler, 'static/img/love.png', function (obj) {
             if (!is_zan ){
                 is_zan = true;
                 zan(10);
                 setTimeout(function(){is_zan = false},300*10);
             }
         });
-        menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
+        menu.add_option(scene, eye_contrler, 'static/img/f.png', function (obj) {
 //            var data= {title:"123",items:["11","22","33"]}
 //            addBox(data);
 //            playAudio("http://lizhilei.cn/webvr/static/audio/th.wav");
@@ -267,7 +267,7 @@
                 setTimeout(function(){is_play = false},1500)
             }
         });
-        menu.add_option(scene, eye_contrler, 'static/img/ship.png', function (obj) {
+        menu.add_option(scene, eye_contrler, 'static/img/yl.png', function (obj) {
             if (!is_play ){
                 is_play = true;
                 texiao();
@@ -275,7 +275,7 @@
             }
         });
 
-        menu.add_option(scene, eye_contrler, 'static/img/voice.jpg', function (obj) {
+        menu.add_option(scene, eye_contrler, 'static/img/voice.png', function (obj) {
             voice();
         });
         menu.show(scene,eye_contrler);
@@ -327,12 +327,12 @@
                 menu.remove_option(scene, eye_contrler, op);
                 if (voice_status){
                     recognizer.postMessage({command: 'start'});
-                    menu.add_option(scene, eye_contrler, 'static/img/novoice.jpg', function (obj) {
+                    menu.add_option(scene, eye_contrler, 'static/img/novoice.png', function (obj) {
                         voice();
                     });
                 } else {
                     recognizer.postMessage({command: 'stop'});
-                    menu.add_option(scene, eye_contrler, 'static/img/voice.jpg', function (obj) {
+                    menu.add_option(scene, eye_contrler, 'static/img/voice.png', function (obj) {
                         voice();
                     });
                 }
