@@ -1,5 +1,5 @@
 function texiao() {
-    var texture = new THREE.TextureLoader().load( 'static/img/ship.png' );
+    var texture = new THREE.TextureLoader().load( 'static/img/boat.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
