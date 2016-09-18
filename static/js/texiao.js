@@ -41,7 +41,7 @@ function texiao1() {
     var Geometry = [];
     var efs = [];
     var rd = 200;
-    var texture = new THREE.TextureLoader().load( 'static/img/flower.png' );
+    var texture = new THREE.TextureLoader().load( 'static/img/flower1.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
