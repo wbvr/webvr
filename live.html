@@ -47,6 +47,12 @@
 <!-- 图形 -->
 <script src="static/js/Geometry.js"></script>
 <script src="static/js/HControl.js"></script>
+<!-- 图像识别-->
+<script src="static/js/CvControls.js"></script>
+<script src="static/js/device.js"></script>
+<script src="static/js/JSARToolKit.js"></script>
+<script src="static/js/magi.js"></script>
+
 
 <script type="text/javascript">
     var user = false;
@@ -312,6 +318,9 @@
         hc.open();
         //
         window.addEventListener( 'resize', onWindowResize, false );
+        var canvas = document.querySelector('canvas');
+        console.log(canvas);
+        window.cv = new CvControls(canvas,cv_found);
 
     }
     var is_voice_change = false;
@@ -708,7 +717,13 @@
         menu.update(hc);
         eye_contrler.update();
         effect.render( scene, camera );
+        if (!window.cv.update()) {
+            window.cv.show_cursor(scene);
+        }
+    }
 
+    function cv_found() {
+        cv.hide_cursor(scene);
     }
 
 
