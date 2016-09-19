@@ -193,7 +193,7 @@
     var ambientLight;
     var font;
     var loader = new THREE.FontLoader();
-    loader.load( 'static/json/optimer_bold.typeface.json', function ( response ) {
+    loader.load( 'static/json/FZYaoTi_Regular.json', function ( response ) {
         font = response;
     } );
     var voice_status = false;
@@ -255,25 +255,26 @@
 
         var is_play = false;
         var is_zan = false;
-        menu.add_option(scene, eye_contrler, 'static/img/hand.png', function (obj) {
+        menu.add_option(scene, eye_contrler, 'static/img/love.png', function (obj) {
             if (!is_zan ){
                 is_zan = true;
                 zan(10);
                 setTimeout(function(){is_zan = false},300*10);
             }
         });
-        menu.add_option(scene, eye_contrler, 'static/img/flower.png', function (obj) {
+        menu.add_option(scene, eye_contrler, 'static/img/f.png', function (obj) {
 //            var data= {title:"123",items:["11","22","33"]}
 //            addBox(data);
 //            playAudio("http://lizhilei.cn/webvr/static/audio/th.wav");
 //            placeItem();
+//            showTips('你好');
             if (!is_play ){
                 is_play = true;
                 texiao1();
                 setTimeout(function(){is_play = false},1500)
             }
         });
-        menu.add_option(scene, eye_contrler, 'static/img/ship.png', function (obj) {
+        menu.add_option(scene, eye_contrler, 'static/img/yl.png', function (obj) {
             if (!is_play ){
                 is_play = true;
                 texiao();
@@ -281,7 +282,7 @@
             }
         });
 
-        menu.add_option(scene, eye_contrler, 'static/img/voice.jpg', function (obj) {
+        menu.add_option(scene, eye_contrler, 'static/img/voice.png', function (obj) {
             voice();
         });
         menu.show(scene,eye_contrler);
@@ -335,13 +336,15 @@
                 var op = menu.options[3];
                 menu.remove_option(scene, eye_contrler, op);
                 if (voice_status){
+			console.log('start');
                     recognizer.postMessage({command: 'start'});
-                    menu.add_option(scene, eye_contrler, 'static/img/novoice.jpg', function (obj) {
+                    menu.add_option(scene, eye_contrler, 'static/img/novoice.png', function (obj) {
                         voice();
                     });
                 } else {
+			console.log('stop');
                     recognizer.postMessage({command: 'stop'});
-                    menu.add_option(scene, eye_contrler, 'static/img/voice.jpg', function (obj) {
+                    menu.add_option(scene, eye_contrler, 'static/img/voice.png', function (obj) {
                         voice();
                     });
                 }
@@ -961,8 +964,10 @@ window.onload = function() {
             user = data.data;
         } else if(data.type == "delitem") {
             delItem(data);
-        }  else if(data.type == "headmenu") {
+        } else if(data.type == "headmenu") {
             head(data.data);
+        } else if(data.type == "tips") {
+            showTips(data.data);
         }
 
     };

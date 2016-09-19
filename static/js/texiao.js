@@ -1,5 +1,5 @@
 function texiao() {
-    var texture = new THREE.TextureLoader().load( 'static/img/ship.png' );
+    var texture = new THREE.TextureLoader().load( 'static/img/boat.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
@@ -41,7 +41,7 @@ function texiao1() {
     var Geometry = [];
     var efs = [];
     var rd = 200;
-    var texture = new THREE.TextureLoader().load( 'static/img/flower.png' );
+    var texture = new THREE.TextureLoader().load( 'static/img/flower1.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
@@ -229,4 +229,85 @@ function s(x, y, z) {
     ef.position.set(x, y, z);
     scene.add(ef);
     var dp = 0;
+}
+
+function  showTips(text) {
+    var curtains = [],
+        texts = [];
+    var time = 0;
+    var curtainGeometry = new THREE.PlaneGeometry( 490, 50);
+    var mesh = new THREE.MeshBasicMaterial({
+        color: 0xffffff
+    });
+    curtains[0] = new THREE.Mesh( curtainGeometry ,mesh);
+    curtains[0].position.set(0,240,-360);
+    scene.add(curtains[0]);
+    curtains[1] = new THREE.Mesh( curtainGeometry ,mesh);
+    curtains[1].position.set(-360,240,0);
+    curtains[1].rotation.y = Math.PI/2;
+    scene.add(curtains[1]);
+    curtains[2] = new THREE.Mesh( curtainGeometry ,mesh);
+    curtains[2].position.set(0,240,360);
+    curtains[2].rotation.y = -Math.PI;
+    scene.add(curtains[2]);
+    curtains[3] = new THREE.Mesh( curtainGeometry ,mesh);
+    curtains[3].position.set(360,240,0);
+    curtains[3].rotation.y = -Math.PI/2;
+    scene.add(curtains[3]);
+
+
+    var textGeo = new THREE.TextGeometry(text,{
+        size: 30,
+        height: 0,
+        weight: 'normal',
+        font:  font,
+        style: 'normal',
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelSegments: 1,
+        curveSegments: 50,
+        steps: 1
+    });
+    var textMaterial = new THREE.MeshBasicMaterial({color:0x000000});        //物体加上材质
+    textGeo.computeBoundingBox();
+    textGeo.computeVertexNormals();
+    var length = ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+
+    texts[0] = new THREE.Mesh( textGeo, textMaterial );
+    texts[0].position.set(240,220,-359);
+    scene.add(texts[0]);
+    texts[1] = new THREE.Mesh( textGeo, textMaterial );
+    texts[1].position.set(-359,220,-240);
+    texts[1].rotation.y = Math.PI/2;
+    scene.add(texts[1]);
+    texts[2] = new THREE.Mesh( textGeo, textMaterial );
+    texts[2].position.set(-240,220,359);
+    texts[2].rotation.y = -Math.PI;
+    scene.add(texts[2]);
+    texts[3] = new THREE.Mesh( textGeo, textMaterial );
+    texts[3].position.set(359,220,240);
+    texts[3].rotation.y = -Math.PI/2;
+    scene.add(texts[3]);
+    var end = 240+length;
+    function updateTips() {
+        time += 1;
+        var pos = 240-time;
+        if(pos > -end) {
+            texts[0].position.x=pos;
+            texts[1].position.z=-pos;
+            texts[2].position.x=-pos;
+            texts[3].position.z=pos;
+            window.requestAnimationFrame(updateTips);
+        } else {
+            scene.remove(texts[0]);
+            scene.remove(texts[1]);
+            scene.remove(texts[2]);
+            scene.remove(texts[3]);
+            scene.remove(curtains[0]);
+            scene.remove(curtains[1]);
+            scene.remove(curtains[2]);
+            scene.remove(curtains[3]);
+        }
+    }
+    window.requestAnimationFrame(updateTips);
 }
