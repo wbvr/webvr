@@ -49,12 +49,12 @@
 
         hover_over: function () {
             console.log("hover_over");
-            //if (this.hover_status != this.HOVER_STATUS.STATUS_HOVERING) {
+            if (this.hover_status != this.HOVER_STATUS.STATUS_HOVERING) {
                 this.hover_status = this.HOVER_STATUS.STATUS_HOVERING;
                 if (this.spote) {
                     this.spoting();
                 }
-            //}
+            }
         },
 
         hover_out: function () {
@@ -197,7 +197,7 @@
             if (this.hover_status == this.HOVER_STATUS.STATUS_HOVERING && --this.spote_num > 0) {
                 this.play_spote();
                 //TODO 传this有问题
-                window.setTimeout(THREE.EyeControls.spoting, this.spote_speed);
+                window.setTimeout(eye_contrler.spoting, this.spote_speed);
             } else {
                 if (this.spote_num == 0) {
                     console.log("EyeControls callbak");
