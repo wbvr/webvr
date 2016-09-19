@@ -200,6 +200,7 @@
     init();
     animate();
 
+
     function init() {
 
         var container = document.getElementById( 'container' );
@@ -319,9 +320,8 @@
         hc.open();
         //
         window.addEventListener( 'resize', onWindowResize, false );
-        var canvas = document.querySelector('canvas');
-        console.log(canvas);
-        window.cv = new CvControls(canvas,cv_found);
+
+        window.cv = new CvControls(null,cv_found,camera);
 
     }
     var is_voice_change = false;
@@ -720,9 +720,8 @@
         menu.update(hc);
         eye_contrler.update();
         effect.render( scene, camera );
-        if (!window.cv.update()) {
-            window.cv.show_cursor(scene);
-        }
+        window.cv.update(scene);
+
     }
 
     function cv_found() {
