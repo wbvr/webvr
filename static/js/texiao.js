@@ -257,7 +257,7 @@ function  showTips(text) {
 
 
     var textGeo = new THREE.TextGeometry(text,{
-        size: 40,
+        size: 30,
         height: 0,
         weight: 'normal',
         font:  font,
@@ -274,18 +274,18 @@ function  showTips(text) {
     var length = ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 
     texts[0] = new THREE.Mesh( textGeo, textMaterial );
-    texts[0].position.set(240,215,-359);
+    texts[0].position.set(240,220,-359);
     scene.add(texts[0]);
     texts[1] = new THREE.Mesh( textGeo, textMaterial );
-    texts[1].position.set(-359,215,-240);
+    texts[1].position.set(-359,220,-240);
     texts[1].rotation.y = Math.PI/2;
     scene.add(texts[1]);
     texts[2] = new THREE.Mesh( textGeo, textMaterial );
-    texts[2].position.set(-240,215,359);
+    texts[2].position.set(-240,220,359);
     texts[2].rotation.y = -Math.PI;
     scene.add(texts[2]);
     texts[3] = new THREE.Mesh( textGeo, textMaterial );
-    texts[3].position.set(359,215,240);
+    texts[3].position.set(359,220,240);
     texts[3].rotation.y = -Math.PI/2;
     scene.add(texts[3]);
     var end = 240+length;
