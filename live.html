@@ -336,11 +336,13 @@
                 var op = menu.options[3];
                 menu.remove_option(scene, eye_contrler, op);
                 if (voice_status){
+			console.log('start');
                     recognizer.postMessage({command: 'start'});
                     menu.add_option(scene, eye_contrler, 'static/img/novoice.png', function (obj) {
                         voice();
                     });
                 } else {
+			console.log('stop');
                     recognizer.postMessage({command: 'stop'});
                     menu.add_option(scene, eye_contrler, 'static/img/voice.png', function (obj) {
                         voice();
