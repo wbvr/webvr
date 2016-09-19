@@ -15,6 +15,7 @@ window.addEventListener("load", function(evt) {
     var input8 = document.getElementById("input8");
     var input9 = document.getElementById("input9");
     var input10 = document.getElementById("input10");
+    var input11 = document.getElementById("input11");
     var ws;
 
     var print = function(message) {
@@ -121,6 +122,14 @@ window.addEventListener("load", function(evt) {
         ws.send(input10.value);
         return false;
     };
+    document.getElementById("tips").onclick = function(evt) {
+        if (!ws) {
+            return false;
+        }
+        print("SEND: " + input11.value);
+        ws.send(input11.value);
+        return false;
+    };
 });
 </script>
 </head>
@@ -130,28 +139,30 @@ window.addEventListener("load", function(evt) {
 <p> 
 You can click "Send" to send a message to the server. 
 You can change the message and send multiple times.
-<p>
+</p>
 <form>
 <p><input id="input1" type="text" value='{"type":"video","data":"static/video/hsy.mp4"}'>
-<button id="video1">video1</button>
+<button id="video1">video1</button></p>
 <p><input id="input2" type="text" value='{"type":"video","data":"yyyy"}'>
-<button id="video2">video2</button>
+<button id="video2">video2</button></p>
 <p><input id="input3" type="text" value='{"type":"menu","data":{"title":"","items":["hi","ho","he"]}}'>
-<button id="menu1">menu1</button>
+<button id="menu1">menu1</button></p>
 <p><input id="input4" type="text" value='{"type":"menu","data":{"title":"like?","items":["yes","no"]}}'>
-<button id="menu2">menu2</button>
+<button id="menu2">menu2</button></p>
 <p><input id="input5" type="text" value='{"type":"music","data":"static/audio/th.wav"}'>
-<button id="music1">music1</button>
+<button id="music1">music1</button></p>
 <p><input id="input6" type="text" value='{"type":"music","data":"static/audio/th.wav"}'>
-<button id="music2">music2</button>
+<button id="music2">music2</button></p>
 <p><input id="input7" type="text" value='{"type":"item","data":{"width":100,"height":100,"x":-300,"y":100,"z":-300,"pic":"static/img/9.png"}}'>
-<button id="item1">item1</button>
+<button id="item1">item1</button></p>
 <p><input id="input8" type="text" value='{"type":"item","data":{"width":50,"height":50,"x":0,"y":-60,"z":-300,"pic":"static/img/5.png"}}'>
-<button id="item2">item2</button>
+<button id="item2">item2</button></p>
 <p><input id="input9" type="text" value='{"type":"delitem"}'>
-<button id="delitem">delitem</button>
+<button id="delitem">delitem</button></p>
 <p><input id="input10" type="text" value='{"type":"headmenu","data":{"title":"nihao"}}'>
-<button id="head">delitem</button>
+<button id="head">delitem</button></p>
+<p><input id="input11" type="text" value='{"type":"tips","data":"韩土豪给主播送了一艘航天母舰"}'>
+<button id="tips">delitem</button></p>
 </form>
 </td><td valign="top" width="50%">
 <div id="output"></div>

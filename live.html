@@ -962,8 +962,10 @@ window.onload = function() {
             user = data.data;
         } else if(data.type == "delitem") {
             delItem(data);
-        }  else if(data.type == "headmenu") {
+        } else if(data.type == "headmenu") {
             head(data.data);
+        } else if(data.type == "tips") {
+            showTips(data.data);
         }
 
     };
