@@ -38,12 +38,13 @@
             this.camera.copy(camera);
 
             this.canvas = document.createElement('canvas');
+            this.canvas.id = "test_canvas";
             this.canvas.width = this.canvas2d_width;
             this.canvas.height = this.canvas2d_height;
             this.canvas.style.display = this.canvas_display;
             document.body.appendChild(this.canvas);
 
-            this.renderer = new THREE.WebGLRenderer({antialias: false});
+            this.renderer = new THREE.WebGLRenderer({antialias: false,preserveDrawingBuffer: true});
             this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
             this.renderer.setSize( this.glcanvas_width, this.glcanvas_height );
             this.renderer.domElement.style.display = this.canvas_display;
@@ -127,7 +128,7 @@
                     break;
                 }
 
-                window.cv.camera.rotation.y += Math.PI / 4;
+                window.cv.camera.rotation.y = (window.cv.camera.rotation.y + Math.PI / 4) % 2 * Math.PI;
             }
         },
 
