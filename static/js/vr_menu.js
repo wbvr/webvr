@@ -309,8 +309,8 @@
         },
         
         change_pic: function (option,pic) {
-            option.mesh.material.uniforms.texture.value = new THREE.TextureLoader().load( pic );
-            option.mesh.material.uniforms.texture.needsUpdate = true;
+            option.material.uniforms.texture.value = new THREE.TextureLoader().load( pic );
+            option.material.uniforms.texture.needsUpdate = true;
         }
     };
 }( THREE ) );
