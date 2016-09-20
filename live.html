@@ -185,7 +185,7 @@
     var video, texture;
 
     var controls, effect;
-    var eye_contrler;
+    var eye_controler;
     var menu;
     var hc = new HControl();     //头势控制&&菜单随动
     var thing;
@@ -211,7 +211,7 @@
 
         camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 2000 );
         //camera.layers.enable( 1 ); // render left view when no stereo available
-        eye_contrler = new THREE.EyeControls(camera);
+        eye_controler = new THREE.EyeControls(camera);
         // video
 
         video = document.createElement( 'video' );
@@ -256,14 +256,14 @@
 
         var is_play = false;
         var is_zan = false;
-        menu.add_option(scene, eye_contrler, 'static/img/love.png', function (obj) {
+        menu.add_option(scene, eye_controler, 'static/img/love.png', function (obj) {
             if (!is_zan ){
                 is_zan = true;
                 zan(10);
                 setTimeout(function(){is_zan = false},300*10);
             }
         });
-        menu.add_option(scene, eye_contrler, 'static/img/f.png', function (obj) {
+        menu.add_option(scene, eye_controler, 'static/img/f.png', function (obj) {
 //            var data= {title:"123",items:["11","22","33"]}
 //            addBox(data);
 //            playAudio("http://lizhilei.cn/webvr/static/audio/th.wav");
@@ -275,7 +275,7 @@
                 setTimeout(function(){is_play = false},1500)
             }
         });
-        menu.add_option(scene, eye_contrler, 'static/img/yl.png', function (obj) {
+        menu.add_option(scene, eye_controler, 'static/img/yl.png', function (obj) {
             if (!is_play ){
                 is_play = true;
                 texiao();
@@ -283,10 +283,10 @@
             }
         });
 
-        menu.add_option(scene, eye_contrler, 'static/img/voice.png', function (obj) {
+        menu.add_option(scene, eye_controler, 'static/img/voice.png', function (obj) {
             voice();
         });
-        menu.show(scene,eye_contrler);
+        menu.show(scene,eye_controler);
 
         //
 
@@ -334,17 +334,17 @@
             if (1){
                 voice_status = !voice_status;
                 var op = menu.options[3];
-                menu.remove_option(scene, eye_contrler, op);
+                menu.remove_option(scene, eye_controler, op);
                 if (voice_status){
 			console.log('start');
                     recognizer.postMessage({command: 'start'});
-                    menu.add_option(scene, eye_contrler, 'static/img/novoice.png', function (obj) {
+                    menu.add_option(scene, eye_controler, 'static/img/novoice.png', function (obj) {
                         voice();
                     });
                 } else {
 			console.log('stop');
                     recognizer.postMessage({command: 'stop'});
-                    menu.add_option(scene, eye_contrler, 'static/img/voice.png', function (obj) {
+                    menu.add_option(scene, eye_controler, 'static/img/voice.png', function (obj) {
                         voice();
                     });
                 }
@@ -354,7 +354,7 @@
                 menu.options[3].rotation.x = op.rotation.x;
                 menu.options[3].rotation.y = op.rotation.y;
                 menu.options[3].rotation.z = op.rotation.z;
-                menu.show(scene,eye_contrler);
+                menu.show(scene,eye_controler);
             }
         }
 
@@ -409,7 +409,7 @@
         item.option_margin_x = width;
         item.option_height = height;
         item.option_width = width;
-        item.add_option(scene, eye_contrler, pic, function (obj) {
+        item.add_option(scene, eye_controler, pic, function (obj) {
             if (ws != null || user !== false) {
                 var msg = {
                     type : 'finditem',
@@ -424,11 +424,11 @@
         item.options[0].position.y = y;
         item.options[0].position.z = z;
         item.options[0].rotation.y = -th;
-        item.show(scene,eye_contrler);
+        item.show(scene,eye_controler);
 
     }
     function delItem() {
-        item.remove_option(scene, eye_contrler, item.options[0]);
+        item.remove_option(scene, eye_controler, item.options[0]);
     }
     function head(data) {
         var box;
@@ -530,12 +530,12 @@
             var len = box.options.length;
             for(var i=0; i<len;i++){
                 op = box.options[i];
-                box.remove_option(scene, eye_contrler, op);
+                box.remove_option(scene, eye_controler, op);
             }
             len = box.options.length;
             for(i=0; i<len;i++){
                 op = box.options[i];
-                box.remove_option(scene, eye_contrler, op);
+                box.remove_option(scene, eye_controler, op);
             }
 
         }
@@ -545,7 +545,7 @@
         box.option_margin_x = 100;
         for(var i=0;i<data.items.length;i++){
             var ms = data.items[i];
-            box.add_text_option(scene, eye_contrler, ms, function (obj) {
+            box.add_text_option(scene, eye_controler, ms, function (obj) {
                 console.log(obj.name);
                 if (ws != null || user !== false) {
                     var msg = {
@@ -560,7 +560,7 @@
             });
             box.options[i].name = ms;
         }
-        box.show(scene,eye_contrler);
+        box.show(scene,eye_controler);
 
         box.updatePosition(hc);
 
@@ -718,7 +718,7 @@
 
         controls.update();
         menu.update(hc);
-        eye_contrler.update();
+        eye_controler.update();
         effect.render( scene, camera );
         window.cv.update(scene);
 
