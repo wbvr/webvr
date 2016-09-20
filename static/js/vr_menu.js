@@ -309,6 +309,7 @@
         },
         
         change_pic: function (option,pic) {
+            console.log(option.material.uniforms);
             option.material.uniforms.texture.value = new THREE.TextureLoader().load( pic );
             option.material.uniforms.texture.needsUpdate = true;
         }
