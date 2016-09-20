@@ -310,7 +310,7 @@
         
         change_pic: function (option,pic) {
             option.material.map = new THREE.TextureLoader().load( pic );
-            option.material.map = true;
+            option.material.needsUpdate = true;
         }
     };
 }( THREE ) );
