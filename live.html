@@ -334,20 +334,21 @@
             if (1){
                 voice_status = !voice_status;
                 var op = menu.options[3];
-                menu.remove_option(scene, eye_controler, op);
-                eye_controler.hover_status = eye_controler.HOVER_STATUS.STATUS_HOVERING;
+                //menu.remove_option(scene, eye_controler, op);
                 if (voice_status){
 			console.log('start');
                     recognizer.postMessage({command: 'start'});
-                    menu.add_option(scene, eye_controler, 'static/img/novoice.png', function (obj) {
-                        voice();
-                    });
+                    menu.change_pic(op,'static/img/novoice.png');
+//                    menu.add_option(scene, eye_controler, 'static/img/novoice.png', function (obj) {
+//                        voice();
+//                    });
                 } else {
 			console.log('stop');
                     recognizer.postMessage({command: 'stop'});
-                    menu.add_option(scene, eye_controler, 'static/img/voice.png', function (obj) {
-                        voice();
-                    });
+                    menu.change_pic(op,'static/img/voice.png');
+//                    menu.add_option(scene, eye_controler, 'static/img/voice.png', function (obj) {
+//                        voice();
+//                    });
                 }
                 menu.options[3].position.x = op.position.x;
                 menu.options[3].position.y = op.position.y;
