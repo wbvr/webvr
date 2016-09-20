@@ -335,6 +335,7 @@
                 voice_status = !voice_status;
                 var op = menu.options[3];
                 menu.remove_option(scene, eye_controler, op);
+                eye_controler.hover_status = eye_controler.HOVER_STATUS.STATUS_HOVERING;
                 if (voice_status){
 			console.log('start');
                     recognizer.postMessage({command: 'start'});
