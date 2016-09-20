@@ -308,9 +308,12 @@
             }
         },
         
-        change_pic: function (option,pic) {
+        change_pic: function (option,pic,callback) {
             option.material.map = new THREE.TextureLoader().load( pic );
             option.material.needsUpdate = true;
+            if (typeof callback != "undefined") {
+                option.eye_callback = callback;
+            }
         }
     };
 }( THREE ) );
