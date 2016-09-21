@@ -238,6 +238,10 @@
         video.load();
         video.play();
 
+        video.addEventListener('playing',function(){
+        	window.cv = new CvControls(video);
+        });
+
 
         texture = new THREE.VideoTexture( video );
         texture.minFilter = THREE.NearestFilter;
@@ -321,7 +325,6 @@
         //
         window.addEventListener( 'resize', onWindowResize, false );
 
-        window.cv = new CvControls(null,cv_found,camera);
 
     }
     var is_voice_change = false;
@@ -715,7 +718,6 @@
         menu.update(hc);
         eye_controler.update();
         effect.render( scene, camera );
-        window.cv.update(scene);
 
     }
 
