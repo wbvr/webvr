@@ -1,5 +1,14 @@
 var textures = {};
 function texiao() {
+
+    if (ws != null || user !== false) {
+        var msg = {
+            type : 'boat',
+            uid : user
+        };
+        msg=JSON.stringify(msg);
+        ws.send(msg);
+    }
     var texture;
     if(textures.boat === undefined){
         texture = new THREE.TextureLoader().load( 'static/img/boat.png' );
@@ -45,6 +54,15 @@ function texiao() {
 }
 
 function texiao1() {
+
+    if (ws != null || user !== false) {
+        var msg = {
+            type : 'flowser',
+            uid : user
+        };
+        msg=JSON.stringify(msg);
+        ws.send(msg);
+    }
     var texture;
     if(textures.flower === undefined){
         texture = new THREE.TextureLoader().load( 'static/img/flower1.png' );
@@ -240,6 +258,14 @@ function texiao3() {
 
 
 function zan(count){
+    if (ws != null || user !== false) {
+        var msg = {
+            type : 'like',
+            uid : user
+        };
+        msg=JSON.stringify(msg);
+        ws.send(msg);
+    }
     var num =0;
     var handlr = function(){
         texiao3();
