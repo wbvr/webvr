@@ -2,77 +2,33 @@
  * Created by zongwen1 on 16-9-14.
  */
 ( function ( ) {
-    CvControls = function (canvas,callback,camera) {
+    var _this = null;
+    CvControls = function (obj,callback) {
         console.log("CvControls");
+
+        _this = this;
         this.paused = false;
-        this.video_last_time = 0;
         this.DEBUG = true;
         window.DEBUG = this.DEBUG;
-
-        this.canvas2d_width = window.innerWidth;
-        this.canvas2d_height = window.innerHeight;
-        this.glcanvas_width = window.innerWidth;
-        this.glcanvas_height = window.innerHeight;
-        this.canvas_display = "none";
 
         if (typeof callback != "undefined") {
             this.callback = callback;
         }
 
-        if (this.DEBUG) {
-            this.canvas2d_width = 200;
-            this.canvas2d_height = 200;
-            this.glcanvas_width = 200;
-            this.glcanvas_height = 200;
-            this.canvas_display = "";
-
-            var debugCanvas = document.createElement('canvas');
-            debugCanvas.width = this.canvas2d_width;
-            debugCanvas.height = this.canvas2d_height;
-            debugCanvas.id = 'debugCanvas';
-            document.body.appendChild(debugCanvas);
-        }
-
-        if (typeof camera != "undefined") {
-            this.camera = new THREE.PerspectiveCamera(75, this.glcanvas_width / this.glcanvas_height, 0.1, 10000);
-            this.camera.copy(camera);
-
+        if (obj.tagName == "VIDEO") {
+            this.video = obj;
             this.canvas = document.createElement('canvas');
-            this.canvas.id = "test_canvas";
-            this.canvas.width = this.canvas2d_width;
-            this.canvas.height = this.canvas2d_height;
-            this.canvas.style.display = this.canvas_display;
-            document.body.appendChild(this.canvas);
-
-            this.renderer = new THREE.WebGLRenderer({antialias: false,preserveDrawingBuffer: true});
-            this.renderer.setPixelRatio(Math.floor(window.devicePixelRatio));
-            this.renderer.setSize( this.glcanvas_width, this.glcanvas_height );
-            this.renderer.domElement.style.display = this.canvas_display;
-            document.body.appendChild(this.renderer.domElement);
-
-            if (typeof THREE.VRControls != "undefined") {
-                this.controls = new THREE.VRControls(this.camera);
-                this.effect = new THREE.VREffect(this.renderer);
-                this.effect.setSize(this.glcanvas_width, this.glcanvas_height);
-            }
-
-        } else if (typeof canvas == "undefined") {
-            this.canvas = document.createElement('canvas');
-        } else {
-            this.canvas = canvas;
+            this.ctx = this.canvas.getContext('2d');
+            this.canvas.width = this.video.videoWidth;
+            this.canvas.height = this.video.videoHeight;
+            this.init_cv();
+            this.update_frome_video();
+        } else if (obj.tagName == "CANVAS") {
+            this.canvas = obj;
+            this.ctx = this.canvas.getContext('2d');
+            this.init_cv();
+            this.update_frome_canvas();
         }
-
-        this.ctx = this.canvas.getContext('2d');
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = "24px URW Gothic L, Arial, Sans-serif";
-
-        this.video_width = 0;
-        this.video_height = 0;
-        //this.ctx.fillRect(0,0,this.video_width,this.video_height);
-
-        this.cursor = '';
-
-        this.create_cursor();
     };
 
     CvControls.prototype = {
@@ -86,117 +42,101 @@
             this.paused = false;
         },
 
+        set_fov: function (fov) {
+            this.half_horizontal_fov = Math.atan(Math.tan(fov/2 * Math.PI/180) * (this.canvas.width / this.canvas.height) / 2 );
+        },
+
+        init_cv: function () {
+
+            if (this.DEBUG) {
+                this.create_debug_canvas();
+            }
+
+            this.detector = new FLARMultiIdMarkerDetector(new FLARParam(this.canvas.width,this.canvas.height), 80);
+            this.detector.setContinueMode(true);
+            this.raster = new NyARRgbRaster_Canvas2D(this.canvas);
+            this.half_canvas_width = this.canvas.width / 2;
+            this.create_cursor();
+            this.set_fov(75);
+        },
+
         //返回找到的坐标
         found: function (x,y) {
             if (typeof this.callback != "undefined") {
                 this.callback(x,y);
+                return;
             }
+
+            var rad = Math.abs(this.half_canvas_width - x) / this.canvas.width * 2 * Math.PI;
+            //var half_horizontal_fov = Math.atan(far * Math.tan(fov/2 * Math.PI/180) * aspect / 2 / far);
+
+            if (rad > this.half_horizontal_fov) {
+                if (this.half_canvas_width - x > 0) {
+                    this.show_left_cursor();
+                } else {
+                    this.show_right_cursor();
+                }
+            } else {
+                this.hide_cursor(this.left_cursor);
+                this.hide_cursor(this.right_cursor);
+            }
+
             //console.log("found",x, y);
         },
 
-        update: function (scene) {
-            if (this.paused) return;
-
-            this.controls.update();
-
-            this.effect.render(scene,this.camera);
-
-
-        },
-
-        timer: function () {
-            for (var i = 0; i < 8; i++) {
-                if (typeof window.cv.effect != "undefined") {
-                    window.cv.effect.render(scene,window.cv.camera);
-                } else {
-                    window.cv.renderer.render(scene,window.cv.camera);
-                }
-
-                window.cv.ctx.drawImage(window.cv.renderer.domElement,0,0,window.cv.canvas.width,window.cv.canvas.height);
-
-                if (window.cv.update_frome_canvas()) {
-                    console.log("update found i="+i);
-                    if (i == 0) {
-                        window.cv.hide_cursor(window.cv.left_cursor);
-                        window.cv.hide_cursor(window.cv.right_cursor);
-                    }
-                    else if (i > 4) {
-                        window.cv.show_right_cursor();
-                    } else {
-                        window.cv.show_left_cursor();
-                    }
-                    break;
-                }
-
-                window.cv.camera.rotation.y = (window.cv.camera.rotation.y + Math.PI / 4) % 2 * Math.PI;
-            }
+        no_found: function () {
+            this.hide_cursor(this.left_cursor);
+            this.hide_cursor(this.right_cursor);
         },
 
         //从canvas中找
         update_frome_canvas: function () {
+            requestAnimationFrame( function () {
+                _this.update_frome_canvas();
+            } );
+
             if (this.paused) return;
+            if (!this.canvas.changed) return;
 
-            if (typeof this.detector == "undefined") {
-                this.detector = new FLARMultiIdMarkerDetector(new FLARParam(this.canvas.width,this.canvas.height), 80);
-                this.detector.setContinueMode(true);
-                this.raster = new NyARRgbRaster_Canvas2D(this.canvas);
-            }
-
-            this.canvas.changed = true;
-            var detected = this.detector.detectMarkerLite(this.raster, 170);
+            this.detector.detectMarkerLite(this.raster, 170);
             //detector._bin_raster.getBuffer().drawOnCanvas(canvas);
-            //detected > 0 && console.log("detected: "+detected);
-
-            return detected;
-
         },
 
         //从video中找
-        update_frome_video: function (video) {
-            if (video.paused) return;
+        update_frome_video: function () {
+            // requestAnimationFrame( function () {
+            //     _this.update_frome_video();
+            // } );
+
+
             if (this.paused) return;
-            if (video.currentTime == this.video_last_time) return;
-            this.video_last_time = video.currentTime;
 
-            if (this.video_width == 0) {
-                this.video_width = video.videoWidth;
-                this.video_height = video.videoHeight;
+            if ( this.video.readyState >= this.video.HAVE_CURRENT_DATA ) {
 
-                this.canvas.width = this.video_width;
-                this.canvas.height = this.video_height;
+                this.ctx.drawImage(this.video, 0, 0, this.canvas.width,this.canvas.height);
+                this.canvas.changed = true;
+                var result = this.detector.detectMarkerLite(this.raster, 170);
+                if (!result) {
+                    this.no_found();
+                }
 
-                //this.ctx.fillRect(0,0,this.video_width,this.video_height);
-                this.detector = new FLARMultiIdMarkerDetector(new FLARParam(this.video_width,this.video_height), 80);
-                this.detector.setContinueMode(true);
-                this.raster = new NyARRgbRaster_Canvas2D(this.canvas);
             }
 
-            this.ctx.drawImage(video, 0, 0, this.video_width,this.video_height);
-            this.canvas.changed = true;
-            var detected = this.detector.detectMarkerLite(this.raster, 170);
-            //detector._bin_raster.getBuffer().drawOnCanvas(canvas);
-            //detected > 0 && console.log("detected: "+detected);
-
-            return detected;
+            setTimeout(function () {
+                _this.update_frome_video();
+            },1000);
         },
 
         //显示箭头
         show_left_cursor: function () {
             console.log("show_left_cursor");
 
-            // if (typeof window.cv.left_cursor == "undefined" ||
-            //     typeof window.cv.right_cursor == "undefined" ) {
-            //     window.cv.create_cursor();
-            // }
-
-            if (window.cv.right_cursor.style.display != "none") {
-                window.cv.right_cursor.style.display = "none";
+            if (this.right_cursor.style.display != "none") {
+                this.right_cursor.style.display = "none";
             }
 
-            if (window.cv.left_cursor.style.display != "none") {
-                return;
-            } else {
-                window.cv.left_cursor.style.display = "";
+            if (this.left_cursor.style.display == "none") {
+                this.left_cursor.style.display = "";
             }
 
         },
@@ -205,19 +145,12 @@
         show_right_cursor: function () {
             console.log("show_right_cursor");
 
-            // if (typeof window.cv.left_cursor == "undefined" ||
-            //     typeof window.cv.right_cursor == "undefined" ) {
-            //     window.cv.create_cursor();
-            // }
-
-            if (window.cv.left_cursor.style.display != "none") {
-                window.cv.left_cursor.style.display = "none";
+            if (this.left_cursor.style.display != "none") {
+                this.left_cursor.style.display = "none";
             }
 
-            if (window.cv.right_cursor.style.display != "none") {
-                return;
-            } else {
-                window.cv.right_cursor.style.display = "";
+            if (this.right_cursor.style.display == "none") {
+                this.right_cursor.style.display = "";
             }
         },
 
@@ -271,65 +204,13 @@
             document.body.appendChild(this.right_cursor);
         },
 
-
-        //显示箭头
-        show_left_cursor2: function () {
-            if (typeof window.cv.right_cursor != "undefined" && window.cv.right_cursor.cursor_state) {
-                window.cv.hide_cursor(window.cv.right_cursor);
-            }
-            if (typeof window.cv.left_cursor != "undefined" && window.cv.left_cursor.cursor_state) {
-                // window.cv.left_cursor.position.x = 200;
-                // window.cv.left_cursor.position.y = 0;
-                // window.cv.left_cursor.position.z = -10;
-                return;
-            }
-
-            var triangle_size = 15;
-            var triangle = new THREE.triangleGeometry(triangle_size);
-            var cursor = new THREE.Mesh( triangle ,new THREE.MeshBasicMaterial({
-                //map: texture,
-                color: 0xff0000
-            }));
-            cursor.position.x = -200;
-            cursor.position.y = 0;
-            cursor.position.z = -10;
-            cursor.rotation.z = -1*Math.PI/4;
-            cursor.cursor_state = 1;
-            window.cv.left_cursor = cursor;
-            scene.add(window.cv.left_cursor);
-        },
-
-        //显示箭头
-        show_right_cursor2: function () {
-            if (typeof window.cv.left_cursor != "undefined" && window.cv.left_cursor.cursor_state) {
-                window.cv.hide_cursor(window.cv.left_cursor);
-            }
-            if (typeof window.cv.right_cursor != "undefined" && window.cv.right_cursor.cursor_state) {
-                // window.cv.right_cursor.position.x = 200;
-                // window.cv.right_cursor.position.y = 0;
-                // window.cv.right_cursor.position.z = -10;
-                return;
-            }
-
-            var triangle_size = 15;
-            var triangle = new THREE.triangleGeometry(triangle_size);
-            var cursor = new THREE.Mesh( triangle ,new THREE.MeshBasicMaterial({
-                //map: texture,
-                color: 0xff0000
-            }));
-            cursor.position.x = 200;
-            cursor.position.y = 0;
-            cursor.position.z = -10;
-            cursor.rotation.z = 3*Math.PI/4;
-            cursor.cursor_state = 1;
-            window.cv.right_cursor = cursor;
-            scene.add(window.cv.right_cursor);
-        },
-
-        //隐藏箭头
-        hide_cursor2: function (cursor) {
-            cursor.cursor_state = 0;
-            scene.remove(cursor);
+        create_debug_canvas: function () {
+            var debugCanvas = document.createElement('canvas');
+            debugCanvas.width = this.canvas.width;
+            debugCanvas.height = this.canvas.height;
+            debugCanvas.id = 'debugCanvas';
+            this.debugCanvas = debugCanvas;
+            document.body.appendChild(debugCanvas);
         }
     };
 }() );
