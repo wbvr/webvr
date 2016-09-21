@@ -1,5 +1,12 @@
+var textures = {};
 function texiao() {
-    var texture = new THREE.TextureLoader().load( 'static/img/boat.png' );
+    var texture;
+    if(textures.boat === undefined){
+        texture = new THREE.TextureLoader().load( 'static/img/boat.png' );
+        textures.boat = texture;
+    } else {
+        texture = textures.boat;
+    }
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
@@ -38,10 +45,16 @@ function texiao() {
 }
 
 function texiao1() {
+    var texture;
+    if(textures.flower === undefined){
+        texture = new THREE.TextureLoader().load( 'static/img/flower1.png' );
+        textures.flower = texture;
+    } else {
+        texture = textures.flower;
+    }
     var Geometry = [];
     var efs = [];
     var rd = 200;
-    var texture = new THREE.TextureLoader().load( 'static/img/flower1.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
@@ -64,6 +77,19 @@ function texiao1() {
 
 function texiao2(x, y, z) {
 
+
+    var img = Math.floor(1 + 9 * Math.random());console.log(img);
+    var texture;
+    if(textures.like === undefined){
+        var like = [];
+        for (var i=1;i<10;i++) {
+            like[i] = new THREE.TextureLoader().load( 'static/img/' + i + '.png' );
+        }
+        texture = like[img];
+        textures.like = like;
+    } else {
+        texture = textures.like[img];
+    }
     var dp = 0;
     var h = 0;
     var th = dp * Math.PI /180;
@@ -72,8 +98,6 @@ function texiao2(x, y, z) {
     var rd = 10 + 100 * Math.random();
     var drd = 0.1 + 0.2 * Math.random();
     var f = Math.random() > 0.5 ? true: false;
-    var img = Math.floor(1 + 9 * Math.random());
-    var texture = new THREE.TextureLoader().load( 'static/img/' + img + '.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true,
@@ -113,6 +137,19 @@ function texiao2(x, y, z) {
 
 
 function texiao3() {
+
+    var img = Math.floor(1 + 9 * Math.random());console.log(img);
+    var texture;
+    if(textures.like === undefined){
+        var like = [];
+        for (var i=1;i<10;i++) {
+            like[i] = new THREE.TextureLoader().load( 'static/img/' + i + '.png' );
+        }
+        texture = like[img];
+        textures.like = like;
+    } else {
+        texture = textures.like[img];
+    }
     var x = 0;
     var y = -200;
     var z = -300;
@@ -125,8 +162,6 @@ function texiao3() {
     var rd = 10 + 100 * Math.random();
     var drd = 0.1 + 0.2 * Math.random();
     var f = (Math.random() > 0.5) ? 1: -1;
-    var img = Math.floor(1 + 9 * Math.random());
-    var texture = new THREE.TextureLoader().load( 'static/img/' + img + '.png' );
     var material = new THREE.MeshBasicMaterial( {
         map: texture,
         transparent: true
