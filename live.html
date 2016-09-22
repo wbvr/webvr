@@ -880,59 +880,61 @@ var initRecognizer = function() {
 			feedWords(wordList);});
 };
 
-// When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
-// request access to the microphone
-window.onload = function() {
-	outputContainer = document.getElementById("output");
-	updateStatus("Initializing web audio and speech recognizer, waiting for approval to access the microphone");
-	callbackManager = new CallbackManager();
-	spawnWorker("js/recognizer.js", function(worker) {
-			// This is the onmessage function, once the worker is fully loaded
-			worker.onmessage = function(e) {
-                // This is the case when we have a callback id to be called
-                if (e.data.hasOwnProperty('id')) {
+function open_voice() {
+    outputContainer = document.getElementById("output");
+    updateStatus("Initializing web audio and speech recognizer, waiting for approval to access the microphone");
+    callbackManager = new CallbackManager();
+    spawnWorker("js/recognizer.js", function(worker) {
+        // This is the onmessage function, once the worker is fully loaded
+        worker.onmessage = function(e) {
+            // This is the case when we have a callback id to be called
+            if (e.data.hasOwnProperty('id')) {
                 var clb = callbackManager.get(e.data['id']);
                 var data = {};
                 if ( e.data.hasOwnProperty('data')) data = e.data.data;
                 if(clb) clb(data);
+            }
+            // This is a case when the recognizer has a new hypothesis
+            // Notice that pocketsphinx.js does not yet recognize words
+            // encoded in UTF8, so we map them to ASCII strings. Here we
+            // display both ASCII and Chinese strings
+            if (e.data.hasOwnProperty('hyp')) {
+                console.log(e.data.hyp);
+                var hyparray = e.data.hyp.split(' ');
+                if(hyparray[hypNum] != '' && hyparray.length>hypNum){
+                    var newHyp = hyparray[hypNum];
+                    hypNum++;
+                    var newHypChinese = wordListChinese[newHyp];
+                    updateHyp(newHypChinese);
                 }
-                // This is a case when the recognizer has a new hypothesis
-                // Notice that pocketsphinx.js does not yet recognize words
-                // encoded in UTF8, so we map them to ASCII strings. Here we
-                // display both ASCII and Chinese strings
-                if (e.data.hasOwnProperty('hyp')) {
-                    console.log(e.data.hyp);
-                    var hyparray = e.data.hyp.split(' ');
-                    if(hyparray[hypNum] != '' && hyparray.length>hypNum){
-                        var newHyp = hyparray[hypNum];
-                        hypNum++;
-                        var newHypChinese = wordListChinese[newHyp];
-                        updateHyp(newHypChinese);
-                    }
-                }
-                // This is the case when we have an error
-                if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
-                    updateStatus("Error in " + e.data.command + " with code " + e.data.code);
-                }
-			};
-			// Once the worker is fully loaded, we can call the initialize function
-			initRecognizer();
-	});
+            }
+            // This is the case when we have an error
+            if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
+                updateStatus("Error in " + e.data.command + " with code " + e.data.code);
+            }
+        };
+        // Once the worker is fully loaded, we can call the initialize function
+        initRecognizer();
+    });
 
-	// The following is to initialize Web Audio
-	try {
-		window.AudioContext = window.AudioContext || window.webkitAudioContext;
-		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-		window.URL = window.URL || window.webkitURL;
-		audioContext = new AudioContext();
-	} catch (e) {
-		updateStatus("Error initializing Web Audio browser");
-	}
-	if (navigator.getUserMedia) navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-			updateStatus("No live audio input in this browser");
-			});
-	else updateStatus("No web audio support in this browser");
-    recognizer.postMessage({command: 'stop'});
+    // The following is to initialize Web Audio
+    try {
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        window.URL = window.URL || window.webkitURL;
+        audioContext = new AudioContext();
+    } catch (e) {
+        updateStatus("Error initializing Web Audio browser");
+    }
+    if (navigator.getUserMedia) navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+        updateStatus("No live audio input in this browser");
+    });
+    else updateStatus("No web audio support in this browser");
+}
+// When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
+// request access to the microphone
+window.onload = function() {
+    open_voice();
     //init WebSocket
     if (ws) {
         return false;
