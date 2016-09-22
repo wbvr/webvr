@@ -331,13 +331,24 @@
     var is_voice_init = false;
     var is_voice_change = false;
     function voice() {
+        var op;
         if(!is_voice_init) {
+            open_voice();
             is_voice_init = true;
             is_voice_change = true;
             setTimeout(function() {
                 is_voice_change = false;
             },10000);
-            open_voice();
+            op = menu.options[3];
+            oice_status = !voice_status;
+            menu.change_pic(op,'static/img/novoice.png');
+            menu.options[3].position.x = op.position.x;
+            menu.options[3].position.y = op.position.y;
+            menu.options[3].position.z = op.position.z;
+            menu.options[3].rotation.x = op.rotation.x;
+            menu.options[3].rotation.y = op.rotation.y;
+            menu.options[3].rotation.z = op.rotation.z;
+            menu.show(scene,eye_controler);
         }
         if (!is_voice_change){
             is_voice_change = true;
@@ -346,13 +357,13 @@
             },2000);
             if (1){
                 voice_status = !voice_status;
-                var op = menu.options[3];
+                op = menu.options[3];
                 if (voice_status){
-			console.log('start');
+			        console.log('start');
                     recognizer.postMessage({command: 'start'});
                     menu.change_pic(op,'static/img/novoice.png');
                 } else {
-			console.log('stop');
+			        console.log('stop');
                     recognizer.postMessage({command: 'stop'});
                     menu.change_pic(op,'static/img/voice.png');
                 }
