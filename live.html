@@ -328,8 +328,17 @@
 
 
     }
+    var is_voice_init = false;
     var is_voice_change = false;
     function voice() {
+        if(!is_voice_init) {
+            is_voice_init = true;
+            is_voice_change = true;
+            setTimeout(function() {
+                is_voice_change = false;
+            },10000);
+            open_voice();
+        }
         if (!is_voice_change){
             is_voice_change = true;
             setTimeout(function() {
@@ -934,7 +943,6 @@ function open_voice() {
 // When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
 // request access to the microphone
 window.onload = function() {
-    open_voice();
     //init WebSocket
     if (ws) {
         return false;
