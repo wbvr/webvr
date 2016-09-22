@@ -238,7 +238,9 @@
         video.play();
 
         video.addEventListener('playing',function(){
-        	window.cv = new CvControls(video);
+            if (typeof window.cv == "undefined") {
+                window.cv = new CvControls(video);
+            }
         });
 
 
