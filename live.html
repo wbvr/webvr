@@ -663,10 +663,13 @@
                     tmpTexture.format = THREE.RGBFormat;
                     tmpTexture.generateMipmaps = false;
 
-                    var tmpGeometry = new THREE.SphereBufferGeometry( 400, 60, 40 ).toNonIndexed();
+                    var tmpGeometry = new THREE.SphereBufferGeometry( 600, 60, 40 ).toNonIndexed();
                     tmpGeometry.scale( - 1, 1, 1 );
                     var tmpMaterial = new THREE.MeshBasicMaterial( { map: tmpTexture } );
-                    tmpMesh = new THREE.Mesh( get_geometry(), tmpMaterial );
+                    tmpMesh = new THREE.Mesh( tmpGeometry, tmpMaterial );
+                    var eulerYXZ = hc.getEulerYXZ();
+                    var th = eulerYXZ.y - Math.PI / 2;
+                    tmpMesh.rotation.set(0,th,0);
                     scene.add( tmpMesh );
                 }
                 function preDelVideo() {
@@ -749,7 +752,7 @@
 
 
     function get_geometry() {
-        var geometry = new THREE.SphereBufferGeometry( 500, 60, 40 ).toNonIndexed();
+        var geometry = new THREE.SphereBufferGeometry( 2000, 60, 40 ).toNonIndexed();
         geometry.scale( - 1, 1, 1 );
 
         // Remap UVs
