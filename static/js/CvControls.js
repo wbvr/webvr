@@ -3,26 +3,33 @@
  */
 ( function ( ) {
     var _this = null;
-    CvControls = function (obj,callback) {
+    CvControls = function (obj,callback,camera) {
         console.log("CvControls");
 
         _this = this;
         this.paused = false;
-        this.DEBUG = true;
+        this.DEBUG = false;
         window.DEBUG = this.DEBUG;
 
-        if (typeof callback != "undefined") {
+        if (typeof callback != "undefined" && callback != null) {
             this.callback = callback;
+        }
+
+        if (typeof camera != "undefined") {
+            this.camera = camera;
         }
 
         if (obj.tagName == "VIDEO") {
             this.video = obj;
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
-            this.canvas.width = this.video.videoWidth;
-            this.canvas.height = this.video.videoHeight;
-            this.init_cv();
-            this.update_frome_video();
+
+            setTimeout(function () {
+                _this.canvas.width = _this.video.videoWidth;
+                _this.canvas.height = _this.video.videoHeight;
+                _this.init_cv();
+                _this.update_frome_video();
+            },5000);
         } else if (obj.tagName == "CANVAS") {
             this.canvas = obj;
             this.ctx = this.canvas.getContext('2d');
@@ -67,24 +74,59 @@
                 return;
             }
 
-            var rad = Math.abs(this.half_canvas_width - x) / this.canvas.width * 2 * Math.PI;
-            //var half_horizontal_fov = Math.atan(far * Math.tan(fov/2 * Math.PI/180) * aspect / 2 / far);
+            // var rad = Math.abs(this.half_canvas_width - x) / this.canvas.width * 2 * Math.PI;
+            // //var half_horizontal_fov = Math.atan(far * Math.tan(fov/2 * Math.PI/180) * aspect / 2 / far);
 
-            if (rad > this.half_horizontal_fov) {
-                if (this.half_canvas_width - x > 0) {
-                    this.show_left_cursor();
-                } else {
-                    this.show_right_cursor();
-                }
+            var look = this.cameraWorldDirection;
+            var look_rad = 0;
+            if (look.x > 0 && look.z <= 0) {
+                look_rad = 2 * Math.PI - Math.atan(look.z/look.x);
+                console.log('look: '+1);
+            } else if (look.x > 0 && look.z >= 0) {
+                look_rad = -1 * Math.atan(look.z/look.x);
+                console.log('look: '+2);
+            } else if (look.x < 0 && look.z > 0) {
+                look_rad = Math.PI - Math.atan(look.z/look.x);
+                console.log('look: '+3);
+            } else if (look.x < 0 && look.z < 0) {
+                look_rad = Math.PI - Math.atan(look.z/look.x);
+                console.log('look: '+4);
+            } else if (x == 0 && y < 0) {
+                look_rad = 3 * Math.PI / 2;
+            } else if (x == 0 && y > 0) {
+                look_rad = Math.PI / 2;
             } else {
-                this.hide_cursor(this.left_cursor);
-                this.hide_cursor(this.right_cursor);
+                return;
             }
+            var found_rad = (x / this.canvas.width) * 2*Math.PI;
+            var rad = look_rad - found_rad;
+            console.log("found_rad: "+found_rad);
+            if (Math.abs(rad) < 3*Math.PI/4) {
+                //alert('hide');
+                this.hide();
+            } else if (rad > 0) {
+                this.show_left_cursor();
+            } else {
+                this.show_right_cursor();
+            }
+
+
+
+            // if (rad > this.half_horizontal_fov) {
+            //     if (this.half_canvas_width - x > 0) {
+            //         this.show_left_cursor();
+            //     } else {
+            //         this.show_right_cursor();
+            //     }
+            // } else {
+            //     this.hide_cursor(this.left_cursor);
+            //     this.hide_cursor(this.right_cursor);
+            // }
 
             //console.log("found",x, y);
         },
 
-        no_found: function () {
+        hide: function () {
             this.hide_cursor(this.left_cursor);
             this.hide_cursor(this.right_cursor);
         },
@@ -113,11 +155,13 @@
 
             if ( this.video.readyState >= this.video.HAVE_CURRENT_DATA ) {
 
+                this.cameraWorldDirection = this.camera.getWorldDirection();
+                console.log(this.cameraWorldDirection);
                 this.ctx.drawImage(this.video, 0, 0, this.canvas.width,this.canvas.height);
                 this.canvas.changed = true;
                 var result = this.detector.detectMarkerLite(this.raster, 170);
                 if (!result) {
-                    this.no_found();
+                    this.hide();
                 }
 
             }
@@ -130,6 +174,7 @@
         //显示箭头
         show_left_cursor: function () {
             console.log("show_left_cursor");
+            //alert('show_left_cursor');
 
             if (this.right_cursor.style.display != "none") {
                 this.right_cursor.style.display = "none";
@@ -144,6 +189,7 @@
         //显示箭头
         show_right_cursor: function () {
             console.log("show_right_cursor");
+            //alert('show_right_cursor');
 
             if (this.left_cursor.style.display != "none") {
                 this.left_cursor.style.display = "none";

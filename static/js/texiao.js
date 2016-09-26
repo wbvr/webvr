@@ -332,43 +332,34 @@ function  showTips(text) {
     var textMaterial = new THREE.MeshBasicMaterial({color:0x000000});        //物体加上材质
     textGeo.computeBoundingBox();
     textGeo.computeVertexNormals();
-    var length = ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+    var length = -1/2 *( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
 
     texts[0] = new THREE.Mesh( textGeo, textMaterial );
-    texts[0].position.set(240,220,-359);
+    texts[0].position.set(length,220,-359);
     scene.add(texts[0]);
     texts[1] = new THREE.Mesh( textGeo, textMaterial );
-    texts[1].position.set(-359,220,-240);
+    texts[1].position.set(-359,220,-length);
     texts[1].rotation.y = Math.PI/2;
     scene.add(texts[1]);
     texts[2] = new THREE.Mesh( textGeo, textMaterial );
-    texts[2].position.set(-240,220,359);
+    texts[2].position.set(-length,220,359);
     texts[2].rotation.y = -Math.PI;
     scene.add(texts[2]);
     texts[3] = new THREE.Mesh( textGeo, textMaterial );
-    texts[3].position.set(359,220,240);
+    texts[3].position.set(359,220,length);
     texts[3].rotation.y = -Math.PI/2;
     scene.add(texts[3]);
-    var end = 240+length;
-    function updateTips() {
-        time += 1;
-        var pos = 240-time;
-        if(pos > -end) {
-            texts[0].position.x=pos;
-            texts[1].position.z=-pos;
-            texts[2].position.x=-pos;
-            texts[3].position.z=pos;
-            window.requestAnimationFrame(updateTips);
-        } else {
-            scene.remove(texts[0]);
-            scene.remove(texts[1]);
-            scene.remove(texts[2]);
-            scene.remove(texts[3]);
-            scene.remove(curtains[0]);
-            scene.remove(curtains[1]);
-            scene.remove(curtains[2]);
-            scene.remove(curtains[3]);
-        }
+    function delTips() {
+        scene.remove(texts[0]);
+        scene.remove(texts[1]);
+        scene.remove(texts[2]);
+        scene.remove(texts[3]);
+        scene.remove(curtains[0]);
+        scene.remove(curtains[1]);
+        scene.remove(curtains[2]);
+        scene.remove(curtains[3]);
     }
-    window.requestAnimationFrame(updateTips);
+    setTimeout(delTips, 1000);
+
+
 }

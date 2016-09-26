@@ -57,6 +57,22 @@
 <script type="text/javascript">
     var user = false;
 
+    var camera, scene, renderer;
+    var video, texture;
+
+    var controls, effect;
+    var eye_controler;
+    var menu;
+    var hc = new HControl();     //头势控制&&菜单随动
+    var thing;
+    var ws;
+    var ambientLight;
+    var font;
+    var loader = new THREE.FontLoader();
+    loader.load( 'static/json/FZYaoTi_Regular.json', function ( response ) {
+        font = response;
+    } );
+    var voice_status = false;
 
     /**
      * @author mrdoob / http://mrdoob.com
@@ -181,22 +197,6 @@
 
     //
 
-    var camera, scene, renderer;
-    var video, texture;
-
-    var controls, effect;
-    var eye_controler;
-    var menu;
-    var hc = new HControl();     //头势控制&&菜单随动
-    var thing;
-    var ws;
-    var ambientLight;
-    var font;
-    var loader = new THREE.FontLoader();
-    loader.load( 'static/json/FZYaoTi_Regular.json', function ( response ) {
-        font = response;
-    } );
-    var voice_status = false;
     init();
     animate();
 
@@ -254,6 +254,7 @@
 
         material = new THREE.MeshLambertMaterial( { map: texture } );
         var mesh = new THREE.Mesh( get_geometry(), material );
+        mesh.rotation.y = - Math.PI / 2;
         scene.add( mesh );
 
         //add_menu();
@@ -328,8 +329,28 @@
 
 
     }
+    var is_voice_init = false;
     var is_voice_change = false;
     function voice() {
+        var op;
+        if(!is_voice_init) {
+            open_voice();
+            is_voice_init = true;
+            is_voice_change = true;
+            setTimeout(function() {
+                is_voice_change = false;
+            },10000);
+            op = menu.options[3];
+            voice_status = !voice_status;
+            menu.change_pic(op,'static/img/novoice.png');
+            menu.options[3].position.x = op.position.x;
+            menu.options[3].position.y = op.position.y;
+            menu.options[3].position.z = op.position.z;
+            menu.options[3].rotation.x = op.rotation.x;
+            menu.options[3].rotation.y = op.rotation.y;
+            menu.options[3].rotation.z = op.rotation.z;
+            menu.show(scene,eye_controler);
+        }
         if (!is_voice_change){
             is_voice_change = true;
             setTimeout(function() {
@@ -337,13 +358,13 @@
             },2000);
             if (1){
                 voice_status = !voice_status;
-                var op = menu.options[3];
+                op = menu.options[3];
                 if (voice_status){
-			console.log('start');
+			        console.log('start');
                     recognizer.postMessage({command: 'start'});
                     menu.change_pic(op,'static/img/novoice.png');
                 } else {
-			console.log('stop');
+			        console.log('stop');
                     recognizer.postMessage({command: 'stop'});
                     menu.change_pic(op,'static/img/voice.png');
                 }
@@ -880,59 +901,60 @@ var initRecognizer = function() {
 			feedWords(wordList);});
 };
 
-// When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
-// request access to the microphone
-window.onload = function() {
-	outputContainer = document.getElementById("output");
-	updateStatus("Initializing web audio and speech recognizer, waiting for approval to access the microphone");
-	callbackManager = new CallbackManager();
-	spawnWorker("js/recognizer.js", function(worker) {
-			// This is the onmessage function, once the worker is fully loaded
-			worker.onmessage = function(e) {
-                // This is the case when we have a callback id to be called
-                if (e.data.hasOwnProperty('id')) {
+function open_voice() {
+    outputContainer = document.getElementById("output");
+    updateStatus("Initializing web audio and speech recognizer, waiting for approval to access the microphone");
+    callbackManager = new CallbackManager();
+    spawnWorker("js/recognizer.js", function(worker) {
+        // This is the onmessage function, once the worker is fully loaded
+        worker.onmessage = function(e) {
+            // This is the case when we have a callback id to be called
+            if (e.data.hasOwnProperty('id')) {
                 var clb = callbackManager.get(e.data['id']);
                 var data = {};
                 if ( e.data.hasOwnProperty('data')) data = e.data.data;
                 if(clb) clb(data);
+            }
+            // This is a case when the recognizer has a new hypothesis
+            // Notice that pocketsphinx.js does not yet recognize words
+            // encoded in UTF8, so we map them to ASCII strings. Here we
+            // display both ASCII and Chinese strings
+            if (e.data.hasOwnProperty('hyp')) {
+                console.log(e.data.hyp);
+                var hyparray = e.data.hyp.split(' ');
+                if(hyparray[hypNum] != '' && hyparray.length>hypNum){
+                    var newHyp = hyparray[hypNum];
+                    hypNum++;
+                    var newHypChinese = wordListChinese[newHyp];
+                    updateHyp(newHypChinese);
                 }
-                // This is a case when the recognizer has a new hypothesis
-                // Notice that pocketsphinx.js does not yet recognize words
-                // encoded in UTF8, so we map them to ASCII strings. Here we
-                // display both ASCII and Chinese strings
-                if (e.data.hasOwnProperty('hyp')) {
-                    console.log(e.data.hyp);
-                    var hyparray = e.data.hyp.split(' ');
-                    if(hyparray[hypNum] != '' && hyparray.length>hypNum){
-                        var newHyp = hyparray[hypNum];
-                        hypNum++;
-                        var newHypChinese = wordListChinese[newHyp];
-                        updateHyp(newHypChinese);
-                    }
-                }
-                // This is the case when we have an error
-                if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
-                    updateStatus("Error in " + e.data.command + " with code " + e.data.code);
-                }
-			};
-			// Once the worker is fully loaded, we can call the initialize function
-			initRecognizer();
-	});
+            }
+            // This is the case when we have an error
+            if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
+                updateStatus("Error in " + e.data.command + " with code " + e.data.code);
+            }
+        };
+        // Once the worker is fully loaded, we can call the initialize function
+        initRecognizer();
+    });
 
-	// The following is to initialize Web Audio
-	try {
-		window.AudioContext = window.AudioContext || window.webkitAudioContext;
-		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-		window.URL = window.URL || window.webkitURL;
-		audioContext = new AudioContext();
-	} catch (e) {
-		updateStatus("Error initializing Web Audio browser");
-	}
-	if (navigator.getUserMedia) navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-			updateStatus("No live audio input in this browser");
-			});
-	else updateStatus("No web audio support in this browser");
-    recognizer.postMessage({command: 'stop'});
+    // The following is to initialize Web Audio
+    try {
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        window.URL = window.URL || window.webkitURL;
+        audioContext = new AudioContext();
+    } catch (e) {
+        updateStatus("Error initializing Web Audio browser");
+    }
+    if (navigator.getUserMedia) navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+        updateStatus("No live audio input in this browser");
+    });
+    else updateStatus("No web audio support in this browser");
+}
+// When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
+// request access to the microphone
+window.onload = function() {
     //init WebSocket
     if (ws) {
         return false;
