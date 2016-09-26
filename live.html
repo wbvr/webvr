@@ -57,6 +57,22 @@
 <script type="text/javascript">
     var user = false;
 
+    var camera, scene, renderer;
+    var video, texture;
+
+    var controls, effect;
+    var eye_controler;
+    var menu;
+    var hc = new HControl();     //头势控制&&菜单随动
+    var thing;
+    var ws;
+    var ambientLight;
+    var font;
+    var loader = new THREE.FontLoader();
+    loader.load( 'static/json/FZYaoTi_Regular.json', function ( response ) {
+        font = response;
+    } );
+    var voice_status = false;
 
     /**
      * @author mrdoob / http://mrdoob.com
@@ -181,22 +197,6 @@
 
     //
 
-    var camera, scene, renderer;
-    var video, texture;
-
-    var controls, effect;
-    var eye_controler;
-    var menu;
-    var hc = new HControl();     //头势控制&&菜单随动
-    var thing;
-    var ws;
-    var ambientLight;
-    var font;
-    var loader = new THREE.FontLoader();
-    loader.load( 'static/json/FZYaoTi_Regular.json', function ( response ) {
-        font = response;
-    } );
-    var voice_status = false;
     init();
     animate();
 
@@ -254,6 +254,7 @@
 
         material = new THREE.MeshLambertMaterial( { map: texture } );
         var mesh = new THREE.Mesh( get_geometry(), material );
+        mesh.rotation.y = - Math.PI / 2;
         scene.add( mesh );
 
         //add_menu();
