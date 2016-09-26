@@ -239,7 +239,7 @@
 
         video.addEventListener('playing',function(){
             if (typeof window.cv == "undefined") {
-                window.cv = new CvControls(video);
+                window.cv = new CvControls(video,null,camera);
             }
         });
 
