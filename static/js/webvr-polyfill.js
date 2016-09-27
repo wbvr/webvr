@@ -1134,9 +1134,9 @@ VRDisplay.prototype.wrapForFullscreen = function(element) {
     this.fullscreenWrapper_.setAttribute('style', cssProperties.join('; ') + ';');
     this.fullscreenWrapper_.classList.add('webvr-polyfill-fullscreen-wrapper');
       //by sohow
-      if (typeof eye_contrler != "undefined") {
-          this.fullscreenWrapper_.appendChild(eye_contrler.show_spote_l());
-          this.fullscreenWrapper_.appendChild(eye_contrler.show_spote_r());
+      if (typeof eye_controler != "undefined") {
+          this.fullscreenWrapper_.appendChild(eye_controler.show_spote_l());
+          this.fullscreenWrapper_.appendChild(eye_controler.show_spote_r());
       }
       if (typeof show_icon != "undefined") {
           this.fullscreenWrapper_.appendChild($('.left')[0]);
