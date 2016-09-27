@@ -227,7 +227,7 @@
         //video.src = 'http://10.235.24.45/hls/test.m3u8';
         //video.src = 'http://58.135.196.138:8090/live/789E9CE292A040d2A459CF55D2FB362E/789E9CE292A040d2A459CF55D2FB362E.m3u8';
         //video.src = 'http://hls.yy.com/live/54880976_54880976.m3u8?id=yyent&uid=0d268e721bafa16011ed420182ecd1d81472019973&appid=15012&uuid=1A3512763E4046869071355677D1FD4A';
-        //video.src = 'http://104.194.70.86/hls/vr.m3u8';
+        //video.src = 'https://sohow.applinzi.com/static/video/v2.mp4';
         video.src = 'http://10.235.24.45/hls/test.m3u8';
         //video.src = 'static/video/zp.mp4';
         video.setAttribute('crossorigin', 'anonymous');
@@ -238,8 +238,8 @@
         video.play();
 
         video.addEventListener('playing',function(){
-            if (typeof window.cv == "undefined") {
-                window.cv = new CvControls(video);
+            if (typeof window.cv_controler == "undefined") {
+                window.cv_controler = new CvControls(video,null,camera);
             }
         });
 
