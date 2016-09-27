@@ -12662,8 +12662,8 @@ FLARMultiIdMarkerDetectCB = ASKlass('FLARMultiIdMarkerDetectCB',
 
 
         //by sohow
-        if (window.cv instanceof CvControls) {
-            window.cv.found(cx, cy);
+        if (window.cv_controler instanceof CvControls) {
+            window.cv_controler.found(cx, cy);
         }
 
 

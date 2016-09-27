@@ -24,12 +24,12 @@
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
 
-            setTimeout(function () {
-                _this.canvas.width = _this.video.videoWidth;
-                _this.canvas.height = _this.video.videoHeight;
-                _this.init_cv();
-                _this.update_frome_video();
-            },5000);
+            this.canvas.width = this.video.videoWidth;
+            this.canvas.height = this.video.videoHeight;
+            console.log(this.canvas.width,this.canvas.height);
+            this.init_cv();
+            this.update_frome_video();
+
         } else if (obj.tagName == "CANVAS") {
             this.canvas = obj;
             this.ctx = this.canvas.getContext('2d');
@@ -74,56 +74,41 @@
                 return;
             }
 
-            // var rad = Math.abs(this.half_canvas_width - x) / this.canvas.width * 2 * Math.PI;
-            // //var half_horizontal_fov = Math.atan(far * Math.tan(fov/2 * Math.PI/180) * aspect / 2 / far);
-
             var look = this.cameraWorldDirection;
             var look_rad = 0;
             if (look.x > 0 && look.z <= 0) {
-                look_rad = 2 * Math.PI - Math.atan(look.z/look.x);
+                look_rad = 2 * Math.PI + Math.atan(look.z/look.x);
                 console.log('look: '+1);
             } else if (look.x > 0 && look.z >= 0) {
-                look_rad = -1 * Math.atan(look.z/look.x);
+                look_rad = Math.atan(look.z/look.x);
                 console.log('look: '+2);
-            } else if (look.x < 0 && look.z > 0) {
-                look_rad = Math.PI - Math.atan(look.z/look.x);
+            } else if (look.x < 0 && look.z >= 0) {
+                look_rad = Math.PI + Math.atan(look.z/look.x);
                 console.log('look: '+3);
-            } else if (look.x < 0 && look.z < 0) {
-                look_rad = Math.PI - Math.atan(look.z/look.x);
+            } else if (look.x < 0 && look.z <= 0) {
+                look_rad = Math.PI + Math.atan(look.z/look.x);
                 console.log('look: '+4);
-            } else if (x == 0 && y < 0) {
+            } else if (look.x == 0 && look.z < 0) {
                 look_rad = 3 * Math.PI / 2;
-            } else if (x == 0 && y > 0) {
+            } else if (look.x == 0 && look.z > 0) {
                 look_rad = Math.PI / 2;
             } else {
                 return;
             }
             var found_rad = (x / this.canvas.width) * 2*Math.PI;
             var rad = look_rad - found_rad;
-            console.log("found_rad: "+found_rad);
-            if (Math.abs(rad) < 3*Math.PI/4) {
+            console.log("look_rad: "+(look_rad*(180/Math.PI)).toFixed(0));
+            console.log("found_rad: "+(found_rad*(180/Math.PI)).toFixed(0));
+            if (Math.abs(rad) < Math.PI/3 || (2*Math.PI-Math.abs(rad)) < Math.PI/3) {
                 //alert('hide');
                 this.hide();
-            } else if (rad > 0) {
+            } else if ((rad > 0 && rad < Math.PI) || (rad < 0 && Math.abs(rad) > Math.PI)) {
+                //this.video.pause();
                 this.show_left_cursor();
             } else {
                 this.show_right_cursor();
             }
 
-
-
-            // if (rad > this.half_horizontal_fov) {
-            //     if (this.half_canvas_width - x > 0) {
-            //         this.show_left_cursor();
-            //     } else {
-            //         this.show_right_cursor();
-            //     }
-            // } else {
-            //     this.hide_cursor(this.left_cursor);
-            //     this.hide_cursor(this.right_cursor);
-            // }
-
-            //console.log("found",x, y);
         },
 
         hide: function () {
@@ -150,13 +135,12 @@
             //     _this.update_frome_video();
             // } );
 
-
             if (this.paused) return;
 
             if ( this.video.readyState >= this.video.HAVE_CURRENT_DATA ) {
 
                 this.cameraWorldDirection = this.camera.getWorldDirection();
-                console.log(this.cameraWorldDirection);
+                //console.log(this.cameraWorldDirection);
                 this.ctx.drawImage(this.video, 0, 0, this.canvas.width,this.canvas.height);
                 this.canvas.changed = true;
                 var result = this.detector.detectMarkerLite(this.raster, 170);
@@ -168,7 +152,7 @@
 
             setTimeout(function () {
                 _this.update_frome_video();
-            },1000);
+            },500);
         },
 
         //显示箭头
