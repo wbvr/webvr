@@ -292,6 +292,11 @@
         menu.add_option(scene, eye_controler, 'static/img/voice.png', function (obj) {
             voice();
         });
+        menu.add_option(scene, eye_controler, 'static/img/cview_close.png', function (obj) {
+            window.cv_controler.paused = !window.cv_controler.paused;
+            var str = window.cv_controler.paused ? 'close' : 'open';
+            menu.change_pic(obj,'static/img/cview_'+str+'.png');
+        });
         menu.show(scene,eye_controler);
 
         //
