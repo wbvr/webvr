@@ -95,7 +95,7 @@
             } else {
                 return;
             }
-            var found_rad = ((x / this.canvas.width) * 2*Math.PI + Math.PI/3) % (2*Math.PI);
+            var found_rad = ((x / this.canvas.width) * 2*Math.PI + Math.PI/2) % (2*Math.PI);
             var rad = look_rad - found_rad;
             console.log("look_rad: "+(look_rad*(180/Math.PI)).toFixed(0));
             console.log("found_rad: "+(found_rad*(180/Math.PI)).toFixed(0));
@@ -131,9 +131,9 @@
 
         //从video中找
         update_frome_video: function () {
-            // requestAnimationFrame( function () {
-            //     _this.update_frome_video();
-            // } );
+            requestAnimationFrame( function () {
+                _this.update_frome_video();
+            } );
 
             if (this.paused) return;
 
@@ -150,9 +150,9 @@
 
             }
 
-            setTimeout(function () {
-                _this.update_frome_video();
-            },500);
+            // setTimeout(function () {
+            //     _this.update_frome_video();
+            // },500);
         },
 
         //显示箭头
