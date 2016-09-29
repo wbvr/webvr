@@ -49,9 +49,6 @@
 <script src="static/js/HControl.js"></script>
 <!-- 图像识别-->
 <script src="static/js/CvControls.js"></script>
-<script src="static/js/device.js"></script>
-<script src="static/js/JSARToolKit.js"></script>
-<script src="static/js/magi.js"></script>
 
 
 <script type="text/javascript">
@@ -239,7 +236,7 @@
 
         video.addEventListener('playing',function(){
             if (typeof window.cv_controler == "undefined") {
-                window.cv_controler = new CvControls(video,null,camera);
+                window.cv_controler = new CvControls(video,camera,'static/js/JSARToolKit-worker.js');
             }
         });
 
@@ -292,11 +289,13 @@
         menu.add_option(scene, eye_controler, 'static/img/voice.png', function (obj) {
             voice();
         });
+
         menu.add_option(scene, eye_controler, 'static/img/cview_close.png', function (obj) {
-            window.cv_controler.paused = !window.cv_controler.paused;
+            window.cv_controler.switch();
             var str = window.cv_controler.paused ? 'close' : 'open';
             menu.change_pic(obj,'static/img/cview_'+str+'.png');
         });
+
         menu.show(scene,eye_controler);
 
         //
