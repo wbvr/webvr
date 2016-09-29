@@ -503,7 +503,7 @@ function head(data) {
             ws.send(msgs);
         }
         hc.closeNod();
-        hc.closeRock();
+        hc.closeShook();
         scene.remove(textMesh);
     }
 
@@ -757,3 +757,4 @@ function changeVideo(src) {
     })();
 
 }
+
