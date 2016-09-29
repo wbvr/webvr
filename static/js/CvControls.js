@@ -7,7 +7,7 @@
         console.log("CvControls");
 
         _this = this;
-        this.paused = false;
+        this.paused = true;
         this.DEBUG = false;
         window.DEBUG = this.DEBUG;
 
@@ -20,6 +20,7 @@
         }
 
         this.create_cursor();
+        this.update_timer = null;
         if (obj.tagName == "VIDEO") {
             this.video = obj;
             this.canvas = document.createElement('canvas');
@@ -31,18 +32,18 @@
 
             if (typeof worker_js == "string") {
                 this.init_worker(worker_js);
-                this.update_from_worker();
+                this.update_timer = this.update_from_worker;
             } else {
                 this.init_cv();
-                this.update_frome_video();
+                this.update_timer = this.update_frome_video;
             }
         } else if (obj.tagName == "CANVAS") {
             this.canvas = obj;
             this.ctx = this.canvas.getContext('2d');
             this.init_cv();
-            this.update_frome_canvas();
+            this.update_timer = this.update_frome_canvas;
         }
-
+        this.update_timer();
     };
 
     CvControls.prototype = {
@@ -312,6 +313,14 @@
             debugCanvas.id = 'debugCanvas';
             this.debugCanvas = debugCanvas;
             document.body.appendChild(debugCanvas);
-        }
+        },
+
+        switch: function () {
+            this.paused = !this.paused;
+            this.hide();
+            if (!this.paused) {
+                this.update_timer();
+            }
+        },
     };
 }() );
