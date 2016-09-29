@@ -239,12 +239,6 @@
             if (typeof window.cv_controler == "undefined") {
                 window.cv_controler = new CvControls(video,camera,'static/js/JSARToolKit-worker.js');
             }
-
-            menu.add_option(scene, eye_controler, 'static/img/cview_close.png', function (obj) {
-                window.cv_controler.paused = !window.cv_controler.paused;
-                var str = window.cv_controler.paused ? 'close' : 'open';
-                menu.change_pic(obj,'static/img/cview_'+str+'.png');
-            });
         });
 
 
@@ -297,6 +291,11 @@
             voice();
         });
 
+        menu.add_option(scene, eye_controler, 'static/img/cview_close.png', function (obj) {
+            window.cv_controler.paused = !window.cv_controler.paused;
+            var str = window.cv_controler.paused ? 'close' : 'open';
+            menu.change_pic(obj,'static/img/cview_'+str+'.png');
+        });
         menu.show(scene,eye_controler);
 
         //
