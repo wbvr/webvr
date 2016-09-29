@@ -3,7 +3,7 @@
  */
 ( function ( ) {
     var _this = null;
-    CvControls = function (obj,callback,camera) {
+    CvControls = function (obj,camera,worker_js,callback) {
         console.log("CvControls");
 
         _this = this;
@@ -15,10 +15,11 @@
             this.callback = callback;
         }
 
-        if (typeof camera != "undefined") {
+        if (typeof camera != "undefined" && camera != null) {
             this.camera = camera;
         }
 
+        this.create_cursor();
         if (obj.tagName == "VIDEO") {
             this.video = obj;
             this.canvas = document.createElement('canvas');
@@ -27,15 +28,21 @@
             this.canvas.width = this.video.videoWidth;
             this.canvas.height = this.video.videoHeight;
             console.log(this.canvas.width,this.canvas.height);
-            this.init_cv();
-            this.update_frome_video();
 
+            if (typeof worker_js == "string") {
+                this.init_worker(worker_js);
+                this.update_from_worker();
+            } else {
+                this.init_cv();
+                this.update_frome_video();
+            }
         } else if (obj.tagName == "CANVAS") {
             this.canvas = obj;
             this.ctx = this.canvas.getContext('2d');
             this.init_cv();
             this.update_frome_canvas();
         }
+
     };
 
     CvControls.prototype = {
@@ -62,9 +69,71 @@
             this.detector = new FLARMultiIdMarkerDetector(new FLARParam(this.canvas.width,this.canvas.height), 80);
             this.detector.setContinueMode(true);
             this.raster = new NyARRgbRaster_Canvas2D(this.canvas);
+
             this.half_canvas_width = this.canvas.width / 2;
-            this.create_cursor();
+
             this.set_fov(75);
+        },
+
+        init_worker: function (worker_js) {
+            this.MSG_TYPE = {INIT:1, DETECT:2, CURSOR: 3};
+            this.CURSOR_STATUS = {HIDDEN: 1, SHOW_LEFT: 2, SHOW_RIGHT: 3};
+
+            this.worker_js = worker_js;
+            this.worker = new Worker(worker_js);
+            this.worker.onmessage = this.worker_onmessage;
+
+            var msg = {type: this.MSG_TYPE.INIT,canvas_width: this.canvas.width, canvas_height: this.canvas.height};
+            this.worker.postMessage( msg );
+        },
+
+        update_from_worker: function () {
+            if (this.paused) return;
+
+            // requestAnimationFrame( function () {
+            //     _this.update_from_worker();
+            // } );
+
+            //不获取图像          45fps      流畅
+            //仅获取图像          35fps      略卡
+            //获取图像 + 识别图像  30fps      比较卡
+
+
+            //var start = new Date().getTime();
+            this.ctx.drawImage(this.video, 0, 0, this.canvas.width,this.canvas.height);
+            var data = this.ctx.getImageData(0,0,this.canvas.width,this.canvas.height);
+            //console.log("delay: "+ (new Date().getTime() - start));
+
+            var look = this.camera.getWorldDirection();
+            var msg = {type: this.MSG_TYPE.DETECT,pixel: data, look: look};
+            this.worker.postMessage( msg );
+
+
+            setTimeout(function () {
+                _this.update_from_worker();
+            },500);
+        },
+
+        worker_onmessage: function (e) {
+            switch (e.data.type) {
+                case _this.MSG_TYPE.CURSOR:
+                    _this.worker_on_cursor(e.data.stat);
+                    break;
+            }
+        },
+
+        worker_on_cursor: function (stat) {
+            switch (stat) {
+                case this.CURSOR_STATUS.SHOW_LEFT:
+                    this.show_left_cursor();
+                    break;
+                case this.CURSOR_STATUS.SHOW_RIGHT:
+                    this.show_right_cursor();
+                    break;
+                case this.CURSOR_STATUS.HIDDEN:
+                    this.hide();
+                    break;
+            }
         },
 
         //返回找到的坐标
@@ -99,7 +168,9 @@
             var rad = look_rad - found_rad;
             console.log("look_rad: "+(look_rad*(180/Math.PI)).toFixed(0));
             console.log("found_rad: "+(found_rad*(180/Math.PI)).toFixed(0));
-            if (Math.abs(rad) < Math.PI/3 || (2*Math.PI-Math.abs(rad)) < Math.PI/3) {
+
+
+            if (Math.abs(rad) < Math.PI/4 || (2*Math.PI-Math.abs(rad)) < Math.PI/4) {
                 //alert('hide');
                 this.hide();
             } else if ((rad > 0 && rad < Math.PI) || (rad < 0 && Math.abs(rad) > Math.PI)) {
@@ -131,9 +202,9 @@
 
         //从video中找
         update_frome_video: function () {
-            requestAnimationFrame( function () {
-                _this.update_frome_video();
-            } );
+            // requestAnimationFrame( function () {
+            //     _this.update_frome_video();
+            // } );
 
             if (this.paused) return;
 
@@ -143,16 +214,16 @@
                 //console.log(this.cameraWorldDirection);
                 this.ctx.drawImage(this.video, 0, 0, this.canvas.width,this.canvas.height);
                 this.canvas.changed = true;
+
                 var result = this.detector.detectMarkerLite(this.raster, 170);
                 if (!result) {
                     this.hide();
                 }
-
             }
 
             // setTimeout(function () {
             //     _this.update_frome_video();
-            // },500);
+            // },200);
         },
 
         //显示箭头
