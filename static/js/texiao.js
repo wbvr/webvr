@@ -757,4 +757,87 @@ function changeVideo(src) {
     })();
 
 }
+function countdown(num) {
 
+    var pointLight = new THREE.PointLight( 0xffffff, 1.5 );
+    pointLight.position.set( 0, 100, 90 );
+    scene.add( pointLight );
+
+    var colorhash  = "00ffff";
+    pointLight.color.setHex( parseInt( colorhash, 16 ) );
+
+
+    var curtainGeometry = new THREE.PlaneGeometry( 100, 100 );
+
+
+    var textMaterial = new THREE.MultiMaterial( [
+        new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.FlatShading } ), // front
+        new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
+    ] );
+    var textGeo = new THREE.TextGeometry( num, {
+
+        font: font,
+
+        size: 50,
+        height: 0,
+        curveSegments: 4,
+        bevelThickness: 2,
+        bevelSize: 1.5,
+        bevelEnabled: true,
+        material: 0,
+        extrudeMaterial: 1
+    });
+    textGeo.computeBoundingBox();
+    textGeo.computeVertexNormals();
+    var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+    var texts = [];
+    var curtains = [];
+    for (var i=-180;i < 180; i+=90){
+        texts[i] = new THREE.Mesh( textGeo, textMaterial );
+        curtains[i] = new THREE.Mesh( curtainGeometry ,new THREE.MeshBasicMaterial({
+            color: 0x000000
+        }));
+        var th = i * Math.PI /180;
+        texts[i].position.set(350 * Math.sin(th), 150, (-350 * Math.cos(th)));
+        texts[i].rotation.set(0,-th,0);
+        curtains[i].position.set(399 * Math.sin(th), 200, (-399 * Math.cos(th)));
+        curtains[i].rotation.set(0,-th,0);
+
+        scene.add(curtains[i]);
+        scene.add(texts[i]);
+    }
+    var c_do = function(){
+        num--;
+        for (var i=-180;i < 180; i+=90){
+            if(num < 0) {
+                scene.remove( texts[i]);
+                scene.remove(curtains[i]);
+            } else {
+                scene.remove(texts[i]);
+                var textGeo = new THREE.TextGeometry( num, {
+                    font: font,
+                    size: 50,
+                    height: 0,
+                    curveSegments: 4,
+                    bevelThickness: 2,
+                    bevelSize: 1.5,
+                    bevelEnabled: true,
+                    material: 0,
+                    extrudeMaterial: 1
+                });
+                textGeo.computeBoundingBox();
+                textGeo.computeVertexNormals();
+                var th = i * Math.PI /180;
+                centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+                texts[i] = new THREE.Mesh( textGeo, textMaterial );
+                texts[i].position.set(350 * Math.sin(th), 150, (-350 * Math.cos(th)));
+                texts[i].rotation.set(0,-th,0);
+
+                scene.add( texts[i]);
+            }
+        }
+        setTimeout(c_do,1000);
+    };
+    setTimeout(c_do,1000);
+
+}
