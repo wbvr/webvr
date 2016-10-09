@@ -586,7 +586,7 @@ window.onload = function() {
         return false;
     }
 
-    var vr_onmessage = function(evt) {
+    window.vr_onmessage = function(evt) {
         var data = JSON.parse(evt);
         console.log(data);
         if (data.type == "video"){
@@ -608,7 +608,7 @@ window.onload = function() {
         }
 
     };
-    var vs = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8087/user',vr_onmessage);
+    var vs = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8087/user',window.vr_onmessage);
 
 //    if (ws) {
 //        return false;
