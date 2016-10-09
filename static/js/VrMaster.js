@@ -8,6 +8,7 @@
         _this = this;
 
         this.total_group = 2;
+        this.user_num = 0;
 
         this.ws = ws;
         ws.onmessage = this.onmessage;
@@ -41,13 +42,14 @@
         },
 
         update_users: function (data) {
-            var gid = this.users.length % this.total_group;
+            var gid = this.user_num % this.total_group;
             var uid = data + "";
             if (typeof this.users[uid] == "undefined") {
                 this.users[uid] = {
                     uid: uid,
                     gid: gid
                 };
+                this.user_num++;
             }
         },
 
