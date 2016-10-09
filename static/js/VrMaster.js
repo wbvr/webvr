@@ -85,8 +85,8 @@
                 return a.score < b.score;
             });
 
-            this.send_rerank_msg(this.rank);
-            this.send_rerank_msg(this.grank);
+            this.send_rerank_msg([{group_name: 'total', group_data: this.rank}]);
+            //this.send_rerank_msg(this.grank);
         },
 
         send_rerank_msg: function (rank) {
