@@ -54,11 +54,11 @@
 
         worker_onmessage: function (event) {
             switch (event.data.type) {
-                case this.WORKER_MSG_TYPE.INIT:
-                    this.init_ws(event.data.data.ws_url);
+                case _this.WORKER_MSG_TYPE.INIT:
+                    _this.init_ws(event.data.data.ws_url);
                     break;
-                case this.WORKER_MSG_TYPE.SEND:
-                    this.ws_send(event.data.data);
+                case _this.WORKER_MSG_TYPE.SEND:
+                    _this.ws_send(event.data.data);
                     break;
             }
         },
