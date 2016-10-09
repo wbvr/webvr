@@ -71,10 +71,10 @@
             this.rank[uid]['score'] += gift_num;
             this.grank[gid][uid]['score'] += gift_num;
             this.rank.sort(function (a,b) {
-                return a.score < b.score;
+                return a.score > b.score;
             });
             this.grank[gid].sort(function (a,b) {
-                return a.score < b.score;
+                return a.score > b.score;
             });
             this.send_rerank_msg(this.rank);
             this.send_rerank_msg(this.grank);
