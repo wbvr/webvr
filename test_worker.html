@@ -48,8 +48,13 @@
 <script src="static/js/Geometry.js"></script>
 <script src="static/js/HControl.js"></script>
 <!-- 图像识别-->
-<script src="static/js/VrWorker.js"></script>
 <script src="static/js/CvControls.js"></script>
+<!-- 排行榜-->
+<script src="static/js/rank.js"></script>
+<!-- worker and websocket-->
+<script src="static/js/VrWorker.js"></script>
+<!--<script src="static/js/VrSocket.js"></script>-->
+<script src="static/js/VrMessage.js"></script>
 
 
 <script type="text/javascript">
@@ -63,7 +68,7 @@
     var menu;
     var hc = new HControl();     //头势控制&&菜单随动
     var thing;
-    var ws;
+    var ws, vs;
     var ambientLight;
     var font;
     var loader = new THREE.FontLoader();
@@ -213,8 +218,8 @@
 
         video = document.createElement( 'video' );
         //print_video_event();
-        video.loop = true;
-        video.muted = true;
+        //video.loop = true;
+        //video.muted = true;
 
         //http://58.135.196.138:8090/live/789E9CE292A040d2A459CF55D2FB362E/789E9CE292A040d2A459CF55D2FB362E.m3u8
 
@@ -226,13 +231,13 @@
         //video.src = 'http://58.135.196.138:8090/live/789E9CE292A040d2A459CF55D2FB362E/789E9CE292A040d2A459CF55D2FB362E.m3u8';
         //video.src = 'http://hls.yy.com/live/54880976_54880976.m3u8?id=yyent&uid=0d268e721bafa16011ed420182ecd1d81472019973&appid=15012&uuid=1A3512763E4046869071355677D1FD4A';
         //video.src = 'https://sohow.applinzi.com/static/video/v2.mp4';
-        video.src = 'static/video/cv.mp4';
+        //video.src = 'http://10.235.24.45/hls/test.m3u8';
+        video.src = 'https://10.235.24.45:8087/webvr/static/video/cv.mp4';
         //video.src = 'static/video/zp.mp4';
-
         video.setAttribute('crossorigin', 'anonymous');
+        //video.setAttribute( 'type', 'application/vnd.apple.mpegurl' );
+        //video.setAttribute( 'type', 'application/x-mpegURL' );	//video/mp4
         video.setAttribute( 'webkit-playsinline', 'webkit-playsinline' );
-        video.autoplay = true;
-        document.body.appendChild(video);
         video.load();
         video.play();
 
@@ -297,6 +302,7 @@
             var str = window.cv_controler.paused ? 'close' : 'open';
             menu.change_pic(obj,'static/img/cview_'+str+'.png');
         });
+
         menu.show(scene,eye_controler);
 
         //
@@ -576,20 +582,12 @@ function open_voice() {
 // request access to the microphone
 window.onload = function() {
     //init WebSocket
-    if (ws) {
+    if (vs) {
         return false;
     }
-    ws = new WebSocket('wss://10.235.24.45:8087/user');
-    console.log(ws);
-    ws.onopen = function(evt) {
-        console.log("WebSocket open");
-    };
-    ws.onclose = function(evt) {
-        console.log("WebSocket close");
-        ws = null;
-    };
-    ws.onmessage = function(evt) {
-        var data = JSON.parse(evt.data);
+
+    window.vr_onmessage = function(evt) {
+        var data = JSON.parse(evt);
         console.log(data);
         if (data.type == "video"){
             changeVideo(data.data);
@@ -610,10 +608,46 @@ window.onload = function() {
         }
 
     };
-    ws.onerror = function(evt) {
-        console.log("WebSocket error");
-        console.log(evt);
-    };
+    var vs = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8087/user',window.vr_onmessage);
+
+//    if (ws) {
+//        return false;
+//    }
+//    ws = new WebSocket('wss://10.235.24.45:8087/user');
+//    console.log(ws);
+//    ws.onopen = function(evt) {
+//        console.log("WebSocket open");
+//    };
+//    ws.onclose = function(evt) {
+//        console.log("WebSocket close");
+//        ws = null;
+//    };
+//    ws.onmessage = function(evt) {
+//        var data = JSON.parse(evt.data);
+//        console.log(data);
+//        if (data.type == "video"){
+//            changeVideo(data.data);
+//        } else if(data.type == "menu") {
+//            addBox(data.data);
+//        } else if(data.type == "item") {
+//            placeItem(data.data);
+//        } else if(data.type == "music") {
+//            playAudio(data.data);
+//        } else if(data.type == "uid") {
+//            user = data.data;
+//        } else if(data.type == "delitem") {
+//            delItem(data);
+//        } else if(data.type == "headmenu") {
+//            head(data.data);
+//        } else if(data.type == "tips") {
+//            showTips(data.data);
+//        }
+//
+//    };
+//    ws.onerror = function(evt) {
+//        console.log("WebSocket error");
+//        console.log(evt);
+//    };
 
 };
 

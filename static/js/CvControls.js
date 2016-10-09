@@ -81,16 +81,15 @@
             this.CURSOR_STATUS = {HIDDEN: 1, SHOW_LEFT: 2, SHOW_RIGHT: 3};
 
             this.worker_js = worker_js;
-            this.worker = new Worker(worker_js);
-            this.worker.onmessage = this.worker_onmessage;
+            this.worker = new VrWorker(worker_js,_this.worker_onmessage,_this.start,_this.stop);
+            //this.worker.onmessage = this.worker_onmessage;
 
             var msg = {type: this.MSG_TYPE.INIT,canvas_width: this.canvas.width, canvas_height: this.canvas.height};
-            this.worker.postMessage( msg );
+            this.worker.worker.postMessage( msg );
         },
 
         update_from_worker: function () {
             if (this.paused) return;
-
             // requestAnimationFrame( function () {
             //     _this.update_from_worker();
             // } );
@@ -107,7 +106,7 @@
 
             var look = this.camera.getWorldDirection();
             var msg = {type: this.MSG_TYPE.DETECT,pixel: data, look: look};
-            this.worker.postMessage( msg );
+            this.worker.worker.postMessage( msg );
 
 
             setTimeout(function () {
