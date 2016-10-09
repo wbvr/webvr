@@ -93,7 +93,7 @@
                     ws_url: ws_url
                 }
             };
-            this.worker.postMessage( msg );
+            this.worker.worker.postMessage( msg );
         }
     };
 
