@@ -69,7 +69,19 @@
             this.grank[gid].sort(function (a,b) {
                 return a.score < b.score;
             });
-            
+
+            var tmp_rank = [];
+            var x;
+            for (x in this.rank) {
+                tmp_rank[x.uid] = x;
+            }
+            this.rank = tmp_rank;
+
+            var tmp_grank = [];
+            for (x in this.grank[gid]) {
+                tmp_grank[x.uid] = x;
+            }
+            this.grank[gid] = tmp_grank;
 
             this.send_rerank_msg(this.rank);
             this.send_rerank_msg(this.grank);
