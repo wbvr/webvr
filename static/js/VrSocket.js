@@ -30,26 +30,26 @@
 
         ws_onmessage: function (event) {
             var msg = {
-                type: this.WS_MSG_TYPE.ONMESSAGE,
+                type: _this.WS_MSG_TYPE.ONMESSAGE,
                 data: event.data
             };
-            this.worker_send(msg);
+            _this.worker_send(msg);
         },
 
         ws_onopen: function (event) {
             var msg = {
-                type: this.WS_MSG_TYPE.ONOPEN,
+                type: _this.WS_MSG_TYPE.ONOPEN,
                 data: event.data
             };
-            this.worker_send(msg);
+            _this.worker_send(msg);
         },
 
         ws_onclose: function (event) {
             var msg = {
-                type: this.WS_MSG_TYPE.ONCLOSE,
+                type: _this.WS_MSG_TYPE.ONCLOSE,
                 data: event.data
             };
-            this.worker_send(msg);
+            _this.worker_send(msg);
         },
 
         worker_onmessage: function (event) {
