@@ -38,7 +38,7 @@
             var msg = {
                 type: this.MSG_TYPE.GIFT,
                 data: {
-                    uid: user.uid
+                    uid: user
                 }
             };
             this.send(msg);
