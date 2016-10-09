@@ -1,13 +1,8 @@
 var textures = {};
 function texiao() {
 
-    if (ws != null || user !== false) {
-        var msg = {
-            type : 'boat',
-            uid : user
-        };
-        msg=JSON.stringify(msg);
-        ws.send(msg);
+    if (vm != null || user !== false) {
+        vm.send(user);
     }
     var texture;
     if(textures.boat === undefined){
@@ -55,13 +50,8 @@ function texiao() {
 
 function texiao1() {
 
-    if (ws != null || user !== false) {
-        var msg = {
-            type : 'flowser',
-            uid : user
-        };
-        msg=JSON.stringify(msg);
-        ws.send(msg);
+    if (vm != null || user !== false) {
+        vm.send(user);
     }
     var texture;
     if(textures.flower === undefined){
