@@ -73,9 +73,11 @@
             this.rank.sort(function (a,b) {
                 return a.score < b.score;
             });
-            this.grank[gid].sort(function (a,b) {
+            var tmp = this.grank[gid];
+            tmp.sort(function (a,b) {
                 return a.score < b.score;
             });
+            this.grank[gid] = tmp;
             this.send_rerank_msg(this.rank);
             this.send_rerank_msg(this.grank);
         },
