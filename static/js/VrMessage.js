@@ -69,13 +69,13 @@
 
         worker_onmessage: function (event) {
             switch (event.data.type) {
-                case this.WS_MSG_TYPE.ONMESSAGE:
-                    this.onmessage(event.data.data);
+                case _this.WS_MSG_TYPE.ONMESSAGE:
+                    _this.onmessage(event.data.data);
                     break;
-                case this.WS_MSG_TYPE.ONOPEN:
+                case _this.WS_MSG_TYPE.ONOPEN:
 
                     break;
-                case this.WS_MSG_TYPE.ONCLOSE:
+                case _this.WS_MSG_TYPE.ONCLOSE:
 
                     break;
             }
@@ -93,7 +93,7 @@
                     ws_url: ws_url
                 }
             };
-            this.worker.postMessage( msg );
+            this.worker.worker.postMessage( msg );
         }
     };
 
