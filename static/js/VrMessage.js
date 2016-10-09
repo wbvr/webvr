@@ -31,7 +31,7 @@
                 type: this.WORKER_MSG_TYPE.SEND,
                 data: data
             };
-            this.worker.postMessage(msg);
+            this.worker.worker.postMessage(msg);
         },
 
         send_gift: function (user) {
