@@ -51,6 +51,7 @@
                     _this.init_ws(event.data.data.ws_url);
                     break;
                 case _this.WORKER_MSG_TYPE.SEND:
+                    _this.worker_send({type:4,data:event.data});
                     _this.ws_send(event.data.data);
                     break;
             }
