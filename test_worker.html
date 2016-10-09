@@ -605,6 +605,8 @@ window.onload = function() {
             head(data.data);
         } else if(data.type == "tips") {
             showTips(data.data);
+        } else if(data.type == "rank") {
+            showRank(data.data);
         }
 
     };
