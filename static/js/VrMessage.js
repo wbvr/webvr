@@ -10,7 +10,7 @@
         this.WORKER_MSG_TYPE = {INIT:1, SEND:2};
         this.WS_MSG_TYPE = {ONMESSAGE: 1, ONOPEN: 2, ONCLOSE: 3};
         //this.MSG_TYPE = {VIDEO: 1,MENU: 2, ITEM: 3, MUSIC: 4, UID: 5, DELITEM: 6, HEADMENU: 7, TIPS: 8, RANK: 9};
-
+        this.MSG_TYPE = {GIFT: 1};
         this.onmessage = onmessage;
         this.init_worker(worker_js, ws_url);
     };
@@ -34,38 +34,15 @@
             this.worker.postMessage(msg);
         },
 
-        // onmessage: function (data) {
-        //     var msg = JSON.parse(data);
-        //     switch (msg.type) {
-        //         case this.MSG_TYPE.VIDEO:
-        //
-        //             break;
-        //         case this.MSG_TYPE.MENU:
-        //
-        //             break;
-        //         case this.MSG_TYPE.ITEM:
-        //
-        //             break;
-        //         case this.MSG_TYPE.MUSIC:
-        //
-        //             break;
-        //         case this.MSG_TYPE.UID:
-        //
-        //             break;
-        //         case this.MSG_TYPE.DELITEM:
-        //
-        //             break;
-        //         case this.MSG_TYPE.HEADMENU:
-        //
-        //             break;
-        //         case this.MSG_TYPE.TIPS:
-        //
-        //             break;
-        //         case this.MSG_TYPE.RANK:
-        //
-        //             break;
-        //     }
-        // },
+        send_gift: function (user) {
+            var msg = {
+                type: this.MSG_TYPE.GIFT,
+                data: {
+                    uid: user.uid
+                }
+            };
+            this.send(msg);
+        },
 
         worker_onmessage: function (event) {
             switch (event.data.type) {
