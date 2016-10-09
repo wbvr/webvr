@@ -21,13 +21,6 @@
             this.ws.onclose = this.ws_onclose;
         },
 
-        send: function (msg) {
-            if (typeof msg != "string") {
-                msg = JSON.stringify(msg);
-            }
-            this.ws.send(msg);
-        },
-
         ws_onmessage: function (event) {
             var msg = {
                 type: _this.WS_MSG_TYPE.ONMESSAGE,
@@ -68,6 +61,9 @@
         },
 
         ws_send: function (msg) {
+            if (typeof msg != "string") {
+                msg = JSON.stringify(msg);
+            }
             this.ws.send(msg);
         }
 
