@@ -15,7 +15,8 @@
         this.MSG_TYPE = {
             GIFT: 1,         //{type:1, data:{uid: 110, gid: 1, gift_type: 1}}
             ONLINE: 'userup',
-            OFFLINE: 'userdown'
+            OFFLINE: 'userdown',
+            RANK: 'rank'
         };
 
     };
@@ -90,7 +91,7 @@
 
         send_rerank_msg: function (rank) {
             var data = {
-                type: this.MSG_TYPE.GIFT,
+                type: this.MSG_TYPE.RANK,
                 data: rank
             };
             var msg = JSON.stringify(data);
