@@ -92,7 +92,7 @@
                 type: this.MSG_TYPE.GIFT,
                 data: rank
             };
-            var msg = JSON.parse(data);
+            var msg = JSON.stringify(data);
             this.ws.send(msg);
         }
     };
