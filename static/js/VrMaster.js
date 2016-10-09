@@ -73,13 +73,13 @@
             var tmp_rank = [];
             var x;
             for (x in this.rank) {
-                tmp_rank[x.uid] = x;
+                tmp_rank[this.rank[x].uid] = this.rank[x];
             }
             this.rank = tmp_rank;
 
             var tmp_grank = [];
             for (x in this.grank[gid]) {
-                tmp_grank[x.uid] = x;
+                tmp_grank[this.grank[gid][x].uid] = this.grank[gid][x];
             }
             this.grank[gid] = tmp_grank;
 
