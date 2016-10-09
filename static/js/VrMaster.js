@@ -43,46 +43,46 @@
 
         update_users: function (data) {
             var gid = this.user_num % this.total_group;
-            var uid = "u"+data;
+            var uid = data;
             if (typeof this.users[uid] == "undefined") {
                 this.users[uid] = {
                     uid: uid,
                     gid: gid
                 };
-                this.rank[uid] = {uid: uid, score: 0};
+
+                this.rank.push({uid: uid, score: 0});
                 if (typeof this.grank[gid] == "undefined") {
                     this.grank[gid] = [];
                 }
-                this.grank[gid][uid] = {uid: uid, score: 0};
+                this.grank[gid].push({uid: uid, score: 0});
+
                 this.user_num++;
             }
         },
 
         rerank: function (uid,gift_num) {
-            uid = "u"+uid;
             var gid = this.users[uid]['gid'];
 
-            this.rank[uid]['score'] += gift_num;
-            this.grank[gid][uid]['score'] += gift_num;
+            var i;
+            for (i= 0; i < this.rank.length; i++) {
+                if (this.rank[i].uid == uid) {
+                    this.rank[i].score += gift_num;
+                    break;
+                }
+            }
+            for (i = 0; i < this.grank[gid].length; i++) {
+                if (this.grank[gid][i].uid == uid) {
+                    this.grank[gid][i].score += gift_num;
+                    break;
+                }
+            }
+
             this.rank.sort(function (a,b) {
                 return a.score < b.score;
             });
             this.grank[gid].sort(function (a,b) {
                 return a.score < b.score;
             });
-
-            var tmp_rank = [];
-            var x;
-            for (x in this.rank) {
-                tmp_rank[this.rank[x].uid] = this.rank[x];
-            }
-            this.rank = tmp_rank;
-
-            var tmp_grank = [];
-            for (x in this.grank[gid]) {
-                tmp_grank[this.grank[gid][x].uid] = this.grank[gid][x];
-            }
-            this.grank[gid] = tmp_grank;
 
             this.send_rerank_msg(this.rank);
             this.send_rerank_msg(this.grank);
