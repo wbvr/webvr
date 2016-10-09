@@ -68,7 +68,7 @@
     var menu;
     var hc = new HControl();     //头势控制&&菜单随动
     var thing;
-    var ws, vs;
+    var vm;
     var ambientLight;
     var font;
     var loader = new THREE.FontLoader();
@@ -582,7 +582,7 @@ function open_voice() {
 // request access to the microphone
 window.onload = function() {
     //init WebSocket
-    if (vs) {
+    if (vm) {
         return false;
     }
 
@@ -608,7 +608,7 @@ window.onload = function() {
         }
 
     };
-    var vs = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8087/user',window.vr_onmessage);
+    vm = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8087/user',window.vr_onmessage);
 
 //    if (ws) {
 //        return false;
