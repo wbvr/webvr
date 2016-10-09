@@ -7,7 +7,7 @@
         console.log("CvControls");
 
         _this = this;
-        this.paused = true;
+        this.paused = false;
         this.DEBUG = false;
         window.DEBUG = this.DEBUG;
 
@@ -20,7 +20,6 @@
         }
 
         this.create_cursor();
-        this.update_timer = null;
         if (obj.tagName == "VIDEO") {
             this.video = obj;
             this.canvas = document.createElement('canvas');
@@ -32,18 +31,18 @@
 
             if (typeof worker_js == "string") {
                 this.init_worker(worker_js);
-                this.update_timer = this.update_from_worker;
+                this.update_from_worker();
             } else {
                 this.init_cv();
-                this.update_timer = this.update_frome_video;
+                this.update_frome_video();
             }
         } else if (obj.tagName == "CANVAS") {
             this.canvas = obj;
             this.ctx = this.canvas.getContext('2d');
             this.init_cv();
-            this.update_timer = this.update_frome_canvas;
+            this.update_frome_canvas();
         }
-        this.update_timer();
+
     };
 
     CvControls.prototype = {
@@ -81,16 +80,15 @@
             this.CURSOR_STATUS = {HIDDEN: 1, SHOW_LEFT: 2, SHOW_RIGHT: 3};
 
             this.worker_js = worker_js;
-            this.worker = new Worker(worker_js);
-            this.worker.onmessage = this.worker_onmessage;
+            this.worker = new VrWorker(worker_js,_this.worker_onmessage,_this.start,_this.stop);
+            //this.worker.onmessage = this.worker_onmessage;
 
             var msg = {type: this.MSG_TYPE.INIT,canvas_width: this.canvas.width, canvas_height: this.canvas.height};
-            this.worker.postMessage( msg );
+            this.worker.worker.postMessage( msg );
         },
 
         update_from_worker: function () {
             if (this.paused) return;
-
             // requestAnimationFrame( function () {
             //     _this.update_from_worker();
             // } );
@@ -107,7 +105,7 @@
 
             var look = this.camera.getWorldDirection();
             var msg = {type: this.MSG_TYPE.DETECT,pixel: data, look: look};
-            this.worker.postMessage( msg );
+            this.worker.worker.postMessage( msg );
 
 
             setTimeout(function () {
@@ -313,14 +311,6 @@
             debugCanvas.id = 'debugCanvas';
             this.debugCanvas = debugCanvas;
             document.body.appendChild(debugCanvas);
-        },
-
-        switch: function () {
-            this.paused = !this.paused;
-            this.hide();
-            if (!this.paused) {
-                this.update_timer();
-            }
-        },
+        }
     };
 }() );
