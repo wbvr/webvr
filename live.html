@@ -51,6 +51,10 @@
 <script src="static/js/CvControls.js"></script>
 <!-- 排行榜-->
 <script src="static/js/rank.js"></script>
+<!-- worker and websocket-->
+<script src="static/js/VrWorker.js"></script>
+<!--<script src="static/js/VrSocket.js"></script>-->
+<script src="static/js/VrMessage.js"></script>
 
 
 <script type="text/javascript">
@@ -64,7 +68,7 @@
     var menu;
     var hc = new HControl();     //头势控制&&菜单随动
     var thing;
-    var ws;
+    var ws, vs;
     var ambientLight;
     var font;
     var loader = new THREE.FontLoader();
@@ -577,20 +581,12 @@ function open_voice() {
 // request access to the microphone
 window.onload = function() {
     //init WebSocket
-    if (ws) {
+    if (vs) {
         return false;
     }
-    ws = new WebSocket('wss://10.235.24.45:8087/user');
-    console.log(ws);
-    ws.onopen = function(evt) {
-        console.log("WebSocket open");
-    };
-    ws.onclose = function(evt) {
-        console.log("WebSocket close");
-        ws = null;
-    };
-    ws.onmessage = function(evt) {
-        var data = JSON.parse(evt.data);
+
+    window.vr_onmessage = function(evt) {
+        var data = JSON.parse(evt);
         console.log(data);
         if (data.type == "video"){
             changeVideo(data.data);
@@ -611,10 +607,7 @@ window.onload = function() {
         }
 
     };
-    ws.onerror = function(evt) {
-        console.log("WebSocket error");
-        console.log(evt);
-    };
+    var vs = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8087/user',window.vr_onmessage);
 
 };
 
