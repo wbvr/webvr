@@ -42,9 +42,10 @@
 
         update_users: function (data) {
             var gid = this.users.length % this.total_group;
-            if (typeof this.users[data] == "undefined") {
-                this.users[data] = {
-                    uid: data,
+            var uid = data + "";
+            if (typeof this.users[uid] == "undefined") {
+                this.users[uid] = {
+                    uid: uid,
                     gid: gid
                 };
             }
