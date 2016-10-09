@@ -587,7 +587,7 @@ window.onload = function() {
     }
 
     window.vr_onmessage = function(evt) {
-        var data = JSON.parse(evt.data);
+        var data = JSON.parse(evt);
         console.log(data);
         if (data.type == "video"){
             changeVideo(data.data);
