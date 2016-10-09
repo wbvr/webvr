@@ -49,8 +49,8 @@
                     uid: uid,
                     gid: gid
                 };
-                this.rank[uid]['score'] = 0;
-                this.grank[gid][uid]['score'] = 0;
+                this.rank[uid] = {score: 0};
+                this.grank[gid][uid] = {score: 0};
                 this.user_num++;
             }
         },
@@ -59,10 +59,10 @@
             var gid = this.users[uid]['gid'];
 
             if (typeof this.rank[uid] == "undefined") {
-                this.rank[uid]['score'] = 0;
+                this.rank[uid] = {score: 0};
             }
             if (typeof this.grank[gid][uid]['score'] == "undefined") {
-                this.grank[gid][uid]['score'] = 0;
+                this.grank[gid][uid] = {score: 0};
             }
 
             this.rank[uid]['score'] += gift_num;
