@@ -73,7 +73,7 @@
             this.rank.sort(function (a,b) {
                 return a.score < b.score;
             });
-            var tmp = this.grank[gid];
+            var tmp = this.grank[gid].concat();
             tmp.sort(function (a,b) {
                 return a.score < b.score;
             });
