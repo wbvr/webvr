@@ -49,11 +49,11 @@
                     uid: uid,
                     gid: gid
                 };
-                this.rank[uid] = {score: 0};
+                this.rank[uid] = {uid: uid, score: 0};
                 if (typeof this.grank[gid] == "undefined") {
                     this.grank[gid] = [];
                 }
-                this.grank[gid][uid] = {score: 0};
+                this.grank[gid][uid] = {uid: uid, score: 0};
                 this.user_num++;
             }
         },
@@ -61,32 +61,26 @@
         rerank: function (uid,gift_num) {
             var gid = this.users[uid]['gid'];
 
-            if (typeof this.rank[uid] == "undefined") {
-                this.rank[uid] = {score: 0};
-            }
-            if (typeof this.grank[gid][uid]['score'] == "undefined") {
-                this.grank[gid][uid] = {score: 0};
-            }
-
             this.rank[uid]['score'] += gift_num;
             this.grank[gid][uid]['score'] += gift_num;
             this.rank.sort(function (a,b) {
                 return a.score < b.score;
             });
-            var tmp = this.grank[gid].concat();
-            tmp.sort(function (a,b) {
+            this.grank[gid].sort(function (a,b) {
                 return a.score < b.score;
             });
-            this.grank[gid] = tmp;
+            
+
             this.send_rerank_msg(this.rank);
             this.send_rerank_msg(this.grank);
         },
 
         send_rerank_msg: function (rank) {
-            var msg = {
+            var data = {
                 type: this.MSG_TYPE.GIFT,
                 data: rank
             };
+            var msg = JSON.parse(data);
             this.ws.send(msg);
         }
     };
