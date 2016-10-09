@@ -2,7 +2,7 @@ var textures = {};
 function texiao() {
 
     if (vm != null || user !== false) {
-        vm.send(user);
+        vm.send_gift(user);
     }
     var texture;
     if(textures.boat === undefined){
@@ -51,7 +51,7 @@ function texiao() {
 function texiao1() {
 
     if (vm != null || user !== false) {
-        vm.send(user);
+        vm.send_gift(user);
     }
     var texture;
     if(textures.flower === undefined){
