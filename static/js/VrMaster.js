@@ -51,7 +51,7 @@
                 };
                 this.rank[uid] = {score: 0};
                 if (typeof this.grank[gid] == "undefined") {
-                    this.grank[gid] = {};
+                    this.grank[gid] = [];
                 }
                 this.grank[gid][uid] = {score: 0};
                 this.user_num++;
