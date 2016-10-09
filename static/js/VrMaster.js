@@ -43,7 +43,7 @@
 
         update_users: function (data) {
             var gid = this.user_num % this.total_group;
-            var uid = data + "";
+            var uid = "u"+data;
             if (typeof this.users[uid] == "undefined") {
                 this.users[uid] = {
                     uid: uid,
@@ -59,6 +59,7 @@
         },
 
         rerank: function (uid,gift_num) {
+            uid = "u"+uid;
             var gid = this.users[uid]['gid'];
 
             this.rank[uid]['score'] += gift_num;
