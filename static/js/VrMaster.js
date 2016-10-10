@@ -115,8 +115,10 @@
             this.ws_send(msg);
         },
 
-        ws_send: function (data) {
-            var msg = JSON.stringify(data);
+        ws_send: function (msg) {
+            if (typeof msg != "string") {
+                msg = JSON.stringify(msg);
+            }
             this.ws.send(msg);
         }
     };
