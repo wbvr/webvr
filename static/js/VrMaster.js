@@ -35,15 +35,15 @@
                     _this.rerank(msg.data.uid, 1);
                     break;
                 case _this.MSG_TYPE.ONLINE:
-                    _this.update_users(msg.data);
+                    _this.user_online(msg.data);
                     break;
                 case _this.MSG_TYPE.OFFLINE:
-
+                    _this.user_offline(msg.data);
                     break;
             }
         },
 
-        update_users: function (data) {
+        user_online: function (data) {
             var gid = this.user_num % this.total_group;
             var uid = data;
             if (typeof this.users[uid] == "undefined") {
@@ -62,6 +62,35 @@
 
                 this.user_num++;
             }
+            this.send_rerank_msg(this.rank);
+            this.send_rerank_msg(this.grank);
+        },
+
+        user_offline: function (data) {
+            var uid = data;
+            var i;
+            for (i= 0; i < this.rank[0].group_data.length; i++) {
+                if (this.rank[0].group_data[i].uid == uid) {
+                    this.rank[0].group_data.splice(i,1);
+                    break;
+                }
+            }
+
+            var group_data = [];
+            for (i = 0; i < this.grank.length; i++) {
+                if (gid == this.grank[i].gid) {
+                    group_data = this.grank[i].group_data;
+                }
+            }
+            var flag = false;
+            for (i = 0; i < group_data.length; i++) {
+                if (group_data[i].uid == uid) {
+                    group_data.splice(i,1);
+                    flag = true;
+                    break;
+                }
+            }
+
             this.send_rerank_msg(this.rank);
             this.send_rerank_msg(this.grank);
         },
