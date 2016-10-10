@@ -108,7 +108,7 @@
                 data: rank
             };
             var msg = JSON.stringify(data);
-            console.log(rank);
+            console.log(msg);
             this.ws.send(msg);
         }
     };
