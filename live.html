@@ -74,6 +74,7 @@
     var loader = new THREE.FontLoader();
     loader.load( 'static/json/FZYaoTi_Regular.json', function ( response ) {
         font = response;
+        init_ws();
     } );
     var voice_status = false;
 
@@ -579,7 +580,7 @@
     }
     // When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
     // request access to the microphone
-    window.onload = function() {
+    window.init_ws = function() {
         //init WebSocket
         if (vm) {
             return false;
