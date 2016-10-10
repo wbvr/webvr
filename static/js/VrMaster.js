@@ -94,7 +94,7 @@
             this.rank[0].group_data.sort(function (a,b) {
                 return a.score < b.score;
             });
-            group.sort(function (a,b) {
+            group_data.sort(function (a,b) {
                 return a.score < b.score;
             });
 
