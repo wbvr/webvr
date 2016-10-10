@@ -108,6 +108,7 @@
                 data: rank
             };
             var msg = JSON.stringify(data);
+            console.log(msg);
             this.ws.send(msg);
         }
     };
