@@ -73,22 +73,22 @@
                     break;
                 }
             }
-            var group = [];
+            var group_data = [];
             for (i = 0; i < this.grank.length; i++) {
                 if (gid == this.grank[i].gid) {
-                    group = this.grank[i];
+                    group_data = this.grank[i].group_data;
                 }
             }
             var flag = false;
-            for (i = 0; i < group.length; i++) {
-                if (group[i].uid == uid) {
-                    group[i].score += gift_num;
+            for (i = 0; i < group_data.length; i++) {
+                if (group_data[i].uid == uid) {
+                    group_data[i].score += gift_num;
                     flag = true;
                     break;
                 }
             }
             if (!flag) {
-                group.push({uid: uid, score: gift_num});
+                group_data.push({uid: uid, score: gift_num});
             }
 
             this.rank[0].group_data.sort(function (a,b) {
