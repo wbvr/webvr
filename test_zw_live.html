@@ -232,7 +232,7 @@
         //video.src = 'http://hls.yy.com/live/54880976_54880976.m3u8?id=yyent&uid=0d268e721bafa16011ed420182ecd1d81472019973&appid=15012&uuid=1A3512763E4046869071355677D1FD4A';
         //video.src = 'https://sohow.applinzi.com/static/video/v2.mp4';
         //video.src = 'http://10.235.24.45/hls/test.m3u8';
-        video.src = 'https://10.235.24.45:8037/webvr/static/video/cv.mp4';
+        video.src = 'https://10.235.24.45:8091/webvr/static/video/cv.mp4';
         //video.src = 'static/video/zp.mp4';
         video.setAttribute('crossorigin', 'anonymous');
         //video.setAttribute( 'type', 'application/vnd.apple.mpegurl' );
@@ -607,10 +607,18 @@
                 showTips(data.data);
             } else if(data.type == "rank") {
                 showRank(data.data);
+            }  else if(data.type == "gift") {
+                if (data.data.uid != user) {
+                    if (data.data.gift_type == vm.GIFT_TYPE.FLOWER) {
+                        texiao1(false);
+                    } else if (data.data.gift_type == vm.GIFT_TYPE.BOAT) {
+                        texiao(false);
+                    }
+                }
             }
 
         };
-        vm = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8037/user',window.vr_onmessage);
+        vm = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8091/user',window.vr_onmessage);
 
     };
 

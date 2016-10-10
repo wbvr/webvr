@@ -13,7 +13,7 @@
         this.ws = ws;
         ws.onmessage = this.onmessage;
         this.MSG_TYPE = {
-            GIFT: 1,         //{type:1, data:{uid: 110, gid: 1, gift_type: 1}}
+            GIFT: "gift",         //{type:"gift", data:{uid: 110, gift_type: "flower"}}
             ONLINE: 'userup',
             OFFLINE: 'userdown',
             RANK: 'rank'
@@ -31,6 +31,7 @@
             var msg = JSON.parse(event.data);
             switch (msg.type) {
                 case _this.MSG_TYPE.GIFT:
+                    _this.ws_send(msg);
                     _this.rerank(msg.data.uid, 1);
                     break;
                 case _this.MSG_TYPE.ONLINE:
@@ -111,6 +112,11 @@
             };
             var msg = JSON.stringify(data);
             console.log(msg);
+            this.ws_send(msg);
+        },
+
+        ws_send: function (data) {
+            var msg = JSON.stringify(data);
             this.ws.send(msg);
         }
     };

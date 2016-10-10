@@ -1,8 +1,10 @@
 var textures = {};
-function texiao() {
-
-    if (vm != null || user !== false) {
-        vm.send_gift(user);
+function texiao(is_send_msg) {
+    if (typeof is_send_msg == "undefined") {
+        is_send_msg = true;
+    }
+    if (is_send_msg && (vm != null || user !== false)) {
+        vm.send_gift(user,vm.GIFT_TYPE.BOAT);
     }
     var texture;
     if(textures.boat === undefined){
@@ -48,10 +50,13 @@ function texiao() {
     requestAnimationFrame(up);
 }
 
-function texiao1() {
+function texiao1(is_send_msg) {
 
-    if (vm != null || user !== false) {
-        vm.send_gift(user);
+    if (typeof is_send_msg == "undefined") {
+        is_send_msg = true;
+    }
+    if (is_send_msg && (vm != null || user !== false)) {
+        vm.send_gift(user,vm.GIFT_TYPE.FLOWER);
     }
     var texture;
     if(textures.flower === undefined){
