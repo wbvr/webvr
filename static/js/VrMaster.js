@@ -68,6 +68,7 @@
 
         user_offline: function (data) {
             var uid = data;
+            var gid = this.users[uid]['gid'];
             var i;
             for (i= 0; i < this.rank[0].group_data.length; i++) {
                 if (this.rank[0].group_data[i].uid == uid) {
