@@ -68,7 +68,7 @@
     var menu;
     var hc = new HControl();     //头势控制&&菜单随动
     var thing;
-    var ws, vs;
+    var vm;
     var ambientLight;
     var font;
     var loader = new THREE.FontLoader();
@@ -261,7 +261,7 @@
         scene.add( mesh );
 
         //add_menu();
-	    menu = new THREE.VrMenu();
+        menu = new THREE.VrMenu();
 
         var is_play = false;
         var is_zan = false;
@@ -412,214 +412,216 @@
 
 </script>
 <script>
-// These will be initialized later
-var recognizer, recorder, callbackManager, audioContext, outputContainer;
-// Only when both recorder and recognizer do we have a ready application
-var isRecorderReady = isRecognizerReady = false;
+    // These will be initialized later
+    var recognizer, recorder, callbackManager, audioContext, outputContainer;
+    // Only when both recorder and recognizer do we have a ready application
+    var isRecorderReady = isRecognizerReady = false;
 
-// A convenience function to post a message to the recognizer and associate
-// a callback to its response
-function postRecognizerJob(message, callback) {
-	var msg = message || {};
-	if (callbackManager) msg.callbackId = callbackManager.add(callback);
-	if (recognizer) recognizer.postMessage(msg);
-};
+    // A convenience function to post a message to the recognizer and associate
+    // a callback to its response
+    function postRecognizerJob(message, callback) {
+        var msg = message || {};
+        if (callbackManager) msg.callbackId = callbackManager.add(callback);
+        if (recognizer) recognizer.postMessage(msg);
+    };
 
-// This function initializes an instance of the recorder
-// it posts a message right away and calls onReady when it
-// is ready so that onmessage can be properly set
-function spawnWorker(workerURL, onReady) {
-	recognizer = new Worker(workerURL);
-	recognizer.onmessage = function(event) {
-		onReady(recognizer);
-	};
-	// Notice that we pass the name of the pocketsphinx.js file to load
-	// as we need the file packaged with the Chinese acoustic model
-	recognizer.postMessage('pocketsphinx_zh.js');
-};
-
-// To display the hypothesis sent by the recognizer
-function updateHyp(hyp) {
-	switch(hyp){
-		case '送鲜花':
-			texiao1();
-			break;
-		case '送邮轮':
-			texiao();
-            break;
-        case '点个赞':
-            zan(10);
-            break;
-		default:
-			break;
-	}
-};
-
-function checkLunch() {
-	if (isRecorderReady && isRecognizerReady){
-		recorder && recorder.start(0)
-	}
-};
-
-// This is just a logging window where we display the status
-function updateStatus(newStatus) {
-	//document.getElementById('current-status').innerHTML += "<br/>" + newStatus;
-};
-
-// Callback function once the user authorises access to the microphone
-// in it, we instanciate the recorder
-function startUserMedia(stream) {
-	var input = audioContext.createMediaStreamSource(stream);
-	// Firefox hack https://support.mozilla.org/en-US/questions/984179
-	window.firefox_audio_hack = input;
-	// Notice that for this Chinese acoustic model, audio must be at 8kHz, so we should
-	// request it from the recorder
-	var audioRecorderConfig = {
-errorCallback: function(x) {updateStatus("Error from recorder: " + x);},
-	       outputSampleRate: 8000
-	};
-	recorder = new AudioRecorder(input, audioRecorderConfig);
-	// If a recognizer is ready, we pass it to the recorder
-	if (recognizer) recorder.consumers = [recognizer];
-	isRecorderReady = true;
-	checkLunch();
-	updateStatus("Audio recorder ready");
-};
-
-// Called once the recognizer is ready
-// We then add the grammars to the input select tag and update the UI
-var recognizerReady = function() {
-	isRecognizerReady = true;
-	checkLunch();
-	updateStatus("Recognizer ready");
-};
-
-// This adds a grammar from the grammars array
-// We add them one by one and call it again as
-// a callback.
-// Once we are done adding all grammars, we can call
-// recognizerReady()
-var feedGrammar = function(g, index, id) {
-	if (id && (grammarIds.length > 0)) grammarIds[0].id = id.id;
-	if (index < g.length) {
-		grammarIds.unshift({title: g[index].title})
-			postRecognizerJob({command: 'addGrammar', data: g[index].g},
-					function(id) {feedGrammar(grammars, index + 1, {id:id});});
-	} else {
-		recognizerReady();
-	}
-};
-
-// This adds words to the recognizer. When it calls back, we add grammars
-var feedWords = function(words) {
-	postRecognizerJob({command: 'addWords', data: words},
-			function() {feedGrammar(grammars, 0);});
-};
-
-// This initializes the recognizer. When it calls back, we add words
-var initRecognizer = function() {
-	// You can pass parameters to the recognizer, such as : {command: 'initialize', data: [["-hmm", "my_model"], ["-fwdflat", "no"]]}
-	// Pay attention here to state the sample rate as the default value is 16kHz and this Chinese acoustic model uses 8kHz
-	postRecognizerJob({command: 'initialize', data:[["-samprate", "8000"]]},
-			function() {
-			if (recorder) recorder.consumers = [recognizer];
-			feedWords(wordList);});
-};
-
-function open_voice() {
-    outputContainer = document.getElementById("output");
-    updateStatus("Initializing web audio and speech recognizer, waiting for approval to access the microphone");
-    callbackManager = new CallbackManager();
-    spawnWorker("js/recognizer.js", function(worker) {
-        // This is the onmessage function, once the worker is fully loaded
-        worker.onmessage = function(e) {
-            // This is the case when we have a callback id to be called
-            if (e.data.hasOwnProperty('id')) {
-                var clb = callbackManager.get(e.data['id']);
-                var data = {};
-                if ( e.data.hasOwnProperty('data')) data = e.data.data;
-                if(clb) clb(data);
-            }
-            // This is a case when the recognizer has a new hypothesis
-            // Notice that pocketsphinx.js does not yet recognize words
-            // encoded in UTF8, so we map them to ASCII strings. Here we
-            // display both ASCII and Chinese strings
-            if (e.data.hasOwnProperty('hyp')) {
-                console.log(e.data.hyp);
-                var hyparray = e.data.hyp.split(' ');
-                if(hyparray[hypNum] != '' && hyparray.length>hypNum){
-                    var newHyp = hyparray[hypNum];
-                    hypNum++;
-                    var newHypChinese = wordListChinese[newHyp];
-                    updateHyp(newHypChinese);
-                }
-            }
-            // This is the case when we have an error
-            if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
-                updateStatus("Error in " + e.data.command + " with code " + e.data.code);
-            }
+    // This function initializes an instance of the recorder
+    // it posts a message right away and calls onReady when it
+    // is ready so that onmessage can be properly set
+    function spawnWorker(workerURL, onReady) {
+        recognizer = new Worker(workerURL);
+        recognizer.onmessage = function(event) {
+            onReady(recognizer);
         };
-        // Once the worker is fully loaded, we can call the initialize function
-        initRecognizer();
-    });
+        // Notice that we pass the name of the pocketsphinx.js file to load
+        // as we need the file packaged with the Chinese acoustic model
+        recognizer.postMessage('pocketsphinx_zh.js');
+    };
 
-    // The following is to initialize Web Audio
-    try {
-        window.AudioContext = window.AudioContext || window.webkitAudioContext;
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        window.URL = window.URL || window.webkitURL;
-        audioContext = new AudioContext();
-    } catch (e) {
-        updateStatus("Error initializing Web Audio browser");
-    }
-    if (navigator.getUserMedia) navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
-        updateStatus("No live audio input in this browser");
-    });
-    else updateStatus("No web audio support in this browser");
-}
-// When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
-// request access to the microphone
-window.onload = function() {
-    //init WebSocket
-    if (vs) {
-        return false;
-    }
+    // To display the hypothesis sent by the recognizer
+    function updateHyp(hyp) {
+        switch(hyp){
+            case '送鲜花':
+                texiao1();
+                break;
+            case '送邮轮':
+                texiao();
+                break;
+            case '点个赞':
+                zan(10);
+                break;
+            default:
+                break;
+        }
+    };
 
-    window.vr_onmessage = function(evt) {
-        var data = JSON.parse(evt);
-        console.log(data);
-        if (data.type == "video"){
-            changeVideo(data.data);
-        } else if(data.type == "menu") {
-            addBox(data.data);
-        } else if(data.type == "item") {
-            placeItem(data.data);
-        } else if(data.type == "music") {
-            playAudio(data.data);
-        } else if(data.type == "uid") {
-            user = data.data;
-        } else if(data.type == "delitem") {
-            delItem(data);
-        } else if(data.type == "headmenu") {
-            head(data.data);
-        } else if(data.type == "tips") {
-            showTips(data.data);
+    function checkLunch() {
+        if (isRecorderReady && isRecognizerReady){
+            recorder && recorder.start(0)
+        }
+    };
+
+    // This is just a logging window where we display the status
+    function updateStatus(newStatus) {
+        //document.getElementById('current-status').innerHTML += "<br/>" + newStatus;
+    };
+
+    // Callback function once the user authorises access to the microphone
+    // in it, we instanciate the recorder
+    function startUserMedia(stream) {
+        var input = audioContext.createMediaStreamSource(stream);
+        // Firefox hack https://support.mozilla.org/en-US/questions/984179
+        window.firefox_audio_hack = input;
+        // Notice that for this Chinese acoustic model, audio must be at 8kHz, so we should
+        // request it from the recorder
+        var audioRecorderConfig = {
+            errorCallback: function(x) {updateStatus("Error from recorder: " + x);},
+            outputSampleRate: 8000
+        };
+        recorder = new AudioRecorder(input, audioRecorderConfig);
+        // If a recognizer is ready, we pass it to the recorder
+        if (recognizer) recorder.consumers = [recognizer];
+        isRecorderReady = true;
+        checkLunch();
+        updateStatus("Audio recorder ready");
+    };
+
+    // Called once the recognizer is ready
+    // We then add the grammars to the input select tag and update the UI
+    var recognizerReady = function() {
+        isRecognizerReady = true;
+        checkLunch();
+        updateStatus("Recognizer ready");
+    };
+
+    // This adds a grammar from the grammars array
+    // We add them one by one and call it again as
+    // a callback.
+    // Once we are done adding all grammars, we can call
+    // recognizerReady()
+    var feedGrammar = function(g, index, id) {
+        if (id && (grammarIds.length > 0)) grammarIds[0].id = id.id;
+        if (index < g.length) {
+            grammarIds.unshift({title: g[index].title})
+            postRecognizerJob({command: 'addGrammar', data: g[index].g},
+                    function(id) {feedGrammar(grammars, index + 1, {id:id});});
+        } else {
+            recognizerReady();
+        }
+    };
+
+    // This adds words to the recognizer. When it calls back, we add grammars
+    var feedWords = function(words) {
+        postRecognizerJob({command: 'addWords', data: words},
+                function() {feedGrammar(grammars, 0);});
+    };
+
+    // This initializes the recognizer. When it calls back, we add words
+    var initRecognizer = function() {
+        // You can pass parameters to the recognizer, such as : {command: 'initialize', data: [["-hmm", "my_model"], ["-fwdflat", "no"]]}
+        // Pay attention here to state the sample rate as the default value is 16kHz and this Chinese acoustic model uses 8kHz
+        postRecognizerJob({command: 'initialize', data:[["-samprate", "8000"]]},
+                function() {
+                    if (recorder) recorder.consumers = [recognizer];
+                    feedWords(wordList);});
+    };
+
+    function open_voice() {
+        outputContainer = document.getElementById("output");
+        updateStatus("Initializing web audio and speech recognizer, waiting for approval to access the microphone");
+        callbackManager = new CallbackManager();
+        spawnWorker("js/recognizer.js", function(worker) {
+            // This is the onmessage function, once the worker is fully loaded
+            worker.onmessage = function(e) {
+                // This is the case when we have a callback id to be called
+                if (e.data.hasOwnProperty('id')) {
+                    var clb = callbackManager.get(e.data['id']);
+                    var data = {};
+                    if ( e.data.hasOwnProperty('data')) data = e.data.data;
+                    if(clb) clb(data);
+                }
+                // This is a case when the recognizer has a new hypothesis
+                // Notice that pocketsphinx.js does not yet recognize words
+                // encoded in UTF8, so we map them to ASCII strings. Here we
+                // display both ASCII and Chinese strings
+                if (e.data.hasOwnProperty('hyp')) {
+                    console.log(e.data.hyp);
+                    var hyparray = e.data.hyp.split(' ');
+                    if(hyparray[hypNum] != '' && hyparray.length>hypNum){
+                        var newHyp = hyparray[hypNum];
+                        hypNum++;
+                        var newHypChinese = wordListChinese[newHyp];
+                        updateHyp(newHypChinese);
+                    }
+                }
+                // This is the case when we have an error
+                if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
+                    updateStatus("Error in " + e.data.command + " with code " + e.data.code);
+                }
+            };
+            // Once the worker is fully loaded, we can call the initialize function
+            initRecognizer();
+        });
+
+        // The following is to initialize Web Audio
+        try {
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            window.URL = window.URL || window.webkitURL;
+            audioContext = new AudioContext();
+        } catch (e) {
+            updateStatus("Error initializing Web Audio browser");
+        }
+        if (navigator.getUserMedia) navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+            updateStatus("No live audio input in this browser");
+        });
+        else updateStatus("No web audio support in this browser");
+    }
+    // When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
+    // request access to the microphone
+    window.onload = function() {
+        //init WebSocket
+        if (vm) {
+            return false;
         }
 
+        window.vr_onmessage = function(evt) {
+            var data = JSON.parse(evt);
+            console.log(data);
+            if (data.type == "video"){
+                changeVideo(data.data);
+            } else if(data.type == "menu") {
+                addBox(data.data);
+            } else if(data.type == "item") {
+                placeItem(data.data);
+            } else if(data.type == "music") {
+                playAudio(data.data);
+            } else if(data.type == "uid") {
+                user = data.data;
+            } else if(data.type == "delitem") {
+                delItem(data);
+            } else if(data.type == "headmenu") {
+                head(data.data);
+            } else if(data.type == "tips") {
+                showTips(data.data);
+            } else if(data.type == "rank") {
+                showRank(data.data);
+            }
+
+        };
+        vm = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8087/user',window.vr_onmessage);
+
     };
-    var vs = new VrMessage('static/js/VrSocket.js','wss://10.235.24.45:8087/user',window.vr_onmessage);
 
-};
-
-// This is the list of words that need to be added to the recognizer
-// This follows the CMU dictionary format and the phone set of the Chinese model
-// These words were taken from model/lm/zh_CN/mandarin_notone.dic
-var wordList = [["dian_ge_zan","d i an g e z an"], ["song_you_lun", "s ong y ou l un"], ["song_xian_hua", "s ong x i an h ua"]];
-var wordListChinese = {"dian_ge_zan": "点个赞", "song_you_lun": "送邮轮", "song_xian_hua": "送鲜花"};
-var grammarChineseGreetings = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "dian_ge_zan"},{from: 0, to: 0, word: "song_you_lun"},{from: 0, to: 0, word: "song_xian_hua"}]};
-var grammars = [{title: "Chinese Greetings", g: grammarChineseGreetings}];
-var grammarIds = [];
-var hypNum = 0;
+    // This is the list of words that need to be added to the recognizer
+    // This follows the CMU dictionary format and the phone set of the Chinese model
+    // These words were taken from model/lm/zh_CN/mandarin_notone.dic
+    var wordList = [["dian_ge_zan","d i an g e z an"], ["song_you_lun", "s ong y ou l un"], ["song_xian_hua", "s ong x i an h ua"]];
+    var wordListChinese = {"dian_ge_zan": "点个赞", "song_you_lun": "送邮轮", "song_xian_hua": "送鲜花"};
+    var grammarChineseGreetings = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "dian_ge_zan"},{from: 0, to: 0, word: "song_you_lun"},{from: 0, to: 0, word: "song_xian_hua"}]};
+    var grammars = [{title: "Chinese Greetings", g: grammarChineseGreetings}];
+    var grammarIds = [];
+    var hypNum = 0;
 </script>
 <!-- These are the two JavaScript files you must load in the HTML,
     The recognizer is loaded through a Web Worker -->

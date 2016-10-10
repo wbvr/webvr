@@ -21,13 +21,6 @@
             this.ws.onclose = this.ws_onclose;
         },
 
-        send: function (msg) {
-            if (typeof msg != "string") {
-                msg = JSON.stringify(msg);
-            }
-            this.ws.send(msg);
-        },
-
         ws_onmessage: function (event) {
             var msg = {
                 type: _this.WS_MSG_TYPE.ONMESSAGE,
@@ -58,6 +51,7 @@
                     _this.init_ws(event.data.data.ws_url);
                     break;
                 case _this.WORKER_MSG_TYPE.SEND:
+                    _this.worker_send({type:4,data:event.data});
                     _this.ws_send(event.data.data);
                     break;
             }
@@ -68,6 +62,9 @@
         },
 
         ws_send: function (msg) {
+            if (typeof msg != "string") {
+                msg = JSON.stringify(msg);
+            }
             this.ws.send(msg);
         }
 

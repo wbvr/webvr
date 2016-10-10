@@ -1,13 +1,8 @@
 var textures = {};
 function texiao() {
 
-    if (ws != null || user !== false) {
-        var msg = {
-            type : 'boat',
-            uid : user
-        };
-        msg=JSON.stringify(msg);
-        ws.send(msg);
+    if (vm != null || user !== false) {
+        vm.send_gift(user);
     }
     var texture;
     if(textures.boat === undefined){
@@ -55,13 +50,8 @@ function texiao() {
 
 function texiao1() {
 
-    if (ws != null || user !== false) {
-        var msg = {
-            type : 'flowser',
-            uid : user
-        };
-        msg=JSON.stringify(msg);
-        ws.send(msg);
+    if (vm != null || user !== false) {
+        vm.send_gift(user);
     }
     var texture;
     if(textures.flower === undefined){
@@ -291,7 +281,7 @@ function s(x, y, z) {
     scene.add(ef);
     var dp = 0;
 }
-
+var delTips;
 function  showTips(text) {
     var curtains = [],
         texts = [];
@@ -349,7 +339,7 @@ function  showTips(text) {
     texts[3].position.set(359,220,length);
     texts[3].rotation.y = -Math.PI/2;
     scene.add(texts[3]);
-    function delTips() {
+    delTips = function() {
         scene.remove(texts[0]);
         scene.remove(texts[1]);
         scene.remove(texts[2]);
@@ -419,17 +409,20 @@ function voice() {
 
 
 }
+var stopAudio;
 function playAudio(src) {
     var audio = new Audio();
     audio.src=src;
     audio.play();
-    audio.addEventListener('ended',function(){
+    stopAudio = function(){
+        audio.pause();
         audio = null;
-    });
-
+    }
+    audio.addEventListener('ended',stopAudio);
 }
 
-var item;
+
+var items = [];
 function placeItem(data) {
     var     width =  100,
         height =  100,
@@ -461,7 +454,7 @@ function placeItem(data) {
         th = Math.asin(x / radiu);
     }
 
-    item = new THREE.VrMenu();
+    var item = new THREE.VrMenu();
     item.menu_position.set(x, y, z);
     item.option_margin_x = width;
     item.option_height = height;
@@ -482,10 +475,14 @@ function placeItem(data) {
     item.options[0].position.z = z;
     item.options[0].rotation.y = -th;
     item.show(scene,eye_controler);
+    items.push(item);
 
 }
 function delItem() {
-    item.remove_option(scene, eye_controler, item.options[0]);
+    while (items.length > 0){
+        item = items.pop();
+        item.remove_option(scene, eye_controler, item.options[0]);
+    }
 }
 function head(data) {
     var box;
@@ -567,10 +564,11 @@ function head(data) {
     }
 }
 
+var delBox;
 function addBox(data) {
     var box;
     var textMesh;
-    function remove() {
+    delBox = function() {
         if (data.title != ""){
             scene.remove(textMesh);
         }
@@ -604,7 +602,7 @@ function addBox(data) {
                 msg=JSON.stringify(msg);
                 ws.send(msg);
             }
-            remove();
+            delBox();
         });
         box.options[i].name = ms;
     }
@@ -657,9 +655,9 @@ function addBox(data) {
 
         scene.add(textMesh);
     }
-
 }
 
+var stopVideo;
 function changeVideo(src) {
     var video_status = 0;
     var tmpMesh;
@@ -707,9 +705,12 @@ function changeVideo(src) {
             function delVideo() {
                 scene.remove( tmpMesh );
             }
-            tmpVideo.addEventListener('ended',function(){
+            stopVideo = function(){
+                tmpVideo.pause();
+                tmpVideo = null;
                 preDelVideo();
-            });
+            };
+            tmpVideo.addEventListener('ended',stopVideo);
             var handler = function(){
                 var color = ambientLight.color.r * 255;
                 if (light_status == 0) {
@@ -757,6 +758,7 @@ function changeVideo(src) {
     })();
 
 }
+ var delcountdown;
 function countdown(num) {
 
     var pointLight = new THREE.PointLight( 0xffffff, 1.5 );
@@ -805,6 +807,10 @@ function countdown(num) {
 
         scene.add(curtains[i]);
         scene.add(texts[i]);
+    }
+    delcountdown = function(){
+        num=0;
+        c_do();
     }
     var c_do = function(){
         num--;
