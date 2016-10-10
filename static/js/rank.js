@@ -1,10 +1,14 @@
-var op
+var op;
 function showRank(data){
-    // var data = [
-    //     {group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}
-    //     ,{group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}
-    //     ];
-    op= getRank(data);
+    if (op !== undefined){
+        removeRank();
+        op = null;
+    }
+//     var data = [
+//         {group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}
+//         ,{group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}
+//         ];
+//    op= getRank(data);
     scene.add(op);
 }
 function removeRank() {
@@ -83,7 +87,7 @@ function getOne(data) {
     curtain.position.set(200,0,-300);
     ob.add(curtain);
 
-    var img = Math.floor(1 + 9 * Math.random());console.log(img);
+    var img = Math.floor(1 + 9 * Math.random());
     var texture;
     if(textures.like === undefined){
         var like = [];
