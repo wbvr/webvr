@@ -58,7 +58,6 @@
                 if (typeof this.grank[gid] == "undefined") {
                     this.grank.push({group_name:gid,gid: gid,group_data:[]});
                 }
-                this.grank[gid].push({uid: uid, score: 0});
 
                 this.user_num++;
             }
@@ -80,11 +79,16 @@
                     group = this.grank[i];
                 }
             }
+            var flag = false;
             for (i = 0; i < group.length; i++) {
                 if (group[i].uid == uid) {
                     group[i].score += gift_num;
+                    flag = true;
                     break;
                 }
+            }
+            if (!flag) {
+                group.push({uid: uid, score: gift_num});
             }
 
             this.rank[0].group_data.sort(function (a,b) {
