@@ -1,4 +1,4 @@
-var op
+var op;
 function showRank(data){
     // var data = [
     //     {group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}
