@@ -54,7 +54,7 @@
                 if (this.rank.length == 0) {
                     this.rank.push({group_name:"total",group_data:[]})
                 }
-                this.rank.group_data.push({uid: uid, score: 0});
+                this.rank[0].group_data.push({uid: uid, score: 0});
                 if (typeof this.grank[gid] == "undefined") {
                     this.grank.push({group_name:gid,gid: gid,group_data:[]});
                 }
@@ -68,9 +68,9 @@
             var gid = this.users[uid]['gid'];
 
             var i;
-            for (i= 0; i < this.rank.group_data.length; i++) {
-                if (this.rank.group_data[i].uid == uid) {
-                    this.rank.group_data[i].score += gift_num;
+            for (i= 0; i < this.rank[0].group_data.length; i++) {
+                if (this.rank[0].group_data[i].uid == uid) {
+                    this.rank[0].group_data[i].score += gift_num;
                     break;
                 }
             }
@@ -87,7 +87,7 @@
                 }
             }
 
-            this.rank.group_data.sort(function (a,b) {
+            this.rank[0].group_data.sort(function (a,b) {
                 return a.score < b.score;
             });
             group.sort(function (a,b) {
