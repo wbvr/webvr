@@ -61,6 +61,8 @@
 
                 this.user_num++;
             }
+            this.send_rerank_msg(this.rank);
+            this.send_rerank_msg(this.grank);
         },
 
         rerank: function (uid,gift_num) {
