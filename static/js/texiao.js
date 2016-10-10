@@ -4,7 +4,7 @@ function texiao(is_send_msg) {
         is_send_msg = true;
     }
     if (is_send_msg && vm != null || user !== false) {
-        vm.send_gift(user);
+        vm.send_gift(user,vm.GIFT_TYPE.BOAT);
     }
     var texture;
     if(textures.boat === undefined){
@@ -56,7 +56,7 @@ function texiao1(is_send_msg) {
         is_send_msg = true;
     }
     if (is_send_msg && vm != null || user !== false) {
-        vm.send_gift(user);
+        vm.send_gift(user,vm.GIFT_TYPE.FLOWER);
     }
     var texture;
     if(textures.flower === undefined){
