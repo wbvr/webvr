@@ -11,6 +11,7 @@
         this.WS_MSG_TYPE = {ONMESSAGE: 1, ONOPEN: 2, ONCLOSE: 3, DEBUG: 4};
         //this.MSG_TYPE = {VIDEO: 1,MENU: 2, ITEM: 3, MUSIC: 4, UID: 5, DELITEM: 6, HEADMENU: 7, TIPS: 8, RANK: 9};
         this.MSG_TYPE = {GIFT: "gift"};
+        this.GIFT_TYPE = {FLOWER: 1, BOAT: 2};
         this.onmessage = onmessage;
         this.init_worker(worker_js, ws_url);
     };
