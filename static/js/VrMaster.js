@@ -51,9 +51,12 @@
                     gid: gid
                 };
 
-                this.rank.push({uid: uid, score: 0});
+                if (this.rank.length == 0) {
+                    this.rank.push({group_name:"total",group_data:[]})
+                }
+                this.rank.group_data.push({uid: uid, score: 0});
                 if (typeof this.grank[gid] == "undefined") {
-                    this.grank[gid] = [];
+                    this.grank.push({group_name:gid,gid: gid,group_data:[]});
                 }
                 this.grank[gid].push({uid: uid, score: 0});
 
@@ -65,28 +68,34 @@
             var gid = this.users[uid]['gid'];
 
             var i;
-            for (i= 0; i < this.rank.length; i++) {
-                if (this.rank[i].uid == uid) {
-                    this.rank[i].score += gift_num;
+            for (i= 0; i < this.rank.group_data.length; i++) {
+                if (this.rank.group_data[i].uid == uid) {
+                    this.rank.group_data[i].score += gift_num;
                     break;
                 }
             }
-            for (i = 0; i < this.grank[gid].length; i++) {
-                if (this.grank[gid][i].uid == uid) {
-                    this.grank[gid][i].score += gift_num;
+            var group = [];
+            for (i = 0; i < this.grank.length; i++) {
+                if (gid == this.grank[i].gid) {
+                    group = this.grank[i];
+                }
+            }
+            for (i = 0; i < group.length; i++) {
+                if (group[i].uid == uid) {
+                    group[i].score += gift_num;
                     break;
                 }
             }
 
-            this.rank.sort(function (a,b) {
+            this.rank.group_data.sort(function (a,b) {
                 return a.score < b.score;
             });
-            this.grank[gid].sort(function (a,b) {
+            group.sort(function (a,b) {
                 return a.score < b.score;
             });
 
-            this.send_rerank_msg([{group_name: 'total', group_data: this.rank}]);
-            //this.send_rerank_msg(this.grank);
+            this.send_rerank_msg(this.rank);
+            this.send_rerank_msg(this.grank);
         },
 
         send_rerank_msg: function (rank) {
