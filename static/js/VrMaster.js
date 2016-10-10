@@ -31,6 +31,7 @@
             var msg = JSON.parse(event.data);
             switch (msg.type) {
                 case _this.MSG_TYPE.GIFT:
+                    _this.ws_send(msg);
                     _this.rerank(msg.data.uid, 1);
                     break;
                 case _this.MSG_TYPE.ONLINE:
@@ -111,6 +112,11 @@
             };
             var msg = JSON.stringify(data);
             console.log(msg);
+            this.ws_send(msg);
+        },
+
+        ws_send: function (data) {
+            var msg = JSON.stringify(data);
             this.ws.send(msg);
         }
     };
