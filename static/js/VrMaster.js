@@ -13,7 +13,7 @@
         this.ws = ws;
         ws.onmessage = this.onmessage;
         this.MSG_TYPE = {
-            GIFT: 1,         //{type:1, data:{uid: 110, gid: 1, gift_type: 1}}
+            GIFT: 1,         //{type:1, data:{uid: 110, gift_type: "flower"}}
             ONLINE: 'userup',
             OFFLINE: 'userdown',
             RANK: 'rank'

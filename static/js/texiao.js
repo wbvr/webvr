@@ -1,7 +1,9 @@
 var textures = {};
-function texiao() {
-
-    if (vm != null || user !== false) {
+function texiao(is_send_msg) {
+    if (typeof is_send_msg == "undefined") {
+        is_send_msg = true;
+    }
+    if (is_send_msg && vm != null || user !== false) {
         vm.send_gift(user);
     }
     var texture;
@@ -48,9 +50,12 @@ function texiao() {
     requestAnimationFrame(up);
 }
 
-function texiao1() {
+function texiao1(is_send_msg) {
 
-    if (vm != null || user !== false) {
+    if (typeof is_send_msg == "undefined") {
+        is_send_msg = true;
+    }
+    if (is_send_msg && vm != null || user !== false) {
         vm.send_gift(user);
     }
     var texture;
