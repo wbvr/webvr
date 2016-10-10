@@ -23,8 +23,8 @@
 
     VrMaster.prototype = {
         constructor: VrMaster,
-        rank: [],   //  array('uid'=>array('score'=>2))
-        grank: [],  //  array('gid'=>rank)
+        rank: [],   //  {"type":"rank","data":[{"group_name":"total","group_data":[{"uid":"242","score":1}]}]}
+        grank: [],  //  {"type":"rank","data":[{"group_name":0,"gid":0,"group_data":[{"uid":"242","score":1}]}]}
         users: [],
 
         onmessage: function (event) {
