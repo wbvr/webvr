@@ -10,7 +10,7 @@
         this.WORKER_MSG_TYPE = {INIT: 1, SEND: 2};
         this.WS_MSG_TYPE = {ONMESSAGE: 1, ONOPEN: 2, ONCLOSE: 3, DEBUG: 4};
         //this.MSG_TYPE = {VIDEO: 1,MENU: 2, ITEM: 3, MUSIC: 4, UID: 5, DELITEM: 6, HEADMENU: 7, TIPS: 8, RANK: 9};
-        this.MSG_TYPE = {GIFT: 1};
+        this.MSG_TYPE = {GIFT: "gift"};
         this.onmessage = onmessage;
         this.init_worker(worker_js, ws_url);
     };
@@ -34,11 +34,12 @@
             this.worker.worker.postMessage(msg);
         },
 
-        send_gift: function (user) {
+        send_gift: function (user,gift_type) {
             var msg = {
                 type: this.MSG_TYPE.GIFT,
                 data: {
-                    uid: user
+                    uid: user,
+                    gift_type: gift_type
                 }
             };
             this.send(msg);
