@@ -23,8 +23,8 @@
 
     VrMaster.prototype = {
         constructor: VrMaster,
-        rank: [],   //  array('uid'=>array('score'=>2))
-        grank: [],  //  array('gid'=>rank)
+        rank: [],   //  {"type":"rank","data":[{"group_name":"total","group_data":[{"uid":"242","score":1}]}]}
+        grank: [],  //  {"type":"rank","data":[{"group_name":0,"gid":0,"group_data":[{"uid":"242","score":1}]}]}
         users: [],
 
         onmessage: function (event) {
@@ -51,11 +51,13 @@
                     gid: gid
                 };
 
-                this.rank.push({uid: uid, score: 0});
-                if (typeof this.grank[gid] == "undefined") {
-                    this.grank[gid] = [];
+                if (this.rank.length == 0) {
+                    this.rank.push({group_name:"total",group_data:[]})
                 }
-                this.grank[gid].push({uid: uid, score: 0});
+                this.rank[0].group_data.push({uid: uid, score: 0});
+                if (typeof this.grank[gid] == "undefined") {
+                    this.grank.push({group_name:gid,gid: gid,group_data:[]});
+                }
 
                 this.user_num++;
             }
@@ -65,28 +67,39 @@
             var gid = this.users[uid]['gid'];
 
             var i;
-            for (i= 0; i < this.rank.length; i++) {
-                if (this.rank[i].uid == uid) {
-                    this.rank[i].score += gift_num;
+            for (i= 0; i < this.rank[0].group_data.length; i++) {
+                if (this.rank[0].group_data[i].uid == uid) {
+                    this.rank[0].group_data[i].score += gift_num;
                     break;
                 }
             }
-            for (i = 0; i < this.grank[gid].length; i++) {
-                if (this.grank[gid][i].uid == uid) {
-                    this.grank[gid][i].score += gift_num;
+            var group_data = [];
+            for (i = 0; i < this.grank.length; i++) {
+                if (gid == this.grank[i].gid) {
+                    group_data = this.grank[i].group_data;
+                }
+            }
+            var flag = false;
+            for (i = 0; i < group_data.length; i++) {
+                if (group_data[i].uid == uid) {
+                    group_data[i].score += gift_num;
+                    flag = true;
                     break;
                 }
             }
+            if (!flag) {
+                group_data.push({uid: uid, score: gift_num});
+            }
 
-            this.rank.sort(function (a,b) {
+            this.rank[0].group_data.sort(function (a,b) {
                 return a.score < b.score;
             });
-            this.grank[gid].sort(function (a,b) {
+            group_data.sort(function (a,b) {
                 return a.score < b.score;
             });
 
-            this.send_rerank_msg([{group_name: 'total', group_data: this.rank}]);
-            //this.send_rerank_msg(this.grank);
+            this.send_rerank_msg(this.rank);
+            this.send_rerank_msg(this.grank);
         },
 
         send_rerank_msg: function (rank) {
@@ -95,6 +108,7 @@
                 data: rank
             };
             var msg = JSON.stringify(data);
+            console.log(msg);
             this.ws.send(msg);
         }
     };
