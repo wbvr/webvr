@@ -606,6 +606,14 @@
                 showTips(data.data);
             } else if(data.type == "rank") {
                 showRank(data.data);
+            } else if(data.type == "gift") {
+                if (data.data.data.uid != user) {
+                    if (data.data.gift_type == "flower") {
+                        texiao1(false);
+                    } else if (data.data.gift_type == "boat") {
+                        texiao(false);
+                    }
+                }
             }
 
         };
