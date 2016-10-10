@@ -4,13 +4,20 @@ function showRank(data){
         removeRank();
         op = null;
     }
-//     var data = [
-//         {group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}
-//         ,{group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}
-//         ];
+     //var data = [{group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]},{group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}];
     op= getRank(data);
     op.position.z = -500;
     scene.add(op);
+    function update() {
+        var eulerYXZ = hc.getEulerYXZ();
+        var th = eulerYXZ.y;
+        op.position.x = -500 * Math.sin(th);
+        op.position.y = 0;
+        op.position.z = -500 * Math.cos(th);
+        op.rotation.set(0,th,0);
+        requestAnimationFrame(update);
+    }
+    update();
 }
 function removeRank() {
         scene.remove(op);
