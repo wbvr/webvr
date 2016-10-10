@@ -9,6 +9,7 @@ function showRank(data){
 //         ,{group_name:'排行榜',group_data:[{uid:1,score:123},{uid:2,score:123},{uid:4,score:123},{uid:5,score:123},{uid:6,score:123},{uid:7,score:123},{uid:8,score:123},{uid:9,score:123},{uid:10,score:123},]}
 //         ];
     op= getRank(data);
+    op.position.z = -500;
     scene.add(op);
 }
 function removeRank() {
@@ -58,17 +59,14 @@ function getOne(data) {
     var count = data.score
 
     var text = '【' + user + '】送给主播' + count + '朵鲜花';
-    var textMaterial = new THREE.MultiMaterial( [
-            new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
-            new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
-        ] );
+    var textMaterial =  new THREE.MeshPhongMaterial( { color: 0x000000} );
     var textGeo = new THREE.TextGeometry( text, {
         font: font,
         size: 20,
         height: 0,
         curveSegments: 4,
         bevelThickness: 2,
-        bevelSize: 1.5,
+        bevelSize: 1,
         bevelEnabled: true,
         material: 0,
         extrudeMaterial: 1
@@ -81,7 +79,9 @@ function getOne(data) {
 
     var curtainGeometry = new THREE.PlaneGeometry( 400, 60);
     var mesh = new THREE.MeshBasicMaterial({
-        color: 0xffffff
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.7
     });
     var curtain = new THREE.Mesh( curtainGeometry ,mesh);
     curtain.position.set(200,0,-300);
@@ -114,17 +114,14 @@ function getOne(data) {
 function getTotal(data) {
     var ob = new THREE.Group();
     var text = data;
-    var textMaterial = new THREE.MultiMaterial( [
-            new THREE.MeshPhongMaterial( { color: 0x000000, shading: THREE.FlatShading } ), // front
-            new THREE.MeshPhongMaterial( { color: 0xffffff, shading: THREE.SmoothShading } ) // side
-        ] );
+    var textMaterial = new THREE.MeshPhongMaterial( { color: 0x000000} );
     var textGeo = new THREE.TextGeometry( text, {
         font: font,
         size: 20,
         height: 0,
         curveSegments: 4,
         bevelThickness: 2,
-        bevelSize: 1.5,
+        bevelSize: 1,
         bevelEnabled: true,
         material: 0,
         extrudeMaterial: 1
@@ -141,7 +138,9 @@ function getTotal(data) {
 
     var curtainGeometry = new THREE.PlaneGeometry( 400, 60);
     var mesh = new THREE.MeshBasicMaterial({
-        color: 0xffffff
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.7
     });
     var curtain = new THREE.Mesh( curtainGeometry ,mesh);
     curtain.position.set(200,0,-300);
