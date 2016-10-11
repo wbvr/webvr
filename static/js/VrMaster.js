@@ -51,7 +51,7 @@
                     uid: uid,
                     gid: gid
                 };
-                
+
                 if (typeof this.grank[gid] == "undefined") {
                     this.grank.push({group_name:gid,gid: gid,group_data:[]});
                 }
