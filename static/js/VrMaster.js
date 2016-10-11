@@ -23,7 +23,7 @@
 
     VrMaster.prototype = {
         constructor: VrMaster,
-        rank: [],   //  {"type":"rank","data":[{"group_name":"total","group_data":[{"uid":"242","score":1}]}]}
+        rank: [{group_name:"total",group_data:[]}],   //  {"type":"rank","data":[{"group_name":"total","group_data":[{"uid":"242","score":1}]}]}
         grank: [],  //  {"type":"rank","data":[{"group_name":0,"gid":0,"group_data":[{"uid":"242","score":1}]}]}
         users: [],
 
@@ -51,19 +51,17 @@
                     uid: uid,
                     gid: gid
                 };
-
-                if (this.rank.length == 0) {
-                    this.rank.push({group_name:"total",group_data:[]})
-                }
-                this.rank[0].group_data.push({uid: uid, score: 0});
+                
                 if (typeof this.grank[gid] == "undefined") {
                     this.grank.push({group_name:gid,gid: gid,group_data:[]});
                 }
 
                 this.user_num++;
             }
-            this.send_rerank_msg(this.rank);
-            this.send_rerank_msg(this.grank);
+            if (this.rank[0].group_data.length >= 0) {
+                this.send_rerank_msg(this.rank);
+                this.send_rerank_msg(this.grank);
+            }
         },
 
         user_offline: function (data) {
@@ -100,19 +98,26 @@
             var gid = this.users[uid]['gid'];
 
             var i;
+            var flag = false;
+
             for (i= 0; i < this.rank[0].group_data.length; i++) {
                 if (this.rank[0].group_data[i].uid == uid) {
                     this.rank[0].group_data[i].score += gift_num;
+                    flag = true;
                     break;
                 }
             }
+            if (!flag) {
+                this.rank[0].group_data.push({uid: uid, score: gift_num});
+            }
+
             var group_data = [];
             for (i = 0; i < this.grank.length; i++) {
                 if (gid == this.grank[i].gid) {
                     group_data = this.grank[i].group_data;
                 }
             }
-            var flag = false;
+            flag = false;
             for (i = 0; i < group_data.length; i++) {
                 if (group_data[i].uid == uid) {
                     group_data[i].score += gift_num;
