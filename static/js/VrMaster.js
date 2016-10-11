@@ -60,7 +60,7 @@
             }
             if (this.rank[0].group_data.length > 0) {
                 this.send_rerank_msg(this.grank);
-                this.send_rerank_msg(this.rank);
+                //this.send_rerank_msg(this.rank);
             }
         },
 
@@ -91,7 +91,7 @@
             }
 
             this.send_rerank_msg(this.grank);
-            this.send_rerank_msg(this.rank);
+            //this.send_rerank_msg(this.rank);
         },
 
         rerank: function (uid,gift_num) {
@@ -137,7 +137,7 @@
             });
 
             this.send_rerank_msg(this.grank);
-            this.send_rerank_msg(this.rank);
+            //this.send_rerank_msg(this.rank);
         },
 
         send_rerank_msg: function (rank) {
