@@ -58,7 +58,7 @@
 
                 this.user_num++;
             }
-            if (this.rank[0].group_data.length >= 0) {
+            if (this.rank[0].group_data.length > 0) {
                 this.send_rerank_msg(this.rank);
                 this.send_rerank_msg(this.grank);
             }
