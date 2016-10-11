@@ -253,14 +253,9 @@ function texiao3() {
 
 
 function zan(count){
-    if (ws != null || user !== false) {
-        var msg = {
-            type : 'like',
-            uid : user
-        };
-        msg=JSON.stringify(msg);
-        ws.send(msg);
-    }
+    // if (is_send_msg && (vm != null || user !== false)) {
+    //     vm.send_gift(user,vm.GIFT_TYPE.BOAT);
+    // }
     var num =0;
     var handlr = function(){
         texiao3();
