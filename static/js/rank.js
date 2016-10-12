@@ -1,17 +1,20 @@
 var op;
-function showRank(){
+function showRank(data){
     if (op !== undefined){
         removeRank();
         op = null;
     }
-    if (data === undefined) {
+    if (data !== undefined) {
+        rank_data = data;
+    }
+    if (rank_data === undefined) {
         return false;
     }
 
     if (!rankStatus) {
         return;
     }
-    op= getRank(data);
+    op= getRank(rank_data);
     op.position.z = -500;
     scene.add(op);
     function update() {
