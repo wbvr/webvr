@@ -306,7 +306,7 @@
         });
         menu.add_option(scene, eye_controler, 'static/img/rank.png', function (obj) {
             rankStatus = ~rankStatus;
-            showRank();
+            showRank(rank_data);
         });
 
         menu.show(scene,eye_controler);
