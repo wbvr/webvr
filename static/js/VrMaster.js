@@ -23,7 +23,7 @@
 
     VrMaster.prototype = {
         constructor: VrMaster,
-        rank: [{group_name:"total",group_data:[]}],   //  {"type":"rank","data":[{"group_name":"total","group_data":[{"uid":"242","score":1}]}]}
+        rank: [{group_name:"排行榜",group_data:[]}],   //  {"type":"rank","data":[{"group_name":"total","group_data":[{"uid":"242","score":1}]}]}
         grank: [],  //  {"type":"rank","data":[{"group_name":0,"gid":0,"group_data":[{"uid":"242","score":1}]}]}
         users: [],
 
