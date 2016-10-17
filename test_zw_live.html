@@ -48,7 +48,7 @@
 <script src="static/js/Geometry.js"></script>
 <script src="static/js/HControl.js"></script>
 <!-- 图像识别-->
-<script src="static/js/CvControls.js"></script>
+<!--<script src="static/js/CvControls.js"></script>-->
 <!-- 排行榜-->
 <script src="static/js/rank.js"></script>
 <!-- worker and websocket-->
@@ -244,11 +244,11 @@
         video.load();
         video.play();
 
-        video.addEventListener('playing',function(){
-            if (typeof window.cv_controler == "undefined") {
-                window.cv_controler = new CvControls(video,camera,'static/js/JSARToolKit-worker.js');
-            }
-        });
+//        video.addEventListener('playing',function(){
+//            if (typeof window.cv_controler == "undefined") {
+//                window.cv_controler = new CvControls(video,camera,'static/js/JSARToolKit-worker.js');
+//            }
+//        });
 
 
         texture = new THREE.VideoTexture( video );
