@@ -7,7 +7,7 @@
         console.log("CvControls");
 
         _this = this;
-        this.paused = true;
+        this.paused = false;
         this.DEBUG = false;
         window.DEBUG = this.DEBUG;
 
