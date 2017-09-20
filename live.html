@@ -243,11 +243,11 @@
         video.load();
         video.play();
 
-//        video.addEventListener('playing',function(){
-//            if (typeof window.cv_controler == "undefined") {
-//                window.cv_controler = new CvControls(video,camera,'static/js/JSARToolKit-worker.js');
-//            }
-//        });
+        video.addEventListener('playing',function(){
+            if (typeof window.cv_controler == "undefined") {
+                window.cv_controler = new CvControls(video,camera,'static/js/JSARToolKit-worker.js');
+            }
+        });
 
 
         texture = new THREE.VideoTexture( video );
