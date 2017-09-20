@@ -299,11 +299,11 @@
             voice();
         });
 
-//        menu.add_option(scene, eye_controler, 'static/img/cview_close.png', function (obj) {
-//            window.cv_controler.switch();
-//            var str = window.cv_controler.paused ? 'close' : 'open';
-//            menu.change_pic(obj,'static/img/cview_'+str+'.png');
-//        });
+        menu.add_option(scene, eye_controler, 'static/img/cview_close.png', function (obj) {
+            window.cv_controler.switch();
+            var str = window.cv_controler.paused ? 'close' : 'open';
+            menu.change_pic(obj,'static/img/cview_'+str+'.png');
+        });
 
         menu.add_option(scene, eye_controler, 'static/img/rank.png', function (obj) {
             rankStatus = ~rankStatus;
