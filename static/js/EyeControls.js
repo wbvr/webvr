@@ -2,8 +2,11 @@
  * Created by zongwen1 on 2016/8/28.
  */
 ( function ( THREE ) {
+    var _this = null;
     THREE.EyeControls = function (camera) {
         console.log("EyeControls");
+
+        _this = this;
         this.camera = camera;
         this.objects = [];
 
@@ -27,7 +30,7 @@
         this.spote_r = null;
         this.SPOTE_NUM = 17;
         this.spote_num = this.SPOTE_NUM;
-        this.spote_speed = 300;
+        this.spote_speed = 100;
         this.show_spote();
         this.op_status = 0;
 
@@ -35,10 +38,10 @@
         this.raycaster = new THREE.Raycaster();
 
     };
-    
+
     THREE.EyeControls.prototype = {
         constructor: THREE.EyeControls,
-        
+
         bind: function (object,callback) {
             var index = this.objects.indexOf(object);
             if (index == -1) {
@@ -49,12 +52,12 @@
 
         hover_over: function () {
             console.log("hover_over");
-            //if (this.hover_status != this.HOVER_STATUS.STATUS_HOVERING) {
+            if (this.hover_status != this.HOVER_STATUS.STATUS_HOVERING) {
                 this.hover_status = this.HOVER_STATUS.STATUS_HOVERING;
                 if (this.spote) {
                     this.spoting();
                 }
-            //}
+            }
         },
 
         hover_out: function () {
@@ -63,22 +66,22 @@
             this.init_spote();
             this.op_status = 0;
         },
-    
+
         unbind: function (object) {
             var index = this.objects.indexOf(object);
             if (index != -1) {
                 this.objects.splice(index, 1);
             }
         },
-        
+
         show: function () {
             this.show_spote();
         },
-        
+
         remove: function () {
             this.remove_spote();
         },
-    
+
         update: function () {
             if (this.status != this.STATUS.STATUS_SHOW) {
                 return false;
@@ -197,7 +200,9 @@
             if (this.hover_status == this.HOVER_STATUS.STATUS_HOVERING && --this.spote_num > 0) {
                 this.play_spote();
                 //TODO 传this有问题
-                window.setTimeout(THREE.EyeControls.spoting, this.spote_speed);
+                window.setTimeout(function () {
+                    _this.spoting();
+                }, this.spote_speed);
             } else {
                 if (this.spote_num == 0) {
                     console.log("EyeControls callbak");

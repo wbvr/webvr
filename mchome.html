@@ -1,160 +1,173 @@
 <!DOCTYPE html>
 <head>
-<meta charset="utf-8">
-<script>  
-window.addEventListener("load", function(evt) {
+    <meta charset="utf-8">
+    <script src="static/js/VrMaster.js"></script>
+    <script>
+        window.addEventListener("load", function(evt) {
 
-    var output = document.getElementById("output");
-    var input1 = document.getElementById("input1");
-    var input2 = document.getElementById("input2");
-    var input3 = document.getElementById("input3");
-    var input4 = document.getElementById("input4");
-    var input5 = document.getElementById("input5");
-    var input6 = document.getElementById("input6");
-    var input7 = document.getElementById("input7");
-    var input8 = document.getElementById("input8");
-    var input9 = document.getElementById("input9");
-    var input10 = document.getElementById("input10");
-    var ws;
+            var output = document.getElementById("output");
+            var input1 = document.getElementById("input1");
+            var input2 = document.getElementById("input2");
+            var input3 = document.getElementById("input3");
+            var input4 = document.getElementById("input4");
+            var input5 = document.getElementById("input5");
+            var input6 = document.getElementById("input6");
+            var input7 = document.getElementById("input7");
+            var input8 = document.getElementById("input8");
+            var input9 = document.getElementById("input9");
+            var input10 = document.getElementById("input10");
+            var input11 = document.getElementById("input11");
+            var ws;
 
-    var print = function(message) {
-        var d = document.createElement("div");
-        d.innerHTML = message;
-        output.appendChild(d);
-    };
+            var print = function(message) {
+                var d = document.createElement("div");
+                d.innerHTML = message;
+                output.appendChild(d);
+            };
 
-    if (ws) {
-	    return false;
-    }
-    ws = new WebSocket("wss://10.235.24.45:8087/mc");
-    ws.onopen = function(evt) {
-	    print("OPEN");
-    }
-    ws.onclose = function(evt) {
-	    print("CLOSE");
-	    ws = null;
-    }
-    ws.onmessage = function(evt) {
-	    print("RESPONSE: " + evt.data);
-    }
-    ws.onerror = function(evt) {
-	    print("ERROR: " + evt.data);
-    }
+            if (ws) {
+                return false;
+            }
+            ws = new WebSocket("wss://10.235.24.45:8087/mc");
+            var vm = new VrMaster(ws);
+            ws.onopen = function(evt) {
+                print("OPEN");
+            }
+            ws.onclose = function(evt) {
+                print("CLOSE");
+                ws = null;
+            }
+//    ws.onmessage = function(evt) {
+//	    print("RESPONSE: " + evt.data);
+//    }
+            ws.onerror = function(evt) {
+                print("ERROR: " + evt.data);
+            }
 
-    document.getElementById("video1").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input1.value);
-        ws.send(input1.value);
-        return false;
-    };
-    document.getElementById("video2").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input2.value);
-        ws.send(input2.value);
-        return false;
-    };
-    document.getElementById("menu1").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input3.value);
-        ws.send(input3.value);
-        return false;
-    };
-    document.getElementById("menu2").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input4.value);
-        ws.send(input4.value);
-        return false;
-    };
-    document.getElementById("music1").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input5.value);
-        ws.send(input5.value);
-        return false;
-    };
-    document.getElementById("music2").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input6.value);
-        ws.send(input6.value);
-        return false;
-    };
-    document.getElementById("item1").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input7.value);
-        ws.send(input7.value);
-        return false;
-    };
-    document.getElementById("item2").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input8.value);
-        ws.send(input8.value);
-        return false;
-    };
-    document.getElementById("delitem").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input9.value);
-        ws.send(input9.value);
-        return false;
-    };
-    document.getElementById("head").onclick = function(evt) {
-        if (!ws) {
-            return false;
-        }
-        print("SEND: " + input10.value);
-        ws.send(input10.value);
-        return false;
-    };
-});
-</script>
+            document.getElementById("video1").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input1.value);
+                ws.send(input1.value);
+                return false;
+            };
+            document.getElementById("video2").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input2.value);
+                ws.send(input2.value);
+                return false;
+            };
+            document.getElementById("menu1").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input3.value);
+                ws.send(input3.value);
+                return false;
+            };
+            document.getElementById("menu2").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input4.value);
+                ws.send(input4.value);
+                return false;
+            };
+            document.getElementById("music1").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input5.value);
+                ws.send(input5.value);
+                return false;
+            };
+            document.getElementById("music2").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input6.value);
+                ws.send(input6.value);
+                return false;
+            };
+            document.getElementById("item1").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input7.value);
+                ws.send(input7.value);
+                return false;
+            };
+            document.getElementById("item2").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input8.value);
+                ws.send(input8.value);
+                return false;
+            };
+            document.getElementById("delitem").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input9.value);
+                ws.send(input9.value);
+                return false;
+            };
+            document.getElementById("head").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input10.value);
+                ws.send(input10.value);
+                return false;
+            };
+            document.getElementById("tips").onclick = function(evt) {
+                if (!ws) {
+                    return false;
+                }
+                print("SEND: " + input11.value);
+                ws.send(input11.value);
+                return false;
+            };
+        });
+    </script>
 </head>
 <body>
 <table>
-<tr><td valign="top" width="50%">
-<p> 
-You can click "Send" to send a message to the server. 
-You can change the message and send multiple times.
-<p>
-<form>
-<p><input id="input1" type="text" value='{"type":"video","data":"static/video/hsy.mp4"}'>
-<button id="video1">video1</button>
-<p><input id="input2" type="text" value='{"type":"video","data":"yyyy"}'>
-<button id="video2">video2</button>
-<p><input id="input3" type="text" value='{"type":"menu","data":{"title":"","items":["hi","ho","he"]}}'>
-<button id="menu1">menu1</button>
-<p><input id="input4" type="text" value='{"type":"menu","data":{"title":"like?","items":["yes","no"]}}'>
-<button id="menu2">menu2</button>
-<p><input id="input5" type="text" value='{"type":"music","data":"static/audio/th.wav"}'>
-<button id="music1">music1</button>
-<p><input id="input6" type="text" value='{"type":"music","data":"static/audio/th.wav"}'>
-<button id="music2">music2</button>
-<p><input id="input7" type="text" value='{"type":"item","data":{"width":100,"height":100,"x":-300,"y":100,"z":-300,"pic":"static/img/9.png"}}'>
-<button id="item1">item1</button>
-<p><input id="input8" type="text" value='{"type":"item","data":{"width":50,"height":50,"x":0,"y":-60,"z":-300,"pic":"static/img/5.png"}}'>
-<button id="item2">item2</button>
-<p><input id="input9" type="text" value='{"type":"delitem"}'>
-<button id="delitem">delitem</button>
-<p><input id="input10" type="text" value='{"type":"headmenu","data":{"title":"nihao"}}'>
-<button id="head">delitem</button>
-</form>
-</td><td valign="top" width="50%">
-<div id="output"></div>
-</td></tr></table>
+    <tr><td valign="top" width="50%">
+        <p>
+            You can click "Send" to send a message to the server.
+            You can change the message and send multiple times.
+        </p>
+        <form>
+            <p><input id="input1" type="text" value='{"type":"video","data":"static/video/hsy.mp4"}'>
+                <button id="video1">video1</button></p>
+            <p><input id="input2" type="text" value='{"type":"video","data":"yyyy"}'>
+                <button id="video2">video2</button></p>
+            <p><input id="input3" type="text" value='{"type":"menu","data":{"title":"","items":["hi","ho","he"]}}'>
+                <button id="menu1">menu1</button></p>
+            <p><input id="input4" type="text" value='{"type":"menu","data":{"title":"like?","items":["yes","no"]}}'>
+                <button id="menu2">menu2</button></p>
+            <p><input id="input5" type="text" value='{"type":"music","data":"static/audio/th.wav"}'>
+                <button id="music1">music1</button></p>
+            <p><input id="input6" type="text" value='{"type":"music","data":"static/audio/th.wav"}'>
+                <button id="music2">music2</button></p>
+            <p><input id="input7" type="text" value='{"type":"item","data":{"width":100,"height":100,"x":-300,"y":100,"z":-300,"pic":"static/img/9.png"}}'>
+                <button id="item1">item1</button></p>
+            <p><input id="input8" type="text" value='{"type":"item","data":{"width":50,"height":50,"x":0,"y":-60,"z":-300,"pic":"static/img/5.png"}}'>
+                <button id="item2">item2</button></p>
+            <p><input id="input9" type="text" value='{"type":"delitem"}'>
+                <button id="delitem">delitem</button></p>
+            <p><input id="input10" type="text" value='{"type":"headmenu","data":{"title":"nihao"}}'>
+                <button id="head">delitem</button></p>
+            <p><input id="input11" type="text" value='{"type":"tips","data":"韩土豪给主播送了一艘航天母舰"}'>
+                <button id="tips">tips</button></p>
+        </form>
+    </td><td valign="top" width="50%">
+        <div id="output"></div>
+    </td></tr></table>
 </body>
 </html>
